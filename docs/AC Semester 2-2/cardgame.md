@@ -65,4 +65,49 @@ const controller = {
 
 
 
-## 枚舉
+## 枚舉(Enumeration)
+1. 從一些元素中替每一個元素命名特殊名字，在這裡會是以類似陣列的形式來產生多個元素，並替這些元素命名，命名的過程就叫語義化，其結果是讓這些元素在程式中具有特殊意義，其形式會類似於：建立一個存放7個數字的集合，數字是從0至6，在這裡，每一個數字都代表著一週的星期幾，比如6代表著星期六。
+```
+enum DAY            /* Defines an enumeration type    */
+{
+    saturday = 6,       /* Names day and declares a       */
+    sunday = 0,     /* variable named workday with    */
+    monday = 1,         /* that type                      */
+    tuesday = 2,
+    wednesday = 3,      /* wednesday is associated with 3 */
+    thursday = 4,
+    friday = 5
+} workday;
+```
+2. 應用於實作以狀態圖為架構的設計，比如利用枚舉來實作每種狀態
+3. 大部分程式語言會有枚舉語法，但JavaScript沒有，只能透過物件來建立，比如說紙牌遊戲中的五種狀態，每一種狀態都用具體屬性和屬性值來代表，FirstCardAwaits代表著等待第一張牌，SecondCardAwaits代表著第二張牌，CardsMatchFailed代表著兩張牌配對失敗，CardsMatched代表著兩張牌配對成功，GameFinished代表遊戲結束。
+
+```
+const GAME_STATE = {
+  FirstCardAwaits: "FirstCardAwaits",
+  SecondCardAwaits: "SecondCardAwaits",
+  CardsMatchFailed: "CardsMatchFailed",
+  CardsMatched: "CardsMatched",
+  GameFinished: "GameFinished",
+}
+```
+
+### 參考資料
+1. https://segmentfault.com/a/1190000024456410
+
+
+
+## setTimeout 的呼叫者和this
+1. setTimeout的原型是window.setTimeout
+2. 它是由瀏覽器額外提供給其他程式語言的API，主要是用作計時器並於指定時間內去做某件事情，這件事情會以函式來代替
+3. 形式為以下，function是時間到了要執行的程式碼內容，milliseconds是指定時間，單位是毫秒(ms)，若要1秒的話，必須填入1000
+
+```
+setTimeout(function, milliseconds)
+```
+
+```
+window.setTimeout(function, milliseconds)
+```
+
+4. 由於本身是由瀏覽器額外提供的，所以每當JS呼叫它時，便會麻煩瀏覽器內部的執行緒去執行setTimeout的工作，當然由於setTimeout呼叫者會是window(瀏覽器)，所以在setTimeout內部的函式會因為呼叫者間接呼叫而讓內部函式的this變數變成window物件。
