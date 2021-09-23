@@ -13,7 +13,6 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
   favicon: 'img/favicon.ico',
   organizationName: 'eklipsorz', // Usually your GitHub org/user name.
   projectName: 'dev-wiki', // Usually your repo name.
-
   presets: [
     [
       '@docusaurus/preset-classic',
@@ -21,6 +20,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
       ({
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
+          routeBasePath: '/',
           // Please change this to your repo.
           editUrl: 'https://github.com/facebook/docusaurus/edit/main/website/',
         },
@@ -41,17 +41,19 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       navbar: {
-        title: 'My Site',
+        title: 'dev-wiki',
         logo: {
           alt: 'My Site Logo',
           src: 'img/logo.svg',
         },
         items: [
           {
-            type: 'doc',
-            docId: 'intro',
-            position: 'left',
-            label: 'Tutorial',
+            /* 告訴navbar items如何被找到 */
+            to: "/",
+            activeBasePath: "/",
+            position: "left",
+            label: "Docs",
+
           },
           { to: '/blog', label: 'Blog', position: 'left' },
           {
@@ -69,7 +71,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
             items: [
               {
                 label: 'Tutorial',
-                to: '/docs/intro',
+                to: '/',
               },
             ],
           },
