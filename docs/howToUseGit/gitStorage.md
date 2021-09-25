@@ -3,13 +3,13 @@ sidebar_position: 2
 ---
 
 
-# git 有哪些儲存空間
-git系統本身是以分散式系統來儲存和處理，本身存放的資料會透過網路而被分散存放，以保證資料不會因為集中存放而易毀損，git分散存放的方式是將本地端的git Repository上傳至伺服器，再由伺服器去發送其Repository給予任何一個想要存取其資料的人或者電腦，每個人都可以透過伺服器而擁有一份Repository，當其中一人或者伺服器出現問題無法正常存取Repository，可藉由其他人在本地端下的repo來進行修復或者正常存取。
+# git 儲存資料方式和儲存空間
 
-而git系統所擁有的儲存空間可藉由本地端和伺服器端而分為兩種，第一種為本地端的儲存空間，第二種則為伺服器端的儲存空間，在這個小文章中，將會介紹這兩種儲存空間。
+在本文章會直接論述著git是如何儲存每一次版本的資料以及它所擁有的儲存空間有那些，前者會在第一小節描述，後者則由第二小節來描述。
 
 
-## git 儲存檔案的方式
+## git 儲存資料的方式
+git 不像其他版本控制系統那樣，每個版本只單純存放修改內容，當要到指定版本時便會匯集以及處理來達成，git會使用snapshot技術來存放每一次版本內容，而這個snapshot技術則是以File snapshot作為基礎來修改，所以在這小節中會先以File snapshot來說明，並且再正式描述git snapshot本身是什麼。
 
 ### File Snapshot
 File snapshot是針對一個檔案來紀錄它在不同時間點下的內容紀錄，每一個時間點下的檔案內容都會被紀錄，而這些內容又如同紀錄某個時段的相片(snapshot)，故稱之為snapshot，但由於這項技術是紀錄特定檔案在不同時間點的內容，所以若只是單純採用複製的方法來實現，會造成系統很多負擔，而且這些內容大部分都是重複的，所以會採取內容共享的手段來大幅度減少系統負擔，我們以一個例子來說明，在這裡我們建立一個名為File 1的檔案內容，其內容會直接以類似by reference或者指標的形式指向
@@ -43,7 +43,7 @@ git在repo存放的每一個版本的資料形式會是以類似於file snapshot
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632580141/blog/git/Gitsnapshot_file2nochange_y1ixl8.png)
 
 
-接著若我們繼續對三個檔案進行修改的話，並且提交第三次的版本，這時的版本內容將會以第二個版本內容為主，每個檔案的snapshot
+接著若我們繼續對三個檔案進行修改的話，並且提交第三次的版本，這時的版本內容將會以第二個版本內容為主，第三個版本下每個檔案的snapshot會是以第二個版本所指向的snapshot以及第二個版本的修改內容，而第三個版本的修改內容會以Changes來存放，拿File 1來說的話，File 1的snapshot會以第二版本的File 1作為snapshot來修改。
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632580274/blog/git/Gitsnapshot_threeVersions_yg2es2.png)
 
 
