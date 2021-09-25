@@ -34,15 +34,17 @@ File snapshot是針對一個檔案來紀錄它在不同時間點下的內容紀�
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632578989/blog/git/anotherExample_copyonwrite_uexl15.png)
 
 ### git snapshot
-git在repo存放的每一個版本的資料形式會是以類似於file snapshot的形式來進行，每一個版本會是以前一個版本作為snapshot來修改，我們以一個例子來說明，首先我們先建立一個repo並放入三個檔案，分別為File、File 2
-
+git在repo存放的每一個版本的資料形式會是以類似於file snapshot的形式來進行，每一個版本會是以前一個版本作為snapshot來修改，我們以一個例子來說明，首先我們先建立一個repo並放入三個檔案，分別為File 1、File 2、File 3，接著對他們進行add和commit來提交第一次的版本，儲存形式會是以完整檔案來存放，接著當我們對著三個檔案做了一些小修改時，並且add以及commit來提交第二次的版本，這時第二次的版本內容將不會是以完整內容來存放，每個檔案有分為snapshot以及Changes((snapshot 和 Changes 並非git真以這名稱來說明，在這裡是方便解釋，但概念上是一樣的)，而snapshot會直接指向前一個版本內容的位置，也就是指向第一個版本的內容，而每個檔案都會指向第一個版本的對應檔案，而Changes則是存放著這次版本修改的內容。
 
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632579687/blog/git/anExampleOfGitsnapshot_pjz1z2.png)
 
+若有檔案沒在第二次版本做任何修改的話，會如同下圖中的第二個檔案那樣，只會有指向前一個版本內容的snapshot。
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632580141/blog/git/Gitsnapshot_file2nochange_y1ixl8.png)
 
 
-
-
+接著若我們繼續對三個檔案進行修改的話，並且提交第三次的版本，這時的版本內容將會以第二個版本內容為主，每個檔案的snapshot
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632580274/blog/git/Gitsnapshot_threeVersions_yg2es2.png)
 
 
 ## 本地端的git系統
