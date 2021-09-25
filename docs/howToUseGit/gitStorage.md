@@ -12,13 +12,33 @@ git系統本身是以分散式系統來儲存和處理，本身存放的資料�
 ## git 儲存檔案的方式
 
 ### File Snapshot
-File snapshot是針對一個檔案來紀錄它在不同時間點下的內容紀錄，每一個時間點下的檔案內容都會被紀錄，而這個內容又如同紀錄某個時段的相片(snapshot)，故稱之為snapshot，但由於這項技術是紀錄特定檔案在不同時間點的內容，所以若只是單純採用複製的方法來實現，會造成系統很多負擔，因此會採取內容共享的手段來大幅度減少系統負擔，首先
+File snapshot是針對一個檔案來紀錄它在不同時間點下的內容紀錄，每一個時間點下的檔案內容都會被紀錄，而這些內容又如同紀錄某個時段的相片(snapshot)，故稱之為snapshot，但由於這項技術是紀錄特定檔案在不同時間點的內容，所以若只是單純採用複製的方法來實現，會造成系統很多負擔，而且這些內容大部分都是重複的，所以會採取內容共享的手段來大幅度減少系統負擔，我們以一個例子來說明，在這裡我們建立一個名為File 1的檔案內容，其內容會直接以類似by reference或者指標的形式指向
+在硬碟(Disk)的實際內容。
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632575615/blog/git/anExample_createFile1_l14ho0.png)
+
+而當我們對File 1進行所謂共享來獲取snapshot時，會生成另一個名為File 2檔案(名稱可以是同名)，其內容會直接以類似於by reference方式或者以指標的形式來指向File 1檔案內容的記憶體位址所在，
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632575634/blog/git/anExample_snapshot_lm3qcm.png)
+
+讓File 2不用再向系統要一塊硬碟空間去存放File1 內容，而是直接像上圖那樣，兩個檔案都共享著同個內容，對於File 1而言， File 2 是以File 1的內容作為snapshot來進行相關的修改
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632575959/blog/git/anExample_copyfile_iovmhc.png)
+
+當File 2想要對共享內容做變更時，系統會以copy on write的形式來向系統要塊硬碟空間去存放這些變更內容，而非整塊檔案內容，在這裡File 2內容還是會仍指向存放File 1內容的硬碟位址，但會增加名為Changes的指標去指向存放變更內容的硬碟區塊，同樣地，File 1本身也能做這樣子的更改。
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632576922/blog/git/anExample_copyonwrite_scoduu.png)
+
+若還有第三個檔案File 3的話，那就要考慮它以什麼檔案內容來當snapshot，若還是把File 1的檔案內容當作snapshot的話，原則上會如同File 2那樣共享File 1內容並存放變更內容，但若是以File 2為主的話，File 3的內容會指向File 2所指向的內容以及它所修改的內容，而File 3的變更內容則是指向存放對File 2進行變更的內容之硬碟區塊。若還有其他檔案如同File 3那樣延續著以前一個檔案來當作snapshot來修改的話，會如同File 3來指向。
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632578989/blog/git/anotherExample_copyonwrite_uexl15.png)
+
+### git snapshot
+git在repo存放的每一個版本的資料形式會是以類似於file snapshot的形式來進行，每一個版本會是以前一個版本作為snapshot來修改，我們以一個例子來說明，首先我們先建立一個repo並放入三個檔案，分別為File、File 2
 
 
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632579687/blog/git/anExampleOfGitsnapshot_pjz1z2.png)
 
-
-
-類似於能紀錄某個時段的相片(snapshot)，故稱為file snapshot，當我們對特定檔案A做file snapshot時，會生成一個另一個同個檔案內容的檔案B，而這個檔案B會是檔案A的snapshot，而讓檔案B的檔案內容會跟檔案A一樣，
 
 
 
