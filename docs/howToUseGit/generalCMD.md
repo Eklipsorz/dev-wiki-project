@@ -66,3 +66,23 @@ git log --oneline
 git diff
 git diff <sha-1> <sha-1> 
 ```
+
+
+## git reset
+1. 將HEAD回溯至先前版本內容
+2. 語法形式為，第一種形式是將HEAD指向對應sha-1的版本，第二種形式則是以對應sha-1版本的前幾個版本，多少個^代表著多少前幾個版本，若為1個^，則以對應sha-1版本的前一版本來回溯，若為2個^，則以則以對應sha-1版本的前二版本來回溯，後面以此類推，第三種是用~n來指定前n個版本，比如&lt;sha-1&gt;~2就以對應該sha-1版本的前兩個版本進行回溯，最後一種形式則以HEAD所在來回溯，剩下符號的應用如同第二三種。
+
+
+```
+git reset <sha-1> 
+git reset <sha-1>^ / git reset <sha-1>^^ /  git reset <sha-1>^^^  
+git reset <sha-1>~n
+git reset HEAD^ / git reset HEAD^ / git reset HEAD^
+```
+
+3. 另外會搭配soft、Mixed、Hard:
+ - soft：回溯指定版本，程式碼會退回staged狀態，在這個狀態下的版本內容會回歸在staging area並處於等待commit的狀態。
+ - mixed：回溯指定版本，程式碼會退回Unstaged，在這個狀態下的版本內容並不會在staging area且處於untracked的狀態，這是預設的git reset設定，換言之，即使不加soft、mixed、hard，預設上會以mixed為主。
+ - hard：回溯指定版本，回溯前的當前版本內容會全刪掉，但只針對內容，不針對檔案。
+
+ 4. 適用於這次commit內容想拆掉重做的場景。
