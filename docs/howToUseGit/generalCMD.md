@@ -86,3 +86,7 @@ git reset HEAD^ / git reset HEAD^ / git reset HEAD^
  - hard：回溯指定版本，回溯前的當前版本內容會全刪掉，但只針對內容，不針對檔案。
 
  4. 適用於這次commit內容想拆掉重做的場景。
+
+
+
+ 
