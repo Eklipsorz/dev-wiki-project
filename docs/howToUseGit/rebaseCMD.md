@@ -114,7 +114,7 @@ git reset --hard eabd0dc
 當想要將分支A複製至另一個分一個分支B的頂端紀錄(分支B的最新提交紀錄)上時，可以先透過git checkout轉移至分支A，
 
 
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632845211/blog/git/rebase/RebaseToBranchDiagram_ruadjz.png)
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632849316/blog/git/rebase/RebaseToBranchDiagram_uy6taw.png)
 
 
 然後對它下達以下指令：
@@ -122,9 +122,9 @@ git reset --hard eabd0dc
 git rebase branchB
 ```
 
-使分支A下的所有節點將會在分支B的最新提交紀錄上面，由於轉移過程是直接從分支A複製並讓分支B的最新提交版本去連接複製過來的版本紀錄，所以每個被複製過來的版本所擁有的sha-1都被改變，而剩餘不在分支A的版本節點都維持一樣的sha-1，皆未曾改變過，而HEAD由於是從分支A來下達rebase，所以HEAD會繼續指向分支A的最新紀錄。
+使分支A下的所有節點將會在分支B的最新提交紀錄上面，由於轉移過程是直接從分支A複製並讓分支B的最新提交版本去連接複製過來的版本紀錄，所以每個被複製過來的版本所擁有的sha-1都被改變，而剩餘不在分支A的版本節點都維持一樣的sha-1，皆未曾改變過，而HEAD由於是從分支A來下達rebase，所以HEAD會繼續指向分支A的最新紀錄，同樣地，git系統會在內部儲存(隱藏)原本分支A的節點圖來幫助開發者還原或者等著被git系統回收，在這裡以橘框來表示
 
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632845211/blog/git/rebase/RebaseToBranchDiagramAfter_k5ocvq.png)
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632849315/blog/git/rebase/RebaseToBranchDiagramAfter_hqfsgo.png)
 
 
 另外分支B和分支A仍然是兩個獨立的分支，只是分支A包含分支B目前的所有節點，而分支B的版本節點仍維持rebase之前的內容，其節點圖如下圖：
