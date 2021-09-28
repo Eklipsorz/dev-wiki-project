@@ -31,15 +31,31 @@ pickup <sha-1> commit message N-1
 squash <sha-1> commit message N
 ```
 
-而壓扁可以不只可以壓2個版本，還能按照squash數量以及能被壓扁的量來盡可能增加可壓的數量，比如說
+而壓扁可以不只可以壓2個版本，還能按照squash數量以及能被壓扁的量來盡可能增加可壓的數量，比如說在版本N至版本M+1前面填上squash，壓扁版本N至版本M成一個提交紀錄。
+
 ```
-pickup <sha-1> commit message N-1
+
+pickup <sha-1> commit message M
+squash <sha-1> commit message M+1
+              .
+              .
+              .
+squash <sha-1> commit message N-2
+squash <sha-1> commit message N-1
 squash <sha-1> commit message N
 ```
 
+不論你壓扁了多少個，最後需要你填寫最新版本的提交訊息，這時你在按照自己所需來填寫版本，並且最後結果
 
 
 ### 取消方法
+
+若你後悔這次合併後的結果，可以試著利用reflog找出先前在
+
+```
+git reflog
+```
+
 
 ### 例子
 
