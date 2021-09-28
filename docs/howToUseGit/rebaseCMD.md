@@ -62,6 +62,13 @@ squash <sha-1> commit message N
 
 ### 壓扁中間幾筆版本紀錄
 
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632837434/blog/git/rebase/simpleExample_zymlon.png)
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632838538/blog/git/rebase/simpleExample2AfterSquash_dtibn0.png)
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632838538/blog/git/rebase/generalExampl2eAfterSquash_xkzrcq.png)
+
 ### 取消方法
 
 若你後悔這次合併後的結果，可以試著利用reflog找出先前在
