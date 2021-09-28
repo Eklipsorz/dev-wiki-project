@@ -45,7 +45,18 @@ squash <sha-1> commit message N-1
 squash <sha-1> commit message N
 ```
 
-不論你壓扁了多少個，最後需要你填寫最新版本的提交訊息，這時你在按照自己所需來填寫版本，並且最後結果
+不論你壓扁了多少個，最後需要你填寫最新版本的提交訊息，這時你在按照自己所需來填寫版本，並且最後結果會以你壓扁後的版本紀錄為主，但實際上原本壓扁前的版本紀錄也會存在git系統直到被git回收機制被回收，在這裡根據壓扁的位置我們可以大致區分為壓扁最新幾筆紀錄以及壓扁中間幾筆紀錄，以這兩個情況下我們試著用一些簡單例子說明當壓扁後來說明會是怎麼樣的情形，接著簡化成一種通用概念來表示。
+
+
+### 壓扁最新幾筆版本紀錄
+我們以一個簡單例子來說明，
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632836268/blog/git/rebase/simpleExample_ppq4vr.png)
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632836269/blog/git/rebase/simpleExampleAfterSquash_ejp3ls.png)
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632836268/blog/git/rebase/generalExampleAfterSquash_fp3n3b.png)
+
 
 
 ### 取消方法
