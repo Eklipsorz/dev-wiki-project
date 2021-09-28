@@ -80,6 +80,20 @@ git reflog
 git reset --hard <sha-1>
 ```
 
+如果拿 "壓扁最新幾筆版本紀錄" 和 "壓扁中間幾筆版本紀錄" 所提到的例子來取消/還原的話，只需要各從中獲取原本壓扁前的最新提交版本(sha-1)，在這裡就是圖中內部隱藏的藍框，只要取得被選取到版本，並下達以下指令：
+
+```
+git reset --hard <sha-1> N
+```
+
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632845290/blog/git/rebase/UndoDigram1_o7rvkv.png)
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632845292/blog/git/rebase/UndoDigram2_qpcsx7.png)
+
+就能將他們都還原成：
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632837434/blog/git/rebase/simpleExample_zymlon.png)
+
 ### 例子
 假設我們提交五個版本，讓這五個版本連成一條節點圖：
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632841538/blog/git/rebase/anUndoExample_ctj0o4.png)
@@ -100,7 +114,7 @@ git reset --hard eabd0dc
 當想要將分支A複製至另一個分一個分支B的頂端紀錄(分支B的最新提交紀錄)上時，可以先透過git checkout轉移至分支A，
 
 
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632844205/blog/git/rebase/RebaseToBranchDigram_ajpxhu.png)
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632845211/blog/git/rebase/RebaseToBranchDiagram_ruadjz.png)
 
 
 然後對它下達以下指令：
@@ -110,7 +124,7 @@ git rebase branchB
 
 使分支A下的所有節點將會在分支B的最新提交紀錄上面，由於轉移過程是直接從分支A複製並讓分支B的最新提交版本去連接複製過來的版本紀錄，所以每個被複製過來的版本所擁有的sha-1都被改變，而剩餘不在分支A的版本節點都維持一樣的sha-1，皆未曾改變過，而HEAD由於是從分支A來下達rebase，所以HEAD會繼續指向分支A的最新紀錄。
 
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632844206/blog/git/rebase/RebaseToBranchDigramAfter_myshuk.png)
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632845211/blog/git/rebase/RebaseToBranchDiagramAfter_k5ocvq.png)
 
 
 另外分支B和分支A仍然是兩個獨立的分支，只是分支A包含分支B目前的所有節點，而分支B的版本節點仍維持rebase之前的內容，其節點圖如下圖：
@@ -122,7 +136,15 @@ git rebase branchB
 
 
 ### 取消方法
+若你後悔這次分支A的rebase結果，可以先git checkout至分支A，並且下達git reflog找出該分支A在rebase前的
 
+```
+git checkout branch A
+git reflog
+```
+
+
+合併後的結果，可以試著利用git reflog找出壓扁前的HEAD節點(會以sha-1碼代表)，接著透過git reset讓HEAD去指向壓扁前的版本，而這個動作相當於你將版本還原至壓扁前的版本，然而你壓縮後的版本節點圖不會因此而消失，會如同壓扁後的內部隱藏的那樣，若你突然想從壓縮前回溯至壓縮後的版本，只需要知道當時的HEAD對應的sha-1就行。
 ### 例子
 
 
