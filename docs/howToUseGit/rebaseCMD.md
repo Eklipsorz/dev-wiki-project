@@ -53,11 +53,11 @@ squash <sha-1> commit message N
 
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632837434/blog/git/rebase/simpleExample_zymlon.png)
 
-在這裡我們想要讓最新的三筆版本紀錄壓扁成(合併成)一個版本，在下達git rebase相關指令後，其節點圖會是如下圖所示，實際能看到會是由原來第三版本至第五版本壓扁而成的最新第三版本，也就是目前HEAD所指向的，然而git系統會保留壓扁前的節點圖，也就是內部隱藏的部分，這部分可以幫助開發者回溯到壓扁前的節點圖，這邊會由後續的取消方法來說明。
+在這裡我們想要讓最新的三筆版本紀錄壓扁成(合併成)一個版本，在下達git rebase相關指令後，其節點圖會是如下圖所示，實際能看到會是由原來第三版本至第五版本壓扁而成的最新第三版本，也就是目前HEAD所指向的，而它的sha-1碼會因為版本內容不同以及壓扁的關係而改變，然而git系統會保留壓扁前的節點圖，也就是內部隱藏的部分，這部分可以幫助開發者回溯到壓扁前的節點圖，這邊會由後續的取消方法來說明。
 
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632837434/blog/git/rebase/simpleExampleAfterSquash_lq8zpa.png)
 
-若我們將這個具體例子轉換成通用概念的話，會考慮著有N個版本紀錄，第N版本原本是HEAD所指向的，第M版本至第N版本則是指定被壓扁的對象，那麼在壓扁後的節點圖會像是如下圖，N-M+1個版本會壓扁成一個新的版本，也就是下圖中的第M'個版本，同樣地，這只是實際上呈現的節點圖，而內部隱藏著原本壓扁前的節點圖。
+若我們將這個具體例子轉換成通用概念的話，會考慮著有N個版本紀錄，第N版本原本是HEAD所指向的，第M版本至第N版本則是指定被壓扁的對象，那麼在壓扁後的節點圖會像是如下圖，N-M+1個版本會壓扁成一個新的版本，也就是下圖中的第M'個版本，同樣地，這只是實際上呈現的節點圖且它的sha-1碼會因為版本內容不同以及壓扁的關係而改變，而內部隱藏著原本壓扁前的節點圖。
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632838124/blog/git/rebase/generalExampleAfterSquash_vjwxk4.png)
 
 ### 壓扁中間幾筆版本紀錄
