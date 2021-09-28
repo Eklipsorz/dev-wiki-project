@@ -80,8 +80,22 @@ git reflog
 git reset --hard <sha-1>
 ```
 
-
 ### 例子
+假設我們提交五個版本，讓這五個版本連成一條節點圖：
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632841538/blog/git/rebase/anUndoExample_ctj0o4.png)
+
+接著我們壓扁所有跟master有關的提交版本後，節點圖會呈現如下：
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632841538/blog/git/rebase/anUndoExampleAfterUndoing_xbc0kt.png)
+
+這時可以利用git reflog去查閱過去對節點做了哪些改變，找到rebase訊息之前的提交紀錄，會看到最近的一筆為eabd0dc對應的版本，
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632841538/blog/git/rebase/anUndoExampleReflog_dfnq6b.png)
+
+而這個版本剛好是原本壓扁前的版本紀錄，這時只要下達以下指令就能還原成壓扁前的節點圖
+
+```
+git reset --hard eabd0dc
+```
+
 
 ## 將分支複製轉移至另一個分支
 
