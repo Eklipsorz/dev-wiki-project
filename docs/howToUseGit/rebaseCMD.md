@@ -53,23 +53,23 @@ squash <sha-1> commit message N
 
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632837434/blog/git/rebase/simpleExample_zymlon.png)
 
-在這裡我們想要讓最新的三筆版本紀錄壓扁成(合併成)一個版本，在下達git rebase相關指令後，其節點圖會是如下圖所示，實際能看到會是由原來第三版本至第五版本壓扁而成的最新第三版本，也就是目前HEAD所指向的，而它的sha-1碼會因為版本內容不同以及壓扁的關係而改變，然而git系統會保留壓扁前的節點圖，也就是內部隱藏的部分，這部分可以幫助開發者回溯到壓扁前的節點圖，這邊會由後續的取消方法來說明。
+在這裡我們想要讓最新的三筆版本紀錄壓扁成(合併成)一個版本，在下達git rebase相關指令後，其節點圖會是如下圖所示，實際能看到會是由原來第三版本至第五版本(commit 3 ~ commit 5)壓扁而成的最新第三版本(commit 3')，也就是目前HEAD所指向的，而它的sha-1碼會因為壓扁的關係而改變，然而git系統會保留壓扁前的節點圖，也就是內部隱藏的部分(使用橘框圍住的部分)，這部分可以幫助開發者回溯到壓扁前的節點圖，這邊會由後續的取消方法來說明。
 
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632837434/blog/git/rebase/simpleExampleAfterSquash_lq8zpa.png)
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632847969/blog/git/rebase/simpleExampleAfterSquash_licvyf.png)
 
-若我們將這個具體例子轉換成通用概念的話，會考慮著有N個版本紀錄，第N版本原本是HEAD所指向的，第M版本至第N版本則是指定被壓扁的對象，那麼在壓扁後的節點圖會像是如下圖，最新的N-M+1個版本會壓扁成一個新的版本，也就是下圖中的第M'個版本，同樣地，這只是實際上呈現的節點圖且它的sha-1碼會因為版本內容不同以及壓扁的關係而改變，而內部隱藏著原本壓扁前的節點圖。
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632838124/blog/git/rebase/generalExampleAfterSquash_vjwxk4.png)
+若我們將這個具體例子轉換成通用概念的話，會考慮著有N個版本紀錄，第N版本原本是HEAD所指向的，第M版本至第N版本則是指定被壓扁的對象，那麼在壓扁後的節點圖會像是如下圖，最新的N-M+1個版本會壓扁成一個新的版本，也就是下圖中的第M'個版本，同樣地，這只是實際上呈現的節點圖且它的sha-1碼會因為版本內容不同以及壓扁的關係而改變，而內部隱藏(橘框圍住的節點們)存放著原本壓扁前的節點圖。
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632848199/blog/git/rebase/generalExampleAfterSquash_frz7ry.png)
 
 ### 壓扁中間幾筆版本紀錄
 同樣地，我們再次拿上面的簡單例子來壓扁，順序和HEAD都一樣，但這次是壓扁第二～三的版本紀錄。
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632837434/blog/git/rebase/simpleExample_zymlon.png)
 
-當我們下達git rebase的指定後，其節點圖會是如下圖所示的實際呈現那邊，在那裡會是由原第二～三個版本節點壓扁後的版本節點2'，接著再從原節點圖複製第四～五個版本節點並與新節點2'進行連接，所以下面的每個版本節點所擁有sha-1都經由複製和壓扁而改變，當然，原本還沒壓扁的節點圖會留起來等待git回收機制進行回收或者讓開發者回溯到壓扁前的節點圖
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632838538/blog/git/rebase/simpleExample2AfterSquash_dtibn0.png)
+當我們下達git rebase的指定後，其節點圖會是如下圖所示的實際呈現那邊，在那裡會是由原第二～三個版本節點(commit 2 ~ commit 3)壓扁後的版本節點2'，接著再從原節點圖複製第四～五個版本節點並與新節點2'進行連接，所以下面的每個版本節點所擁有sha-1都經由複製和壓扁而改變，當然，原本還沒壓扁的節點圖(以橘框圍著的節點們)會留起來等待git回收機制進行回收或者讓開發者回溯到壓扁前的節點圖
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632848381/blog/git/rebase/simpleExample2AfterSquash_eztpbr.png)
 
-若我們將這個具體例子轉換成通用概念的話，考慮著N個版本紀錄以及第N版本原本是HEAD所指向的，第X至X+Y個版本節點則是被壓扁成一個版本節點的對象，那麼在壓扁後的節點圖會像是如下圖中的實際呈現那樣，第X至X+Y個版本節點被壓扁成第X'個版本節點，而原節圖點上第X+Y個節點之後的節點會被複製至下面與新節點X'進行連接，這些節點同樣地因為壓扁和複製而被更改sha-1碼，而git系統會隱藏著壓扁前的節點圖。
+若我們將這個具體例子轉換成通用概念的話，考慮著N個版本紀錄以及第N版本原本是HEAD所指向的，第X至X+Y個版本節點(commit X至commit X+Y)則是被壓扁成一個版本節點的對象，那麼在壓扁後的節點圖會像是如下圖中的實際呈現那樣，第X至X+Y個版本節點(commit X至commit X+Y)被壓扁成第X'個版本節點，而原節圖點上第X+Y個節點(commit X+Y)之後的節點會被複製至下面與新節點X'進行連接，這些節點同樣地因為壓扁和複製而被更改sha-1碼，而git系統會隱藏著壓扁前的節點圖，也就是橘框圍住的範圍。
 
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632839767/blog/git/rebase/generalExampl2eAfterSquash_lp9ufa.png)
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632848713/blog/git/rebase/generalExampl2eAfterSquash_ptebas.png)
 
 ### 取消方法
 
@@ -87,8 +87,8 @@ git reset --hard <sha-1> N
 ```
 
 
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632845290/blog/git/rebase/UndoDigram1_o7rvkv.png)
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632845292/blog/git/rebase/UndoDigram2_qpcsx7.png)
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632848919/blog/git/rebase/UndoDiagram1_eavjlx.png)
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632848920/blog/git/rebase/UndoDiagram2_agglxa.png)
 
 就能將他們都還原成：
 
@@ -136,12 +136,14 @@ git rebase branchB
 
 
 ### 取消方法
-若你後悔這次分支A的rebase結果，可以先git checkout至分支A，並且下達git reflog找出該分支A在rebase前的
-
+若你後悔這次分支A的rebase結果，可以先git checkout至分支A，並且下達git reflog找出該分支A在rebase前的最新版本紀錄所對應的sha-1碼
 ```
 git checkout branch A
 git reflog
 ```
+
+
+
 
 
 合併後的結果，可以試著利用git reflog找出壓扁前的HEAD節點(會以sha-1碼代表)，接著透過git reset讓HEAD去指向壓扁前的版本，而這個動作相當於你將版本還原至壓扁前的版本，然而你壓縮後的版本節點圖不會因此而消失，會如同壓扁後的內部隱藏的那樣，若你突然想從壓縮前回溯至壓縮後的版本，只需要知道當時的HEAD對應的sha-1就行。
