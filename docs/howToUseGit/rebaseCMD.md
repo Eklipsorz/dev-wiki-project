@@ -84,7 +84,7 @@ git reset --hard <sha-1>
 假設我們提交五個版本，讓這五個版本連成一條節點圖：
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632841538/blog/git/rebase/anUndoExample_ctj0o4.png)
 
-接著我們壓扁所有跟master有關的提交版本後，節點圖會呈現如下：
+接著我們壓扁所有跟master有關的提交版本後，兩個被壓扁的版本訊息會是add all masters，而其節點圖會呈現如下，你可以看到在這個版本和在他前面版本所擁有sha-1碼全都改變，這代表著這些節點已經經過被複製或者壓扁的處理才改變的。
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632841538/blog/git/rebase/anUndoExampleAfterUndoing_xbc0kt.png)
 
 這時可以利用git reflog去查閱過去對節點做了哪些改變，找到rebase訊息之前的提交紀錄，會看到最近的一筆為eabd0dc對應的版本，
@@ -95,9 +95,30 @@ git reset --hard <sha-1>
 ```
 git reset --hard eabd0dc
 ```
-
-
 ## 將分支複製轉移至另一個分支
+
+當想要將分支A複製至另一個分一個分支B的頂端紀錄(分支B的最新提交紀錄)上時，可以先透過git checkout轉移至分支A，
+
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632844205/blog/git/rebase/RebaseToBranchDigram_ajpxhu.png)
+
+
+然後對它下達以下指令：
+```
+git rebase branchB
+```
+
+使分支A下的所有節點將會在分支B的最新提交紀錄上面，由於轉移過程是直接從分支A複製並讓分支B的最新提交版本去連接複製過來的版本紀錄，所以每個被複製過來的版本所擁有的sha-1都被改變，而剩餘不在分支A的版本節點都維持一樣的sha-1，皆未曾改變過，而HEAD由於是從分支A來下達rebase，所以HEAD會繼續指向分支A的最新紀錄。
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632844206/blog/git/rebase/RebaseToBranchDigramAfter_myshuk.png)
+
+
+另外分支B和分支A仍然是兩個獨立的分支，只是分支A包含分支B目前的所有節點，而分支B的版本節點仍維持rebase之前的內容，其節點圖如下圖：
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632844205/blog/git/rebase/BranchB_b1sdvu.png)
+
+而分支A的節點圖會是：
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632844205/blog/git/rebase/BranchA_ukxjof.png)
 
 
 ### 取消方法
