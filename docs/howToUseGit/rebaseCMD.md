@@ -2,7 +2,7 @@
 sidebar_position: 6
 ---
 
-# 進階指定 - git rebase
+# 進階指令 - git rebase
 在這裡base會是指以什麼做為根基，而在git系統是指以什麼commit紀錄(節點)作為分支的起始點，拿下圖來說的話，分支1(Branch 1)是以Master/Main分支上的commitM來作為它的base，而re是重新、再一次，re和base組合在一起就是重新定義目前分支的起始點，換言之就是把某個分支的base改換另一個commit節點來作為新的base。
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632815679/blog/git/rebase/anExampleOfigtbase_ybh3kf.png)
 
