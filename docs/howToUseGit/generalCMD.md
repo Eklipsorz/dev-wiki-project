@@ -103,6 +103,7 @@ git revert <sha-1>
 git revert --no-edit <sha-1> 
 git revert --no-commit <sha-1>
 ```
+4. 通常適用於已經推送出去的 Commit，或是不允許使用 Reset 或 Rebase 等會修改歷史紀錄的指令的場合。
 
 ## git reset
 1. 將HEAD回溯至先前版本內容
@@ -120,8 +121,15 @@ git reset HEAD^ / git reset HEAD^ / git reset HEAD^
  - soft：回溯指定版本，程式碼會退回staged狀態，在這個狀態下的版本內容會回歸在staging area並處於等待commit的狀態。
  - mixed：回溯指定版本，程式碼會退回Unstaged，在這個狀態下的版本內容並不會在staging area且處於untracked的狀態，這是預設的git reset設定，換言之，即使不加soft、mixed、hard，預設上會以mixed為主。
  - hard：回溯指定版本，回溯前的當前版本內容會全刪掉，但只針對內容，不針對檔案。
+ 
 
-4. 適用於這次commit內容想拆掉重做的場景。
+4. 每次下達git reset時，會自動將reset前的版本紀錄儲存至ORI_HEAD，以方便開發者藉由以下指令再回到reset前的版本紀錄。
+
+```
+git reset ORI_HEAD
+```
+
+5. 通常適用於尚未推出去的 Commit。
 
 
 
