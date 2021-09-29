@@ -47,7 +47,7 @@ git在repo存放的每一個版本的資料形式會是以類似於file snapshot
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632580274/blog/git/Gitsnapshot_threeVersions_yg2es2.png)
 
 
-## 本地端的git系統
+## git系統：本地端空間
 當在本地端透過git init或者利用git clone來產生一個新repo時，會以存放.git目錄作為repo的根目錄，而這個根目錄和其下檔案/目錄皆稱為工作目錄(working directory/working tree)，每當在目錄下對某些內容下達git add時，會將內容存放暫存區(Staging area)，接著當下達git commit時，便會將暫存區的內容以一個版本的形式去提交/上傳至倉庫(Repository, repo)。 而工作目錄、暫存區、倉庫會是本地端的git 系統所會擁有的儲存空間，在這小節中，會以上面的描述為基礎來稍微詳細說明每種的用途以及他們是什麼。
 
 
@@ -83,3 +83,8 @@ git在repo存放的每一個版本的資料形式會是以類似於file snapshot
 
 當對這個工作目錄下達git commit時，系統會以一個版本的形式來將暫存區的內容搬移至repo，而此時的暫存區會被清空。
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632562545/blog/git/anExample3OfGitStorage_gqcrun.png)
+
+
+
+## git系統：遠端空間
+由外部提供git服務的伺服器所提供的空間，該空間通常會以Repository的形式來存放資料，也可以稱之為Remote Repository，並且允許使用者上傳自己在本地端上的git Repository至伺服器所提供的空間從而讓更多使用者下載共享這份Respository，甚至可以利用其服務來更新遠端倉庫的內容，而這也是git分散式版本控制的核心部分，通常提供這服務的知名服務有github、gitlab等等。另外git本身帶有一組指令能夠從本地端控管遠端倉庫的設定、內容更新/刪除等等等

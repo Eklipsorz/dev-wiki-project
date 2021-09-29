@@ -67,7 +67,7 @@ git diff
 git diff <sha-1> <sha-1> 
 ```
 ## git branch
-1. 查看、建立、刪除分支，分支是指另一條時間線的版本紀錄。
+1. 查看、建立、刪除分支、變更分支名稱，分支是指另一條時間線的版本紀錄。
 2. 查看分支語法如下，這兩個指令二選一，當執行後，會顯示遠端和本地端的分支
 ```
 git branch -a
@@ -82,6 +82,13 @@ git branch branchName
 
 ```
 git branch -d branchName
+```
+
+5. 變更分支名語法有兩種形式，第一種則是將目前所在分支名稱更改為name，第二種則是將名為name1的分支更改為name2這分支名稱。
+
+```
+git branch -M <name>
+git branch -M <name1> <name2>
 ```
 
 ## git checkout
