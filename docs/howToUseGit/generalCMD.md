@@ -94,6 +94,24 @@ git checkout branchName
 
 
 ## git revert
+1. 將指定版本內容撤回並自由選擇是否提交一份版本內容說明目前版本為已撤回指定版本內容
+2. 撤回的意思如同字面上的意思，會取消、反轉對於指定版本的動作，當提交內容是新增內容，那麼經由revert會轉變為刪除同樣內容
+
+
+會跳進編輯畫面來寫提交內容並提交
+```
+git revert <sha-1>
+```
+
+不用跳進編輯畫面，採用預設提交訊息內容並提交
+```
+git revert --no-edit <sha-1> 
+```
+
+不用提交
+```
+git revert --no-commit <sha-1>
+```
 
 ## git reset
 1. 將HEAD回溯至先前版本內容
