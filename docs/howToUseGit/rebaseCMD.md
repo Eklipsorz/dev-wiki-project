@@ -73,26 +73,28 @@ squash <sha-1> commit message N
 
 ### 取消方法
 
-若你後悔這次合併後的結果，可以試著利用git reflog找出壓扁前的HEAD節點(會以sha-1碼代表)，接著透過git reset讓HEAD去指向壓扁前的版本，而這個動作相當於你將版本還原至壓扁前的版本，然而你壓縮後的版本節點圖不會因此而消失，會如同壓扁後的內部隱藏的那樣，若你突然想從壓縮前回溯至壓縮後的版本，只需要知道當時的HEAD對應的sha-1就行。
+若你後悔這次合併後的結果，可以試著利用git reflog找出壓扁前的HEAD節點(會以sha-1碼代表)，接著透過git reset讓HEAD去指向壓扁前的版本，而這個動作相當於你將版本還原至壓扁前的版本，然而你壓縮後的版本節點圖不會因此而消失，會如同壓扁後的內部隱藏的那樣，若你突然想從壓縮前回溯至壓縮後的版本，只需要知道當時的HEAD對應的sha-1碼就行。
 
 ```
 git reflog
 git reset --hard <sha-1>
 ```
 
-如果拿 "壓扁最新幾筆版本紀錄" 和 "壓扁中間幾筆版本紀錄" 所提到的例子來取消/還原的話，只需要各從中獲取原本壓扁前的最新提交版本(sha-1)，在這裡就是圖中內部隱藏的藍框，只要取得被選取到版本，並下達以下指令：
-
-```
-git reset --hard <sha-1> N
-```
-
+如果拿 "壓扁最新幾筆版本紀錄" 和 "壓扁中間幾筆版本紀錄" 所提到的例子來取消/還原的話，只需要各從中獲取原本壓扁前的最新提交版本(sha-1)，在這裡就是圖中內部(隱藏)藍框圍住的節點，
 
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632848919/blog/git/rebase/UndoDiagram1_eavjlx.png)
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632848920/blog/git/rebase/UndoDiagram2_agglxa.png)
 
-就能將他們都還原成：
 
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632837434/blog/git/rebase/simpleExample_zymlon.png)
+只要取得被選取到版本，並下達以下指令：
+```
+git reset --hard <sha-1> N
+```
+
+就能將他們分別還原成下面的二張圖，第一張圖對應上面的第一張，也就是壓扁最新幾筆版本紀錄前後的結果，第二張圖對應著上面的第二張圖，也就是壓扁中間幾筆版本紀錄前後的結果，可以看到還原後，git系統會內部儲存(隱藏)壓扁後的節點圖，也就是橘框圍住的節點們，若要再從壓扁前還原至壓扁後的狀態，只需要reset至下圖中藍框圍住的節點所擁有的sha-1碼就能達成。
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632891320/blog/git/rebase/UndoDiagram1Result_n2nzyc.png)
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632891320/blog/git/rebase/UndoDiagram2Result_yiulfd.png)
 
 ### 例子
 假設我們提交五個版本，讓這五個版本連成一條節點圖：
@@ -154,7 +156,6 @@ git reset --hard <sha-1>
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632890688/blog/git/rebase/UndoDiagram3Result_okbp3a.png)
 
 
-合併後的結果，可以試著利用git reflog找出壓扁前的HEAD節點(會以sha-1碼代表)，接著透過git reset讓HEAD去指向壓扁前的版本，而這個動作相當於你將版本還原至壓扁前的版本，然而你壓縮後的版本節點圖不會因此而消失，會如同壓扁後的內部隱藏的那樣，若你突然想從壓縮前回溯至壓縮後的版本，只需要知道當時的HEAD對應的sha-1就行。
 ### 例子
 
 
