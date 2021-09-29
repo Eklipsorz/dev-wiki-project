@@ -66,7 +66,27 @@ git log --oneline
 git diff
 git diff <sha-1> <sha-1> 
 ```
+## git branch
+1. 查看、建立、刪除分支，分支是指另一條時間線的版本紀錄。
+2. 查看分支語法如下，這兩個指令二選一，當執行後，會顯示遠端和本地端的分支
+```
+git branch -a
+git branch --all
+```
+3. 建立分支語法如下，其中branchName可由使用者自行決定，當使用者下達之後，便會以目前分支A的最新版本上做一個分支B，而另一個分支B一開始會有分支A的最新紀錄，而在那可以建立獨立於分支A的內容。
+```
+git branch branchName
+```
 
+4. 刪除分支語法如下，其中branchName可由使用者自行決定，當使用者下達之後，便會刪除名為branchName的分支。
+
+```
+git branch -d branchName
+```
+
+## git checkout
+
+## git revert
 
 ## git reset
 1. 將HEAD回溯至先前版本內容
@@ -85,7 +105,7 @@ git reset HEAD^ / git reset HEAD^ / git reset HEAD^
  - mixed：回溯指定版本，程式碼會退回Unstaged，在這個狀態下的版本內容並不會在staging area且處於untracked的狀態，這是預設的git reset設定，換言之，即使不加soft、mixed、hard，預設上會以mixed為主。
  - hard：回溯指定版本，回溯前的當前版本內容會全刪掉，但只針對內容，不針對檔案。
 
- 4. 適用於這次commit內容想拆掉重做的場景。
+4. 適用於這次commit內容想拆掉重做的場景。
 
 
 
