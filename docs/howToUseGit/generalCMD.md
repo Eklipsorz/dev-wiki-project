@@ -85,6 +85,13 @@ git branch -d branchName
 ```
 
 ## git checkout
+1. 用作於切換分支
+2. 使用語法為如下，當使用者下達之後，便會從目前分支轉移至名為branchName的分支上。
+
+```
+git checkout branchName
+```
+
 
 ## git revert
 
