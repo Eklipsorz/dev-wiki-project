@@ -136,14 +136,22 @@ git rebase branchB
 
 
 ### 取消方法
-若你後悔這次分支A的rebase結果，可以先git checkout至分支A，並且下達git reflog找出該分支A在rebase前的最新版本紀錄所對應的sha-1碼
+若你後悔這次分支A的rebase結果，由於本身是分支A移動至分支B，而分支B本來就沒改變，所以得從分支A著手取消掉這次rebase的結果，首先git checkout至分支A，並且下達git reflog找出該分支A在rebase前的最新版本紀錄所對應的sha-1碼，並且對其sha-1碼下達git reset
 ```
-git checkout branch A
+git checkout branchA
 git reflog
 ```
 
+在這裡rebase前的最新版本紀錄會是以下圖中藍框圍住的節點，
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632890268/blog/git/rebase/UndoDiagram3_ouup50.png)
 
+從那取得sha-1碼，並且下達下面指令
+```
+git reset --hard <sha-1>
+```
 
+就能使分支A恢復成rebase之前的分支A，也就是下圖中實際呈現的那樣，然而git系統還是會保留(隱藏)rebase之後的分支A等待著回收或者還原，若要再從rebase之前還原至rebase之後的狀態，只需要reset至下圖中藍框圍住的節點所擁有的sha-1碼就能達成
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632890688/blog/git/rebase/UndoDiagram3Result_okbp3a.png)
 
 
 合併後的結果，可以試著利用git reflog找出壓扁前的HEAD節點(會以sha-1碼代表)，接著透過git reset讓HEAD去指向壓扁前的版本，而這個動作相當於你將版本還原至壓扁前的版本，然而你壓縮後的版本節點圖不會因此而消失，會如同壓扁後的內部隱藏的那樣，若你突然想從壓縮前回溯至壓縮後的版本，只需要知道當時的HEAD對應的sha-1就行。
