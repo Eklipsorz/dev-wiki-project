@@ -157,7 +157,19 @@ git reset --hard <sha-1>
 
 
 ### 例子
+假設我們建立了三個分支，分別為cat、sloth、master，master是主分支，目前儲存master1、master2這兩個檔案並依序提交了f10a1f8和306cf9d這兩個對應版本，而cat、sloth則是從master主分支上的306cf9d最新版本而衍生過來的額外分支，所以這兩個分支包含主分支的306cf9d版本內容以及它們本身就有的檔案內容，比如cat分支就有cat1、cat2，而sloth分支則是有sloth1、sloth2這兩份檔案。
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632896079/blog/git/rebase/UndoRebaseExample_xxnrys.png)
+
+現在我們想要讓sloth分支搬移至cat分之之上，那麼就會先checkout至sloth分支讓HEAD指向sloth，並下達git rebase cat讓節點圖變成下圖這樣，此時的HEAD仍指向著sloth，sloth分支會包含著cat分支下的所有版本紀錄，而cat分支和master主分支的內容仍維持rebase之前的版本內容。
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632896079/blog/git/rebase/RebaseExample_lsfkkl.png)
+
+若我們想要著手想要讓sloth分支恢復到rebase之前的內容，那麼只需要checkout至sloth分支並下達git reflog去查閱該分支下在rebase前的最新紀錄所擁有的sha-1碼是多少，從下圖中，左側是被處理的版本號碼，而右側是實際的處理內容，首先我們可以先看到rebase的訊息，再往下看就可以看到sloth原本提交的內容，而最前面的提交內容b8faf8f就是原本sloth分支的最新版本內容。
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632896081/blog/git/rebase/UndoRebaseReflog_fnssnx.png)
 
 
+所以只要下達以下指令就能使sloth分支還原至第一張圖那樣。
 
+```
+git reset --hard b8faf8f
+```
 
