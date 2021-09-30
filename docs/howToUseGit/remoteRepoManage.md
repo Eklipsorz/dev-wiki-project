@@ -85,3 +85,11 @@ fatal: The upstream branch of your current branch does not
 match the name of your current branch.
 ```
 
+## git pull
+
+
+## git fetch
+
+
+## git clone
+
