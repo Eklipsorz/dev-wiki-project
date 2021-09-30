@@ -15,6 +15,11 @@ sidebar_position: 2
 git remote -v
 ```
 
+
+
+
+
+
 ### 新增要存取的遠端倉庫
 主要是新增一個遠端倉庫好讓開發者能從本地端更新或者下載指定遠端倉庫的內容，name是指對應遠端倉庫位置url的別名，而url則是對應著遠端倉庫的url，另外name的預設別名為origin，若以origin來設定，跟遠端倉庫相關的指令只要沒特別指定遠端倉庫，預設上會直接使用origin對應的遠端倉庫。
 ```
@@ -40,6 +45,10 @@ git remote remove <name>
 git remote remove name1
 ```
 
+
+## 當如果取得遠端倉庫的內容時
+你在一個分支取得遠端倉庫的內容後，git系統會為你添加兩個指標，一個是repository/branch，另一個則是repository/HEAD，前者會指向儲存取得內容的所有版本紀錄之節點連接圖，而另一個則是指向取得內容的最新版本。這兩個如同正常的分支和HEAD來運作，只是在這裡用repository來區分它們是用來控管從遠端倉庫取得的內容。
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632995576/blog/git/remote/remoteBranch_d8tfzg.png)
 
 ## git push
 根據git remote所設定的遠端倉庫來將本地端倉庫內容推送(push)/更新至指定遠端倉庫，主要分為三種，第一種語法：主要功用為推送本地端內容至遠端倉庫，在這裡的repository是指遠端倉庫(由提供git服務的伺服器所提供的倉庫)，可由git remote設定的別名來代表repository，而src則是指要推送哪一個本地端分支，而dst則是推送的目的地，整體的語法就是推送本地端src分支的內容至遠端倉庫repository下的dst分支。
@@ -85,10 +94,14 @@ fatal: The upstream branch of your current branch does not
 match the name of your current branch.
 ```
 
+## git fetch
+主要會從遠端倉庫的分支下載最新內容(對於本地端而言所沒有的內容)至本地端形成另一個分支，而這個分支會是repository/branch，由於該分支會有新內容，所以repository/HEAD會移動至最新版本內容。
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632996015/blog/git/remote/gitFetchResult_nlv9wa.png)
+
+
 ## git pull
 
 
-## git fetch
 
 
 ## git clone
