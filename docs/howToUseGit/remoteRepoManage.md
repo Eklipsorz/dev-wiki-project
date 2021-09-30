@@ -113,6 +113,12 @@ git merge <repository>/<dst>
 ```
 
 ## git clone
+主要從遠端倉庫以倉庫(含有.git的目錄)形式下載回本地端，語法會是以下，其中repository會是遠端倉庫的URL，
+
+```
+git clone <repository>
+```
+
 
 
 
