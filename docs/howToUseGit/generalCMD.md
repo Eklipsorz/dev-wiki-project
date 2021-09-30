@@ -112,6 +112,11 @@ git branch -u branchName1
 git checkout branchName
 ```
 
+3.  先建立名為branchName的分支，然後在切換至該分支
+```
+git checkout -b branchName
+```
+
 
 ## git revert
 1. 將指定版本撤回並自由選擇是否提交一份版本內容說明目前版本為已撤回指定版本

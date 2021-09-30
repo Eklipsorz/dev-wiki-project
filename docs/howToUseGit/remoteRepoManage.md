@@ -15,11 +15,6 @@ sidebar_position: 2
 git remote -v
 ```
 
-
-
-
-
-
 ### 新增要存取的遠端倉庫
 主要是新增一個遠端倉庫好讓開發者能從本地端更新或者下載指定遠端倉庫的內容，name是指對應遠端倉庫位置url的別名，而url則是對應著遠端倉庫的url，另外name的預設別名為origin，若以origin來設定，跟遠端倉庫相關的指令只要沒特別指定遠端倉庫，預設上會直接使用origin對應的遠端倉庫。
 ```
@@ -98,6 +93,16 @@ match the name of your current branch.
 主要會從遠端倉庫的分支下載最新內容(對於本地端而言所沒有的內容)至本地端形成另一個分支，而這個分支會是repository/branch，由於該分支會有新內容，所以repository/HEAD會移動至最新版本內容。
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632996015/blog/git/remote/gitFetchResult_nlv9wa.png)
 
+
+語法主要有三種：repository是遠端倉庫的別名、dst則是遠端倉庫的分支名稱
+1. 第一種 只有在設定上游才有效，會取得該遠端倉庫的所有分支，
+2. 第二種 會取得該遠端倉庫的所有分支 
+3. 第三種 會取得該遠端倉庫的對應分支，其中dst為目標分支
+```
+git fetch
+git fetch <repository>
+git fetch <repository> <dst>
+```
 
 ## git pull
 
