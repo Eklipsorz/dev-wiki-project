@@ -105,9 +105,14 @@ git fetch <repository> <dst>
 ```
 
 ## git pull
+主要會從遠端倉庫的分支下載最新內容(對於本地端而言所沒有的內容)至本地端形成另一個分支A，並且利用git merge來將分支A的內容與目前分支的內容進行合併。換言之，git pull是由以下指令所組合而成的：
 
-
-
+```
+git fetch <repository> <dst>
+git merge <repository>/<dst>
+```
 
 ## git clone
+
+
 
