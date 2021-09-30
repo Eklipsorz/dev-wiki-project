@@ -61,6 +61,7 @@ git branch -u <repository>/<dst>
 
 
 ### git push 簡化和限制
+
 理論上若設定上游分支B給指定分支A時，你在分支A所下達的push指令可以進一步簡化，原本是要添加遠端倉庫的別名、要推送哪個本地端分支、推送目的分支，但經由簡化後，只需要下達：
 ```
 git push
@@ -70,5 +71,17 @@ git push
 
 ```
 git push <repository> <src>:<dst>
+```
+
+但根據git官方文件顯示，會出於安全政策，而不允許與上游分支名稱進行綁定的本地端分支名稱取不一樣名稱，上游分支名稱和本地分支名稱必須是一樣的。
+
+> the current branch is pushed to the corresponding upstream branch, but as a safety measure, the push is aborted if the upstream branch does not have the same name as the local one
+
+
+若堅持使用不一樣的名稱，會跑出以下的錯誤訊息，並告知你必須親自設定完整git push指令，不能使用簡化版的push指令。
+
+```
+fatal: The upstream branch of your current branch does not 
+match the name of your current branch.
 ```
 
