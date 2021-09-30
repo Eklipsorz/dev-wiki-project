@@ -87,8 +87,8 @@ git branch -d branchName
 5. 變更分支名語法有兩種形式，第一種則是將目前所在分支名稱更改為name，第二種則是將名為name1的分支更改為name2這分支名稱。
 
 ```
-git branch -M <name>
-git branch -M <name1> <name2>
+git branch -M/-m <name>
+git branch -M/-m <name1> <name2>
 ```
 
 6. 設定一個上游分支(upstream branch)與目前分支A做綁定，而這個上游分支會告訴系統每當在分支A進行遠端倉庫的處理(比如push、pull)時會是使用這個上游分支來當作目標分支，而這個上游分支的形式會是以alias/branchName來表示，其中alias就是在git remote所設定的遠端倉庫的別名，而branchName則是遠端倉庫所擁有的分支之名稱
@@ -97,7 +97,7 @@ git branch -M <name1> <name2>
 git branch -u <branchName>
 ```
 
-例子：首先先轉移至分支1(branch1)，然後下達 branch -u 設定上游分支branchName1與目前分支 branch1 做綁定，那麼每當在branch1分支下達git push或者git pull時，便不用告訴系統要在哪一個遠端分支進行，因為會以上游分支作為目標分支，比如git push會將目前分支 branch1 的內容推送至遠端分支 branchName1，而不用git push branchName1
+例子：首先先轉移至分支1(branch1)，然後下達 branch -u 設定上游分支branchName1與目前分支 branch1 做綁定，那麼每當在branch1分支下達git push或者git pull時，便不用告訴系統要在哪一個遠端分支進行，因為會以上游分支作為目標分支，比如git push會將目前分支 branch1 的內容推送至遠端分支 branchName1，而不用git push branchName1，詳細的push規則和限制可以在[這邊](./remoteRepoManage)查閱。
 
 ```
 git checkout branch1

@@ -42,4 +42,33 @@ git remote remove name1
 
 
 ## git push
-根據git remote所設定的遠端倉庫來將本地端倉庫內容推送(push)/更新至指定遠端倉庫，
+根據git remote所設定的遠端倉庫來將本地端倉庫內容推送(push)/更新至指定遠端倉庫，主要分為三種，第一種語法：主要功用為推送本地端內容至遠端倉庫，在這裡的repository是指遠端倉庫(由提供git服務的伺服器所提供的倉庫)，可由git remote設定的別名來代表repository，而src則是指要推送哪一個本地端分支，而dst則是推送的目的地，整體的語法就是推送本地端src分支的內容至遠端倉庫repository下的dst分支。
+
+```
+git push <repository> <src>:<dst>
+git push -u <repository> <src>:<dst>
+git push -u <repository> <dst>
+```
+
+第二種語法：主要功用為推送本地端內容至遠端倉庫並設定上游分支，整體語法除了-u參數的存在以外，其餘功能與第一種語法的功能一樣，而-u相當於以下語法，首先會先以執行第一種語法，接著透過checkout切換本地端分支至src，去設置上游分支名支，形式上會是repository/其repo所擁有的分支。
+```
+git push <repository> <src>:<dst>
+git checkout <src>
+git branch -u <repository>/<dst>
+```
+
+第三種語法上：主要功用為推送本地端內容，主要是若src對應的分支名和dst對應的分支名是一樣的名稱，就能簡化成dst，但原則上系統會以第一種語法的形式來push。
+
+
+### git push 簡化和限制
+理論上若設定上游分支B給指定分支A時，你在分支A所下達的push指令可以進一步簡化，原本是要添加遠端倉庫的別名、要推送哪個本地端分支、推送目的分支，但經由簡化後，只需要下達：
+```
+git push
+```
+
+就能讓git系統從上游分支替你解析這個分支是對應哪個遠端分支，並且自動幫你填入完整指令，
+
+```
+git push <repository> <src>:<dst>
+```
+
