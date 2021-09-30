@@ -118,6 +118,14 @@ git checkout -b branchName
 ```
 
 
+## git merge
+1. 
+
+2. Commits, usually other branch heads, to merge into our branch. Specifying more than one commit will create a merge with more than two parents 
+```
+git merge <commit>
+```
+
 ## git revert
 1. 將指定版本撤回並自由選擇是否提交一份版本內容說明目前版本為已撤回指定版本
 2. 撤回的意思如同字面上的意思，會取消、反轉對於指定版本的動作，當提交內容是新增內容A，那麼經由revert會轉變為刪除同樣內容A；而若是提交內容為刪除內容B，那麼經由revert會轉變為增加內容B
