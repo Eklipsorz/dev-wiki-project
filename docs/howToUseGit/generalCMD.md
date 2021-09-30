@@ -67,7 +67,7 @@ git diff
 git diff <sha-1> <sha-1> 
 ```
 ## git branch
-1. 查看、建立、刪除分支、變更分支名稱，分支是指另一條時間線的版本紀錄。
+1. 管理(查看、建立、刪除分支、變更、設定遠端分支等)分支名稱，分支是指另一條時間線的版本紀錄。
 2. 查看分支語法如下，這兩個指令二選一，當執行後，會顯示遠端和本地端的分支
 ```
 git branch -a
@@ -89,6 +89,19 @@ git branch -d branchName
 ```
 git branch -M <name>
 git branch -M <name1> <name2>
+```
+
+6. 設定一個上游分支(upstream branch)與目前分支A做綁定，而這個上游分支會告訴系統每當在分支A進行遠端倉庫的處理(比如push、pull)時會是使用這個上游分支來當作目標分支，而這個上游分支的形式會是以alias/branchName來表示，其中alias就是在git remote所設定的遠端倉庫的別名，而branchName則是遠端倉庫所擁有的分支之名稱
+
+```
+git branch -u <branchName>
+```
+
+例子：首先先轉移至分支1(branch1)，然後下達 branch -u 設定上游分支branchName1與目前分支 branch1 做綁定，那麼每當在branch1分支下達git push或者git pull時，便不用告訴系統要在哪一個遠端分支進行，因為會以上游分支作為目標分支，比如git push會將目前分支 branch1 的內容推送至遠端分支 branchName1，而不用git push branchName1
+
+```
+git checkout branch1
+git branch -u branchName1
 ```
 
 ## git checkout
