@@ -3,13 +3,18 @@ sidebar_position: 6
 ---
 
 # 進階指令 - git merge
-git上的合併主要分為兩種，第一種為
-
-
+一般來說，git上的合併對象會是兩個分支，其中一個分支會從另一分支衍生而來，若經過合併，其結果會是這兩個分支上的版本紀錄根據合併結果重整紀錄，根據合併的難易度，可以分為兩種，第一種為：分支Branch1從另一個分支Branch的最新紀錄衍生，並且做一種名為快轉(fast-forward)合併的處理來解決。
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1633013783/blog/git/merge/mergeType2_lwmagq.png)
 
+第二種為分支Branch1是從另一個分支Branch的最新紀錄衍生，但隨後分支Branch又提交一些版本紀錄，這時得做合併提交，然而提交過程中會有同個內容的修改衝突，這部分會在隨後再補充。
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1633013783/blog/git/merge/mergeType1_lks8cy.png)
 
+## 快轉 (Fast-forward)
+若我們有兩個分支，分支Branch2從另一個分支Branch1的最新紀錄衍生，
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1633015120/blog/git/merge/simpleMerge_hdy9sw.png)
+
+當我們在Branch1下達merge Branch2的話，合併結果會直接使負責指向Branch1和Branch1最新節點的兩個指標(Branch1和HEAD)直接指向Branch2的最新版本紀錄。
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1633015120/blog/git/merge/simpleMergeResult_ja3cfv.png)
 
 
 ## 合併提交 (Merge commit)
@@ -41,4 +46,3 @@ git merge Branch2
 
 
 
-## 快轉合併
