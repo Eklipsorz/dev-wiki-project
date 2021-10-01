@@ -154,5 +154,5 @@ document.getElementsByTagName("h3")[0].innerHTML = "a123"
 ## Reference
 1. [瀏覽器如何處理解析URL](https://dev.to/deepika_banoth/what-happens-when-i-type-a-url-in-browser-3i5o)
 2. [什麼是Critical Rendering Path](https://www.geeksforgeeks.org/critical-rendering-path-flow/)
-
+3. [瀏覽器如何處理網頁](https://www.html5rocks.com/en/tutorials/internals/howbrowserswork/#Painting)
 
