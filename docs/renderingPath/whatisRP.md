@@ -10,7 +10,7 @@ tags:
 
 
 ## 渲染路徑簡介
-Rendering Path 是瀏覽器如何將網頁檔案轉化成網頁的處理路徑，其路徑包含了網路(Network)、HTML、CSS檔案轉化成兩顆獨立樹狀結構、兩顆樹狀結構合併成渲染樹(Render Tree)、版面配置(Layout)、繪製(Paint)，每個路徑之間關係會如同下圖所示那樣，首先會先從網路找到提供網頁的伺服器獲取對應網頁(由HTML、CSS)、當客戶端的瀏覽器一拿到這些檔案，便會將他們轉化為名為 DOM Tree 和 CSSOM Tree，接著再將兩顆樹合併成渲染樹，接著根據渲染樹和DOM Tree來配置網頁的每個元件的擺放位置，最後再用瀏覽器的繪製功能來對螢幕上的pixel進行處理，比如上色之類的。
+Rendering Path 是瀏覽器如何將網頁檔案轉化成網頁的處理路徑，其路徑包含了網路(Network)、HTML、CSS檔案轉化成兩顆獨立樹狀結構、兩顆樹狀結構合併成渲染樹(Render Tree)、版面配置(Layout)、繪製(Paint)，每個路徑之間關係會如同下圖所示那樣，首先會先從網路找到提供網頁的伺服器獲取對應網頁(由HTML、CSS)、當客戶端的瀏覽器一拿到這些檔案，便會將他們轉化為名為 DOM Tree 和 CSSOM Tree，接著再將兩顆樹合併成渲染樹，接著根據渲染樹和DOM Tree來計算網頁上的每個元件的實際擺放位置以及大小，最後再用瀏覽器的繪製方法來完整呈現每一個元件的真實面貌，比如輪廓、顏色之類的。在本文會談論到路徑上會包含到的東西，但比較偏重於Network至Layout之間的東西，剩下將由後續的文章進行補充，因此而將本文歸類為(一)。
 
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1629987931/blog/RenderingPath/Critical_Rendering_Path_ntcjvi.png)
 
@@ -94,10 +94,45 @@ label {
 
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1629982746/blog/RenderingPath/cssomTreeExample_lbkboi.png)
 
+### 產生DOM之後的JavaScript 
+在產生DOM和CSSOM之後，我們還可以透過JavaScript在Render Tree產生之前來變更DOM或者CSSOM的內容，假設一個HTML檔案內容為以下內容，後頭有個script包覆著的內容，其內容會是JavaScript的語法。
+
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   
+    <title>Document</title>
+</head>
+<body>
+        <h1>hi world</h1>
+        <h3></h3>
+        <script>
+            document.getElementsByTagName("h3")[0].innerHTML = "a123"
+        </script>
+        
+</body>
+</html>
+
+```
+而其內容是變更原本沒內容的h3標籤元素：在這裡你可以看到內容會被指定為"a123"。
+
+```
+document.getElementsByTagName("h3")[0].innerHTML = "a123"
+```
+
+而當我們以瀏覽器來讀取整份檔案時，會在DOM Tree裡發現h3標籤元素所儲存的內容變更為"a123"，不再是無內容，從這邊展現出JavaScript可以在合併前影響著DOM和CSSOM
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1629989767/blog/RenderingPath/result_javascript_within__html_ijz2jg.png)
+
+若script部分程式碼是擺在h3元素定義之前的話，其script執行的結果會因為h3對應節點還不存在而無法改變h3元素內容。
 
 ## 渲染樹
 
-在經過解析而獲得DOM以及CSSOM之後，接著會根據兩者對應的標籤、類別、ID是否一樣來尋找同一個網頁元素進行合併，合併後的節點會以DOM節點的形式多增加一個子節點(如同下圖紅框中的節點)來表示父節點(網頁元素)要調整的樣式是為何。
+在經過解析後從而獲得DOM以及CSSOM之後，接著會根據兩者對應的元件是否一樣來進行同元件在DOM和CSSOM的節點合併，合併後的節點會以DOM節點的形式多增加一個子節點(如同下圖紅框中的節點)來表示父節點(網頁元素)要調整的樣式是為何。
 
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1629991053/blog/RenderingPath/newNode_renderTree_otmzal.png)
 
@@ -113,14 +148,8 @@ label {
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1629992416/blog/RenderingPath/finalRenderTreeExample_sf7ylt.png)
 
 
-## 版面配置
-
-
-
-## 繪製
-
-
-
+## 版面配置和繪製
+在這個階段中會利用前面階段獲取的樹狀結構來計算網頁元件實際會在頁面上擺放的位置、大小以及如何擺放，計算完之後便會開始執行繪製，而繪製過程會開始依據渲染樹指定的樣式來對頁面上的pixel來呈現每個元件的真實面貌，比如背景顏色、背景圖片、邊框、輪廓等等，過程中會遍歷著渲染樹並對著指定元件在特定螢幕位置進行無數次(由render/瀏覽器所提供)paint的呼叫來實際達成元件的呈現。
 
 ## Reference
 1. [瀏覽器如何處理解析URL](https://dev.to/deepika_banoth/what-happens-when-i-type-a-url-in-browser-3i5o)
