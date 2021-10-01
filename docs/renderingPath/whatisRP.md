@@ -97,6 +97,21 @@ label {
 
 ## 渲染樹
 
+在經過解析而獲得DOM以及CSSOM之後，接著會根據兩者對應的標籤、類別、ID是否一樣來尋找同一個網頁元素進行合併，合併後的節點會以DOM節點的形式多增加一個子節點(如同下圖紅框中的節點)來表示父節點(網頁元素)要調整的樣式是為何。
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1629991053/blog/RenderingPath/newNode_renderTree_otmzal.png)
+
+另外會根據該元素是否能夠正常在瀏覽器顯示來決定該元素是否存在於Render Tree，也就是說當元素本身設定為display: none的屬性時，該元素不會在這個階段挑選為合併後的結果，預設上有這設定的元素有html、head、link、body等元素，所以在合併結果上並不會看到它們。
+
+我們繼續拿DOM和CSS提到的例子來為他們合併成一個Render Tree，在這裡你可以看到叉叉，而它表示著其元素本身是display: none的元素，所以無法成為最終合併後的結果，另外也由於body元素也被跟著剔除，所以會在最終結果上替合併後的新樹添加新的root元素，而在那下的每個節點都會有新加進來的屬性節點，這些節點會在後續paint程序為父節點增添樣式。
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1629992018/blog/RenderingPath/renderTreeExample_lnh9md.png)
+
+
+最後的合併結果會是：
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1629992416/blog/RenderingPath/finalRenderTreeExample_sf7ylt.png)
+
 
 ## 版面配置
 
