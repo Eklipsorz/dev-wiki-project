@@ -3,6 +3,6 @@ sidebar_position: 1
 ---
 
 
-# DOM 是什麼
+# 渲染路徑
 
 
