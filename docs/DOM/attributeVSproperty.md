@@ -32,6 +32,30 @@ HTML的屬性是用attribute來表達，而物件的屬性則是用property來�
 
 ## HTML轉變成DOM後
 
+當瀏覽器載入頁面時，會讀取(解析)網頁並將網頁上的每一個HTML元件轉化成DOM節點或者DOM物件，
+對於元素節點而言，雖說網頁元件是用attribute來表達自己所擁有的屬性，而其實大部分屬性早已標準化並被瀏覽器正確辨識這些屬性是做些什麼，而那些沒被標準化的屬性會被瀏覽器當成路人的存在，而那些被標準化的屬性(attribute)會因為HTML元件轉化成DOM物件而從attribute轉化成property，也就是說我們可以用物件的形式來到那些attribute帶有的額外資訊，比如說HTML元件為
+```
+<body id=“page”>
+```
+而轉化後的物件是body，而id屬性(attribute)可以透過body.id(property)來獲取”page”這內容
+
+Attribute中部分屬性給標準化，也就是每個元件都有特定的屬性(attribute)能夠被瀏覽器辨識出來，無法辨識會被當作undefined，而每個元件所能夠辨識出來的屬性(attribute)都有所不同，而通常無法辨識的案例會是：
+
+1. 屬性名稱未能夠正常辨識：something是這案例所要使用的屬性名稱，在這裡由於其名稱既不是body元件會有的屬性名稱，更不是正常會有的屬性名稱，所以無法被辨識
+
+```
+<body id="test" something="non-standard">
+</body>
+```
+
+2. 同個能辨識出來的屬性名稱讓其他不存在該屬性的元件使用：其中type是這案例所要使用的屬性，在input元件上因為它存在type這屬性名稱，所以能夠正常辨識，而body元件則是不存在type這屬性名稱，所以無法被辨識
+
+```
+<body id="body" type="...">
+  <input id="input" type="text">
+</body>
+
+```
 
 
 ## 參考資料
