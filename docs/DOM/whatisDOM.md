@@ -40,23 +40,6 @@ DOM (Document(註1) Object Model)是將一份HTML文件內的標籤、文字、�
 
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1630055616/blog/dom/aDomNodeExample_ncvwwt.png)
 
-
-## 縮排會構成文字節點
-當瀏覽器去解析HTML檔案時會根據讀取到的內容所具有的特徵來判定該內容是屬於什麼種類的節點，而剛好縮排(換行和空白)會被瀏覽器當作一般文字並轉化成文字節點，這情況時常發在標籤之間的縮排，比如&lt;ul&gt;和&lt;li&gt;之間存在著"\n      "，而&lt;li&gt;之間也存在同樣的縮排
-```
-<ul>
-   <li>sugar</li>
-   <li>cocoa</li>
-</ul>
-```
-
-這會使DOM Tree多產生幾個存放縮排內容的文字節點(如下圖)，而這樣的節點有可能會影響著DOM節點的遍歷，且會增加渲染過程的成本。
-
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1633275050/blog/dom/additionalTextNode_vvbtiu.png)
-
-### 解法
-由於是因爲出現縮排內容才額外產生存放縮排內容的文字節點，因此只要把縮排刪除就能解決，但這樣會對易讀性有所影響，因此實務上會在正式發佈網站前，會採用一種自動化工具能將文件裡的縮排全部取消，而這個程序稱為 Minify，取消後的縮排也會使檔案縮小，另外這程序也時常在一般專案出現，比如Bootstrap的函式庫裡都會含有min檔名，那是經過 Minify 程序的檔案。
-
 ## 註解
 1. Document Object Model中的Document是指HTML檔案本身
 2. 在HTML語法中，除了可以用&lt;tag&gt;&lt;/tag&gt;來定義其tag對應的元素以外，還可以在括號內部增加屬性值，來進一步描述其元素在HTML會呈現的樣子，而該屬性值包含了class、id、href、src等等，這些屬性值將會在DOM架構中被當作屬性節點。
