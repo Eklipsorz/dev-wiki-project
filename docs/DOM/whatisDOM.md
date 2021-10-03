@@ -30,22 +30,13 @@ DOM (Document(註1) Object Model)是將一份HTML文件內的標籤、文字、�
 ### 例子
 以一個例子來說明一個元素(標籤)在DOM中會是什麼樣子，在這裡我們以p標籤為例子，並給予p標籤一些屬性值，比如class和id，另外再讓p標籤去包含一般文字、em元素、註解。
 ```
-<html>
-   <head>
-	<title>DOM</title>
-   </head>
-   <body>
-	<h1>Hello, World!</h1>
-  	<p class="class1 class2" id="id1">
-		<!-- TEST COMMENT -->
-    		This is a <em>simple</em> website.
- 	</p>
-        
-</body>
-</html>
+<p class="class1 class2" id="id1">
+	<!-- TEST COMMENT -->
+  This is a <em>simple</em> website.
+</p>   
 ```
 
-經過瀏覽器解析而轉換成DOM後，其p標籤會如同下圖那樣，標籤以及被包含的標籤會被當作元素節點(以橘紅色來標示)，原本標籤上的屬性值會是屬性節點(以藍綠色來標示)，而子節點出現順序將會以HTML檔案的讀取順序來決定，越先讀取的就放的越前面，首先我們會看到由"TEST COMMENT"所構成的註解節點(以綠色來標示)，接著就是以"This is a "所構成的文字節點，緊接著是&lt;em&gt;元素節點，最後是" website."構成的文字節點(以淺藍色來標示)，而&lt;em&gt;元素節點還會包含著"simple"所構成的文字節點(以橘紅色來標示):
+經過瀏覽器解析而轉換成DOM後，其p標籤會如同下圖那樣，標籤以及被包含的標籤會被當作元素節點(以橘紅色來標示)，原本標籤上的屬性值會是屬性節點(以藍綠色來標示)，而子節點出現順序將會以HTML檔案的讀取順序來決定，越先讀取的就放的越前面，首先我們會看到由"TEST COMMENT"所構成的註解節點(以綠色來標示)，接著就是以"This is a "所構成的文字節點，緊接著是&lt;em&gt;元素節點，最後是" website."構成的文字節點(以淺藍色來標示)，而&lt;em&gt;元素節點還會包含著"simple"所構成的文字節點(以淺藍色來標示):
 
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1630055616/blog/dom/aDomNodeExample_ncvwwt.png)
 
@@ -54,12 +45,11 @@ DOM (Document(註1) Object Model)是將一份HTML文件內的標籤、文字、�
 2. 在HTML語法中，除了可以用&lt;tag&gt;&lt;/tag&gt;來定義其tag對應的元素以外，還可以在括號內部增加屬性值，來進一步描述其元素在HTML會呈現的樣子，而該屬性值包含了class、id、href、src等等，這些屬性值將會在DOM架構中被當作屬性節點。
 
 ## 參考資料
-1. children 和 childNodes 的差別，https://www.geeksforgeeks.org/what-is-the-difference-between-children-and-childnodes-in-javascript/
-2. HTML 屬性，https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes
+1. [屬性節點只是在物件導向的角度繼承了名為Node的物件所擁有的特性和方法](https://stackoverflow.com/questions/18102854/in-dom-structure-are-attributes-child-nodes-or-siblings)
+2. [HTML 屬性](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes)
 
 
-attribute vs. property
-https://javascript.info/dom-attributes-and-properties
 
-屬性節點只是在物件導向的角度繼承了名為Node的物件所擁有的特性和方法，但實際上並不會被DOM當作節點或者子節點看待：
-https://stackoverflow.com/questions/18102854/in-dom-structure-are-attributes-child-nodes-or-siblings
+
+
+
