@@ -52,12 +52,16 @@ TCP分為四層，應用層、傳輸層、網路層、網路介面層
 基於這個基礎，我們可以構建出另一個小網路，然後再彼此依靠著另一台轉接器連接，當網路1的主機想要傳遞資料給網路2下的某台主機時，便直接將資料轉接給兩個網路之間的轉接器，而轉接器由於本身沒辦法透過mac address來區分這哪一個網路而使用廣播(向所有連接者傳遞)將這個資料給其他網路，在這裡只會有網路2的轉接器接收到，當它收到時便會根據目的的mac address來傳達資料給指定主機
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1633422197/blog/network/macaddrNetwork/twoMacAddressNetworks_macsec.png)
 
-
+當隨著越來越多的網路或者群體出現時，連接各個網路的轉接器要廣播的對象就越來越多，
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1633422195/blog/network/macaddrNetwork/multipleMacAddressNetworks_uwxlte.png)
+
+若在這個情況下，有個主機想要跨網路傳遞資料給另一個網路下的主機時，就比如網路1的主機1想傳遞信號至其他網路下，那麼當網路1的轉接器收到資料便會轉接給連接其他網路的轉接器，由它來進行廣播，然後再讓真正擁有目的主機所擁有mac adddress之網路來負責最後資料的轉接，在這樣個情況下，每一次的傳送都要對所有網路進行一次轉接，甚至若網路情況比用一台來連接所有網路還要複雜的話，或者要傳遞的目的主機突然不在或者轉移至其他網路時，其效能都會花在廣播和轉接，
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1633422195/blog/network/macaddrNetwork/sendASignalOnNetwork_lnxyuf.png)
 
 
 ## 網路層 
-
+1. 為了
 
 網路層(Network Layer)：
 1. 由於前兩層只專注於實體媒介中的傳輸(就一條線和兩台機器的傳輸，或者就專注mac address上的傳輸)以及其傳輸完整性，傳遞資料必須要讓主機們擁有判定資料是從那個主機發送以及發送至哪個主機才能辦法實現，而前兩層頂多就是利用固定不可更動的mac address來進行資料傳輸，建構出來的網路會受限於不可更動的缺點，
