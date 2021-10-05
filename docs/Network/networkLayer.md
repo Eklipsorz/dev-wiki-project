@@ -5,11 +5,18 @@ sidebar_position: 2
 # 網路模型(待紀錄)
 
 
-
-
 ## OSI 模型
-將端點之間的傳送接收過程分數個階層，每個階層都有各自獨立的功能且不會彼此干擾，因此可以開發者在不同階層進行開發，當某一層出現問題時，只要針對那一層來解決就行了，而這就是OSI 模型。
+將端點之間的傳送接收過程分數個階層，每個階層都有各自獨立的功能且不會彼此干擾，因此可以開發者在不同階層進行開發，當某一層出現問題時，只要針對那一層來解決就行了，而這就是OSI 模型，而該模型下的七層階層分別為以下，並且雙方端點都擁有這七種階層，
+  - 應用層（Application Layer)
+  - 呈現層 (Presentation Layer)
+  - 會話層 (Session Layer)
+  - 傳輸層 (Transport Layer)
+  - 網路層 (Network Layer)
+  - 資料鏈結層 (Data Link Layer)
+  - 實體層 (Physical Layer)
 
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1633455135/blog/network/macaddrNetwork/osimodel_s84kdv.png)
 ### 應用層
 1. 是OSI 7層中的最後一層，英文是Application Layer
 2. 定義應用程式如何進入此層的溝通介面，以將資料收或者傳送給應用程式，最終展示給使用者
