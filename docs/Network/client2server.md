@@ -42,18 +42,17 @@ https://test.com/todolist
 隨後，為了解決這問題，就有人想著若可以從客戶端的角度來更新向伺服器索求資訊來更新部分內容以及在更新的同時間不能夠影響著使用者的使用體驗，說不定能避免上述的問題，所以就有人為瀏覽器提供AJAX(Asynchronous JavaScript and XML)這功能，這功能能讓瀏覽器以非同步的形式去向伺服器索求瀏覽器(使用者想要)的資訊，並讓伺服器回傳這些資訊，而客戶端會利用AJAX來接收這資訊並且做出適當的部分內容渲染，而非整份文件的渲染，在這個架構之下，伺服器中的View將轉移至客戶端來進行，然後由客戶端的AJAX去根據需求像伺服器索要資料並於瀏覽器進行渲染。
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1633596645/blog/network/ClientAndServer/MVCModel_moveView2Browser_tlhh6y.png)
 
+不過當瀏覽器還未取得完整的網頁時，還是會像下圖中那樣去索求完整的網頁檔案，等到完全取得並渲染完成的時候，便會以AJAX為主的架構進行更新。
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1633596645/blog/network/ClientAndServer/MVCModel_dgvnhm.png)
 
 ### 前端框架的出現
 
-
+不過AJAX本身並不是一個完美的技術，還是會出現意想不到的問題，由於AJAX本身會是非同步的運作，而AJAX本身利用其特色來獲取資料，但隨之而來的是對於獲取到資料所要做的網頁更新也會是非同步進行，而這種非同步的運作中，我們無法確定請求什麼時候傳送、什麼時候會收到請求、什麼時候會利用請求來渲染畫面，所以很有可能會因這無法確定而讓結果不如預期。所以就為了解決這不確定的問題，就有人提出Vue.js、React.js等前端框架來解決，由框架中的某一塊利用AJAX來更新網站的部分內容。
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1633596645/blog/network/ClientAndServer/MVCModel_framework_abzxcz.png)
 
-基本問題：
-1. Protocol、packet、router、IP、TCP、HTTP、Client & Server端是什麼
-2. 它們能做些什麼？
-3. 你能夠用他們做什麼？
-4. 資料為什麼可以成功傳輸到目的地？(以現有平台提供的線索來回答)
-5. 設備之間究竟為什麼能互相溝通
+
+不過當瀏覽器還未取得完整的網頁時，還是會像下圖中那樣去索求完整的網頁檔案，等到完全取得並渲染完成的時候，便會以前端框架為主的架構進行更新。
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1633596645/blog/network/ClientAndServer/MVCModel_dgvnhm.png)
 
 
 ## Protocol
@@ -67,8 +66,6 @@ https://test.com/todolist
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1633538606/blog/network/networkModel/macFrame_zpxt1t.png)
 
 3. 訊框會直接能夠被實體層變轉化成位元串，而位元串
-
-
 
 
 
