@@ -25,12 +25,72 @@ server端封包的Header部分會有Status code、Response Headers，而Body則�
 ### Resquest Method
 Resqest Method是指Client端想要對目標資源做什麼樣請求，具體請求有：
 1. GET: 主要向目標資源請求讀取某些資料。
-2. POST: 主要告訴對方我要傳東西給你，請看我在Message body儲存的內容來新增，注重於建立內容和資源
-3. PATCH: 主要告訴對方我要傳東西給你，請看我在Message body儲存的內容來更新，注重於現有資料的部分內容更新
-4. PUT: 透過特定內容來取代目標資源上的被取代內容來達到更新，若被取代內容不存在的話，會增加特定內容至目標資源上，注重於現有資料的取代
+2. POST: 主要告訴對方我要傳東西給你，請看我在Message body儲存的內容來新增，注重於建立內容和資源。
+3. PATCH: 主要告訴對方我要傳東西給你，請看我在Message body儲存的內容來按照現有資料內容進行部分內容更新。
+4. PUT: 透過特定內容來取代目標資源上的所有內容來達到更新，若被取代內容不存在的話，會增加特定內容至目標資源上。
 5. DELETE: 會請求對方刪除某些資源。
 
-如果一個請求被重複發送好幾次，其最後結果會像是下達一個同種請求後的結果，該請求就會是冪等(Idempotent)，而冪等名字是源自於數學的一元運算式的冪等，如果一個請求不會改變伺服器上的狀態和資源，該請求為safe，根據這兩種請求，我們將上述五種請求歸類：
+
+### 冪等請求
+英文為Idempotent，源自於數學的一元運算式的冪等，也就是若進行任一個元素進行多次的冪等運算式，其結果會是該元素進行一次的冪等運算式之結果，套用在HTTP請求上，如果任一個資源被一個請求被重複發送好幾次，其最後結果會像是下達一個同種請求後的結果，該請求就會是冪等(Idempotent)。根據這個定義，主要的五種請求方法會是：
+
+1. GET 請求方法：屬於冪等請求，因為當對一個資源進行多次同樣的GET請求方法，都會是得到同樣的資源內容，這對於下達一次的GET請求方法而言，結果會與多次同樣的方法之結果是一樣。
+2. POST 請求方法：不屬於冪等請求，因為當對一個資源進行多次同樣的POST請求方式時，會不斷建立好幾塊內容或者資源，這對一次的POST請求方法而言，結果會與多次同樣的方法之結果是不一樣，因為單次的POST請求方法就只是一塊內容或者資源。
+3. PATCH 請求方法：不屬於冪等請求，然而該請求方式可以是冪等請求或者非冪等請求，一切取決於開發者如何運用PATCH以及運用方式是否具有冪等特性，但在這裡會為了嚴謹性而直接設定成不屬於冪等請求，不過當我們指定Patch為冪等請求時，比如下面的Patch request，這個請求會直接修改名為Tito的歲數，但多次下次同樣的Patch request，其結果會如同指下達一次的Patch reqeust之結果，也就是都皆為33歲
+```
+// Original resource
+{
+  name: 'Tito',
+  age: 32
+}
+
+// PATCH request
+{
+  age: 33
+}
+
+// New resource
+{
+  name: 'Tito',
+  age: 33
+}
+```
+
+然而若Patch request改成非冪等請求，則會像是以下的Patch request，當下達一次的Patch request就會替名為Tito的歲數增加歲數，這會讓每一次的Patch結果皆不一樣，換言之，多次的Patch request之結果跟單次Patch request的結果是不一樣的。
+```
+// Original resource
+{
+  name: 'Tito',
+  age: 32
+}
+
+// PATCH request
+{
+  $increment: 'age'
+}
+
+// New resource
+{
+  name: 'Tito',
+  age: 33
+}
+
+```
+
+這兩個範例皆從本小節的參考資料得來的，若要仔細了解可以去閱讀參考資料中的[Why PATCH method is not idempotent?](https://softwareengineering.stackexchange.com/questions/260818/why-patch-method-is-not-idempotent)
+
+
+4. PUT 請求方法：屬於冪等請求，該功能會先找到它想更改的內容，並用其他內容來完整取代，所以若對一個資源進行多次同樣的PUT請求方法，會因為第一次就已經成功取代，而並不會讓後續相同的PUT請求方法找到同樣想改的內容進行取代，整體結果會跟第一次的PUT請求方法一樣。
+
+5. DELETE 請求方法：屬於冪等請求，該功能會先找到它想要刪除的內容，並且找到就刪除，所以若對一個資源進行多次同樣的DELETE請求方法，會因為第一次就已經完成刪除，而並不會讓後續相同的DELETE請求方法找到同樣想改的內容進行刪除，整體結果會跟第一次的DELETE請求方法一樣。
+
+
+參考資料：
+1. [Why PATCH method is not idempotent?](https://softwareengineering.stackexchange.com/questions/260818/why-patch-method-is-not-idempotent)
+
+## 安全請求
+
+如果一個請求不會改變伺服器上的狀態和資源，該請求為safe，根據這兩種請求，我們將上述五種請求歸類：
 
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1631438998/blog/how2useAPI/safeAndIdempotent_yonpjf.png)
 
