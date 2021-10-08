@@ -88,9 +88,17 @@ Resqest Method是指Client端想要對目標資源做什麼樣請求，具體請
 參考資料：
 1. [Why PATCH method is not idempotent?](https://softwareengineering.stackexchange.com/questions/260818/why-patch-method-is-not-idempotent)
 
-## 安全請求
+### 安全請求
 
-如果一個請求不會改變伺服器上的狀態和資源，該請求為safe，根據這兩種請求，我們將上述五種請求歸類：
+如果一個請求不會改變伺服器上的狀態和資源，該請求為Safe請求，根據這種特性，我們將上述五種請求來分類：
+1. GET 請求方法：屬於Safe請求，因為只會單方面讀取資源內容，並不會更改狀態和資源內容。
+2. POST 請求方法：不屬於Safe請求，因為會單方面對增加內容或者增加資源，這更改了資源。
+3. PATCH 請求方法：不屬於Safe請求，因為會單方面對指定內容來更新另一個指定內容，這更改了資源。
+4. PUT 請求方法：不屬於Safe請求，因為會單方面會對指定內容進行完整內容的取代，這更改了資源。
+5. DELETE 請求方法：不屬於Safe請求，因會單方面會指定資源或者指定內容來刪除，這更改了資源。
+
+
+### 整體的分類表
 
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1631438998/blog/how2useAPI/safeAndIdempotent_yonpjf.png)
 
