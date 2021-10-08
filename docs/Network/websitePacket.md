@@ -36,7 +36,7 @@ Resqest Method是指Client端想要對目標資源做什麼樣請求，具體請
 
 1. GET 請求方法：屬於冪等請求，因為當對一個資源進行多次同樣的GET請求方法，都會是得到同樣的資源內容，這對於下達一次的GET請求方法而言，結果會與多次同樣的方法之結果是一樣。
 2. POST 請求方法：不屬於冪等請求，因為當對一個資源進行多次同樣的POST請求方式時，會不斷建立好幾塊內容或者資源，這對一次的POST請求方法而言，結果會與多次同樣的方法之結果是不一樣，因為單次的POST請求方法就只是一塊內容或者資源。
-3. PATCH 請求方法：不屬於冪等請求，然而該請求方式可以是冪等請求或者非冪等請求，一切取決於開發者如何運用PATCH以及運用方式是否具有冪等特性，但在這裡會為了嚴謹性而直接設定成不屬於冪等請求，不過當我們指定Patch為冪等請求時，比如下面的Patch request，這個請求會直接修改名為Tito的歲數，但多次下次同樣的Patch request，其結果會如同指下達一次的Patch reqeust之結果，也就是都皆為33歲
+3. PATCH 請求方法：不屬於冪等請求，然而該請求方式可以是冪等請求或者非冪等請求，這並不是其他請求那樣其特性被固定，一切取決於開發者如何運用PATCH以及運用方式是否具有冪等特性，但在這裡會為了嚴謹性而直接設定成不屬於冪等請求，不過當我們指定Patch為冪等請求時，比如下面的Patch request，這個請求會直接修改名為Tito的歲數，但多次下次同樣的Patch request，其結果會如同指下達一次的Patch reqeust之結果，也就是都皆為33歲
 ```
 // Original resource
 {
@@ -101,6 +101,22 @@ Resqest Method是指Client端想要對目標資源做什麼樣請求，具體請
 ### 整體的分類表
 
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1631438998/blog/how2useAPI/safeAndIdempotent_yonpjf.png)
+
+### POST vs. PATCH
+這兩者的共同點是可以增加內容，但不同點就在於POST會更注重於內容或者資源上的建立，而PATCH更注重於找到指定內容並且更新其內容。
+
+
+
+### POST vs. PUT
+這兩者的共同點是可以增加內容，但不同點主要有兩點：
+1. POST會更注重於內容或者資源上的建立，而PUT會先去找指定內容是否存在，若存在就以另一個指定內容來取代；而若不存在的話就增加指定內容。
+2. POST並不是Idempotent請求，因對同一個資源進行多次相同的POST請求會增加多個區塊的內容，而這不同於第一次的POST請求結果，而PUT則是Idempotent請求，因PUT請求會先找到指定內容才會開始有所動作，但若第一次先處理完PUT請求，那麼之後相同的PUT請求將會找不到指定內容而讓內容沒變動過，換言之，多次的PUT請求結果會等同於一次的PUT請求結果。
+
+3. 另一個對於PUT和POST的官方解釋(參考於本小節的參考資料)：
+> The difference between PUT and POST is that PUT is idempotent: calling it once or several times successively has the same effect (that is no side effect), whereas successive identical POST requests may have additional effects, akin to placing an order several times.
+
+參考資料：
+1. [The difference between PUT and POST](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PUT)
 
 ### PATCH vs. PUT
 這兩者的共同點是可以更新資料，就前者而言，可以直接指定部分資料範圍來更新資料，而後者則是透過取代來更新資料，然而在更新方面上，PUT得必須添加更新內容和其餘內容來替代，比如說我們想要修改某個網頁的第一隻動物的名字，
@@ -175,4 +191,5 @@ PUT http://127.0.0.1:3000/api/animal/1
 2. [What is the difference between PUT, POST and PATCH?](https://stackoverflow.com/questions/31089221/what-is-the-difference-between-put-post-and-patch)
 
 
-The difference between PUT and POST is that PUT is idempotent: calling it once or several times successively has the same effect (that is no side effect), whereas successive identical POST requests may have additional effects, akin to placing an order several times.
+
+
