@@ -213,3 +213,10 @@ Status code則是Server端以數字表示回應Client端請求的結果/狀態�
 2. 3XX系列：重新轉向，例如301 (永久轉向)、302 (暫時轉向)
 3. 4XX系列：客户端錯誤回應，例如400 Bad Request 表示客戶端發送的請求封包出現錯誤(如格式出錯)，伺服器無法處理、403 Forbidden 表示伺服器理解請求，但拒絕執行回應結果(不包含回傳403訊息)
 4. 5XX系列：伺服器的問題，例如 500 Internal Server Error
+
+
+### Content Type
+content-type是Server端告知Client端本次請求回應的資料內容是什麼樣的資料格式，好讓Client知道如何讀取利用這些內容資訊，而種類主要有：
+- text/html
+- text/plain
+- application/json
