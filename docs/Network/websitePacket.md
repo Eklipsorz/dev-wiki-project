@@ -9,5 +9,17 @@ sidebar_position: 4
 ## HTTP封包形式
 
 
+當client端想透過HTTP協定去使用server端的網站時，client端跟server端這兩者間會做TCP/IP中的三向交握中建立連結，之後client便會正式發送請求的HTTP封包給server端，而server端收到請求後便會回傳另一個HTTP封包來回應client。
+
+未增加封包後的版本：
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1631431354/blog/how2useAPI/client2server_rzjbgc.png)
+
+增加封包後的版本：
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1631433951/blog/how2useAPI/detail_client2server_k7juuv.png)
+
+
+由於應用層的HTTP封包都會直接分為Header和Body，Header會存放告訴系統如何處理應用層或者HTTP協定，而Body則是應用程式-網站所要傳遞/接收的正式內容，client端和server端對於Header和Body的內容皆不一樣，client端封包的Header部分會有Request Method、Request URL、Request Headers，而Body則是Message body，其中Resqest Method是指想要對目標資源做什麼樣請求，Request URL是具體的目標資源，其URL是用來定義資源在網路環境下的的位置格式，使用這個格式可以在網路上找到對應的目標資源，Request Headers則是進一步定義請求的設定、格式、要找的伺服器位址(與URL不同，只列出對應伺服器域名或者IP)，最後一個Message body是該請求封包的具體詳細請求內容。
+
+server端封包的Header部分會有Status code、Response Headers，而Body則是Response Body，其中Status code則是以數字表示回應client請求的結果/狀態，Response Headers則是進一步定義回應"請求"的設定、內容格式(Content-Type，定義回傳資料是什麼格式)，而Response Body則是具體詳細的回應內容。
 
 
