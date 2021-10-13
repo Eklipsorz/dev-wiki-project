@@ -16,6 +16,8 @@ sidebar_position: 1
 
 對於不必重新打造相同類似的功能而言，框架可以在某一種程度上能做得到，但是其本身是另一套擁有專屬語法、概念、功能的開發環境，所以本質上無法讓開發者自由自在去調用框架下所提供程式碼，開發者必須遵守框架所定下的語法、概念才能被執行，而執行方面會是由框架來呼叫開發者的程式碼，而非像函式庫那樣，由開發者去呼叫函式庫的程式碼。
 
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1634139009/blog/SE/frameworkVSLibrary_twgjx3.png)
+
 ## 用語介紹
 1. 框架(Framework)和函式庫(Library)可以用工具包來形容他們，而工具包本身意思就是將多個模組/多種不同程式碼封裝成一個空間，形容工具包的英文可以是Package、Library、Module 來形容，其中Package在Javascript社群中特別常形容這兩者，另外部分用語可能無法通用於兩者，比如Library和Framework本質上並不能劃上等號。
 2. Package的原意為被紙包覆住的物件，在這裏可以指被用另一個開發環境包覆住開發者的程式碼的框架、程式碼被封裝在一起的函式庫(Library)
