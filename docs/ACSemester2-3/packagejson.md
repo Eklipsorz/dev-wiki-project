@@ -11,6 +11,18 @@ sidebar_position: 9
 3. 可以方便與其他開發者分享以及重複使用
 4. 每一次透過npm指令來對套件進行更新、下載、變更都會影響(獲取)著package.json的內容
 
+## package-lock.json
+1. 由於package.json通常會搭配semantic versioning 來定義專案所支援的版本範圍，然而在這些範圍內有些版本存在與專案相衝突的版本，所以若單純採用package.json來下載安裝，勢必會遇到相衝突或者花更多時間去調試的問題，而為了解決這樣的問題，npm就提供package-lock.json這份檔案來鎖定每一次套件安裝時的具體版本、具體所依賴的套件是什麼，好讓使用者多了一份選擇可以安裝合適的具體版本來安裝，而非只是單純靠package.json。
+2. Package-lock.json 主要紀錄安裝套件的具體版本以及套件所需的套件是什麼(依賴鏈)
+3. 用途和package.json一樣，開發者可以觀看package.json和package-lock.json來得知目前專案依賴著什麼樣的模組以及透過他們來安裝
+4. 每一次透過npm指令來對套件進行更新、下載、變更都會影響(獲取)著package.json的內容
+5. 注意細節：
+  - 當以區域形式來下達npm install時，npm會根據package-lock.json和 package.json來安裝(覆蓋)套件至目前專案下的node_modules
+  - 不允許透過修改package.json來回溯至舊版本： 以往安裝錯誤的套件，可以在package.json指定正確的版本並下達npm install來安裝正確版本，但在npm5之後，就不允許npm install來回溯舊版本，只能透過npm install package@version 來安裝才能成功安裝正確版本
+  - 允許透過修改package.json來升級至新版本：版本更新的話，可允許直接修改package.json並npm install，即可成功安裝以及更新package-lock.json的內容
+
+
+
 ## Semantic versioning
 1. 使用特定語法來指定套件的版本範圍
 2. 通常會使用^(caret)、~(tilde)、>=、<=、*、-等特定語法來定義。
