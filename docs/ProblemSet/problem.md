@@ -51,4 +51,6 @@ Additional labels for pre-release and build metadata are available as extensions
 
 npm uninstall &lt;package&gt;：移除指定package以及該package所依賴的package也會跟著刪掉，但有些套件會不會因為其他套件正在用而不刪掉
 
+1. Npm下載代表這些檔案的套件，然後重新以webpack來打包來方便給客戶端下載(待學習)
+2. middleware function  是什麼
 
