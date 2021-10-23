@@ -22,14 +22,13 @@ sidebar_position: 4
 
 server端封包的Header部分會有Status code、Response Headers，而Body則是Response Body，其中Status code則是以數字表示回應Client請求的結果/狀態，Response Headers則是進一步定義回應"請求"的設定、內容格式(Content-Type，定義回傳資料是什麼格式)，而Response Body則是具體詳細的回應內容。
 
-### Resquest Method
+## Main Resquest Method
 Resqest Method是指Client端想要對目標資源做什麼樣請求，具體請求有：
 1. GET: 主要向目標資源請求讀取某些資料。
 2. POST: 主要告訴對方我要傳東西給你，請看我在Message body儲存的內容來新增，注重於建立內容和資源。
 3. PATCH: 主要告訴對方我要傳東西給你，請看我在Message body儲存的內容來按照現有資料內容進行部分內容更新。
 4. PUT: 透過特定內容來取代目標資源上的所有內容來達到更新，若被取代內容不存在的話，會增加特定內容至目標資源上。
 5. DELETE: 會請求對方刪除某些資源。
-
 
 ### 冪等請求
 英文為Idempotent，源自於數學的一元運算式的冪等，也就是若進行任一個元素進行多次的冪等運算式，其結果會是該元素進行一次的冪等運算式之結果，套用在HTTP請求上，如果任一個資源被一個請求被重複發送好幾次，其最後結果會像是下達一個同種請求後的結果，該請求就會是冪等(Idempotent)。根據這個定義，主要的五種請求方法會是：
@@ -190,10 +189,10 @@ PUT http://127.0.0.1:3000/api/animal/1
 1. [PUT、PATCH 差別](https://ithelp.ithome.com.tw/articles/10224134)
 2. [What is the difference between PUT, POST and PATCH?](https://stackoverflow.com/questions/31089221/what-is-the-difference-between-put-post-and-patch)
 
+### Additional Method
+1. HEAD: 大致上與GET相同，主要向目標資源請求讀取某些資料，但回應的封包形式會只有HEAD，而沒Body。由於本質上跟GET一樣，所以會是Safe請求和冪等請求
 
-
-
-### Request URL 
+## Request URL 
 統一資源定位器(Uniform Resource Locator，URL)，別名網址，定義資源在網路環境下的的位置格式，如同門牌，URL會包含著支援協定、資源所在的主機位置、資源所在的主機位置之埠號(port)、資源在主機下的對應位置、參數，而URL普遍會被當作是向資源所在的主機位置發送索要資源的請求。
 
 格式上會是：
@@ -207,18 +206,22 @@ PUT http://127.0.0.1:3000/api/animal/1
 - 檔案路徑：會以特定目錄/資料夾位置來當作根目錄，並且根據網址給定的路徑來從對方主機的根目錄下找指定檔案路徑或者由網頁系統構成的路由系統來決定的資源和其資源路徑
 - 查詢/參數：這邊會被瀏覽器當作該頁面下的參數來使用，若參數多於1個時會搭配著&符號
 
-### 路由系統
+## 路由系統
 路由系統為了讓整體的URL資源請求更適應於MVC架構而提出的，在這個系統之下的URL會有些許的不同，比如原本索要的資源必須以在該主機根目錄下的實際位置來索求資源，現在只需要幾個明確且單一的關鍵字就能代替這部分，換言之，URL中的該伺服器下的檔案路徑(含檔名)將會以該系統所定義的合法路徑來進行，
 ```
 [協定類型]://[伺服器位址]:[埠號]/[該伺服器下的檔案路徑(含檔名)]?[查詢/參數]
 ```
-而且不一定真的指向實際檔案位置，比如以下網址不一定就是以www.example.com根目錄下的todolist目錄的index.html，而是經由路由系統轉發給其他controller的結果
+而且不一定真的指向實際檔案位置，比如以下網址
 
 ```
 http://www.example.com/todolist
 ```
 
-### Status Code
+不一定就是以下面網址對應的根目錄下的todolist目錄的index.html，而會是經由路由系統轉發給其他controller的結果
+```
+www.example.com
+```
+## Status Code
 Status code則是Server端以數字表示回應Client端請求的結果/狀態，數字分別有：
 1. 2XX系列：成功回應，例如200 OK，表示請求成功
 2. 3XX系列：重新轉向，例如301 (永久轉向)、302 (暫時轉向)
@@ -226,7 +229,7 @@ Status code則是Server端以數字表示回應Client端請求的結果/狀態�
 4. 5XX系列：伺服器的問題，例如 500 Internal Server Error
 
 
-### Content Type
+## Content Type
 content-type是Server端告知Client端本次請求回應的資料內容是什麼樣的資料格式，好讓Client知道如何讀取利用這些內容資訊，而種類主要有：
 - text/html
 - text/plain
