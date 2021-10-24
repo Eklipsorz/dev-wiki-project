@@ -38,7 +38,9 @@ sidebar_position: 11
 
 ### 同時的意涵
 
-
+根據觀察者可看到的結果，來將同時分成兩種：
+1. 不論是宏觀或者微觀上，某些事物都會是同時的
+2. 宏觀上，某些事物會是同時的，但微觀上是不同時，比如說在某種程式花了1秒同時完成n個任務，而這件事就是我們人類所能觀察到的角度，但實際上在1秒內，這種程式只能一次執行一個任務，因此會不斷地切換任務來做，只是做到1秒的時候，就剛好完成n個任務，而這個角度就是微觀角度。
 ## 參考資料
 1. [一起了解什麼是高併發](https://www.itread01.com/content/1547164817.html)
 2. [劍橋字典對於parallel的定義](https://dictionary.cambridge.org/us/dictionary/english-chinese-traditional/parallel)
