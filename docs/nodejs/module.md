@@ -27,52 +27,47 @@ Node.js的模組根據原不原生(native)分為兩種：原生模組(native mod
 關於模組化機制上，有兩個主要方法：exports和require，前者能將程式碼片段轉換為模組主要提供的功能，後者能將模組、外部資源以Node.js能夠辨識的形式來載入至內部程式碼。
 
 ### require 用法
-用來調用模組(外部資源)至目前環境，形式通常會是如下所示，id會是指Node.js預設路徑下的模組，path則是用指定位置上來調用模組的，其位置可以是相對位置或者絕對位置，require會根據判定標準(參考下一個小節)來將id/path辨識成特定形式來回傳內容，回傳內容會是對應模組下所開放給外部使用的程式碼。
+用來調用模組(外部資源)至目前環境，形式通常會是如下所示，id會是指Node.js預設路徑下的模組，path則是用指定位置上來調用模組的，其位置可以是相對位置或者絕對位置，require會根據判定檔案機制(參考下一個小節)來將id/path辨識成特定形式來回傳內容，回傳內容會是對應模組下所開放給外部使用的程式碼。
 ```
 require(id/path)
 ```
-### require 判定檔案標準
+### require 判定檔案機制
+當在路徑Y執行Require(X)的JS程式碼時，會先檢查X是否為Node.js內建的模組，若是的話，就直接載入，若不是的話就會被當作非官方提供的模組，接著在判斷X的路徑是否為絕對路徑，是的話，將Y設定為'/'，但不論是不是，後續會接著以X的路徑形式來進行，而後續流程將以第二張圖來說明，第二張圖主要說明Handle Path and LOAD的流程。
 
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1635152431/blog/nodejs/simpleRequireFlow_lm64kv.png)
+
+首先它會檢查X的路徑是否為絕對路徑，是的話，就將Y設定為'/'，接著根據X指定的路徑來處理，若指定路徑為絕對路徑的話，會將絕對路徑X的'/'去除，並與Y進行合併，而Y此時是'/'，將X和Y結合成一個指向一個檔案的路徑，接著若檔案沒，若不是的話，就會根據副檔名來判斷是否json、node，若是其中一種便停止後續判斷而直接載入，但若指定路徑為相對路徑的話，就會根據Y和X給予的相對路徑來拼湊出新的檔案路徑來判斷檔案是否為JavaScript、json、node，都載入不到就試著將X當作NPM套件來載入，還是載入不到就直接印出找不到。
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1635154823/blog/nodejs/simpleIFileType_arw3xb.png)
+
+舉例來說，當在/A/B/C路徑執行包含下面程式碼的JS檔，那麼根據require機制會組裝成/A/B/C/FILE的路徑來指向FILE這檔案，根據FILE的副檔名和內容來判定FILE是否為JS、JSON、node，若三種都不是的話，就改把X當作NPM套件來試著載入。
+
+```
+require(./FILE)
+```
+
+此小節為簡單版的判定檔案標準，若要研究詳細版的標準，可參考[high-level algorithm in pseudocode of what require()](https://nodejs.org/api/modules.html]來研究。
 
 
 ### exports 用法
+該方法如同其名是負責輸出內容至某個地區，在這裏是會以目前檔案為一個模組並定義其模組要輸出的內容，模組內容會根據輸出內容而有所不同：
+ - 若module.exports是物件型別，require會回傳物件型別
+ - 若module.exports是原型型別，require會回傳原型型別
+ - 若module.exports是函式物件，require會是函式物件
 
-
-
-
-
-
-### exports：
-該方法如同其名是負責輸出內容至某個地區，在這裏是會以目前檔案為一個模組並定義模組內容，模組內容會根據輸出內容而有所不同：
- - 當module.exports是物件，require會回傳物件
- - 當module.exports是原型，require會回傳原型
- - 當module.exports是函式，require會是函式 
-
-
-## require
-1. 用來調用外部資源至目前環境，形式通常會是如下所示，require會根據fileName所對應的檔案類型而具有不同的對應檔案處理，主要會有四種檔案類型能被require處理：模組、js檔、json檔、node檔
+舉例：若對名為one.js的JS檔案中的multiplyByTwo函式進行輸出的話，那麼在two.js載入one.js的內容時，funct會因為輸出內容為函式物件而拿到one.js的multiplyByTwo函式，此時，可以當作函式來使用，比如funct(3)，會獲得6這個結果
 
 ```
-const obj = require(fileName)
+/* inside one.js */
+function multiplyByTwo(n) {
+   return n * 2
+}
+module.exports = multiplyByTwo;
+
+
+/* inside two.js */
+const funct = require('./one')
+console.log(funct(3))
 ```
-
-
-
-
-2. 而require判定檔案類型的標準，則是根據檔案名稱和路徑是否明確寫出，假使有寫路徑但就是不寫副檔名的話，
- - 檢查是否為js檔案，不是就往下，是js檔案就按照js檔案來處理
- - 檢查是否為json檔案，不是就往下，是json檔案就按照json檔案處理，這邊會直接把json檔案內容視為JavaScript 物件來處理
- - 檢查是否為node檔案，不就往下，是node檔案就按照node檔案來處理
- - 都不是的話，就沒辦法被正確讀取。
-3. 假使不寫路徑和副檔名的話，Node.js就會認為這是模組，然後就去預設放模組的路徑尋找該模組是否存在，若不存在就停止後續判斷
-
-4. 舉例：會先判定目前目錄是否有movies這模組或者js檔案，都沒有的話，就會朝著movies.json來尋找，接著就是movies.node來尋找。
-
-```
-const movieList = require('./movies')
-```
-
-模組會以其他形式來封裝實現功能JS檔案，本身是和JS檔案為不同的檔案
 
 ### 參考資料
 1. [[第三週] Node.js 基礎 — module.exports 和 require](https://miahsuwork.medium.com/第三週-node-js-基礎-module-exports-和-require-2f9f6915d9f0)
