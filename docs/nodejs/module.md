@@ -45,7 +45,7 @@ require(id/path)
 require(./FILE)
 ```
 
-此小節為簡單版的判定檔案標準，若要研究詳細版的標準，可參考[high-level algorithm in pseudocode of what require()](https://nodejs.org/api/modules.html]來研究。
+此小節為簡單版的判定檔案標準，若要研究詳細版的標準，可參考[high-level algorithm in pseudocode of what require()](https://nodejs.org/api/modules.html)來研究。
 
 
 ### exports 用法
