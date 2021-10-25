@@ -69,28 +69,6 @@ const funct = require('./one')
 console.log(funct(3))
 ```
 
-### 參考資料
-1. [[第三週] Node.js 基礎 — module.exports 和 require](https://miahsuwork.medium.com/第三週-node-js-基礎-module-exports-和-require-2f9f6915d9f0)
-2. [Day5 - 關於 module.exports 的兩三事](https://ithelp.ithome.com.tw/articles/10185083)
-
-
-
-
-
-
-
-載入其他js檔案方法：
-1. require(path/filename)，若沒添加指定path/的話，系統會去預設路徑去尋找filename是否存在，若指定path/則會以指定路徑來找到filename
-2. Filename可以不添加.js後綴名，系統會預設為該檔案為js檔案
-3. Require 回傳結果會根據module.exports指定的內容而定
-
-
-http module：
-1. 由Node.js內建的模組，它允許Node.js能夠透過HTTP協定來傳遞資料
-2. 會使用 require(‘http’)來調用該模組，而require會是一個物件的形式來回傳http本身
-const http = require(‘http’)
-
-
 
 ## 參考資料
 1. [韋伯字典對於native的定義](https://www.merriam-webster.com/dictionary/native)
@@ -98,3 +76,5 @@ const http = require(‘http’)
 3. [What is native code?](https://www.quora.com/What-is-native-code)
 4. [In programming, what does native mean?](https://www.quora.com/In-programming-what-does-native-mean)
 5. [Node.js 核心(原生)模块整理](https://itbilu.com/nodejs/core/N1tv0Pgd-.html)
+6. [[第三週] Node.js 基礎 — module.exports 和 require](https://miahsuwork.medium.com/第三週-node-js-基礎-module-exports-和-require-2f9f6915d9f0)
+7. [Day5 - 關於 module.exports 的兩三事](https://ithelp.ithome.com.tw/articles/10185083)
