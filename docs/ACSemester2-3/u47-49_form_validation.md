@@ -58,14 +58,129 @@ selector:invalid {
 
 </form>
 ```
-2. 關閉瀏覽器對於提交事件的預設行為
+2. 關閉瀏覽器對於提交事件的預設行為，主要停止信號繼續傳遞以及取消掉預設行為
 ```
 const form = document.querySelector('#form')
 form.addEventListener('submit', function onFormSubmitted(event) {
   if (!form.checkValidity()) {
+    // 因為輸入資料是不符合規則，所以事件信號傳遞只會是多餘的，所以得停止事件信號傳遞
     event.stopPropagation()
+    // 取消掉瀏覽器預設的行為來讓開發者自行開發這行為的實現
     event.preventDefault()
   }
 })
+```
+
+3. 設計對於驗證結果的樣式，主要會透過偽類設置擷取內容符合標準之樣式和擷取內容不符合標準之樣式，形式會是如下，而selector會對應一個可擷取內容的元件，當內容不合法就跳到invalid這個偽類所指示的樣式內容，而當內容合法就跳到valid這個偽類所指示的樣式內容，然而在使用者未進行任何輸入時，對應元件會立刻被判定是否合法而給予適當的樣式，若預期結果會是要輸入之後或者提交後才給予樣式的話，這樣形式會是錯誤的
 
 ```
+selector:invalid {
+  property1: value1,
+        .
+        .
+        .
+}
+selector:valid {
+  property1: value1,
+        .
+        .
+        .
+}
+```
+
+4. 承第三點，預期結果會是要輸入之後或者提交後才給予樣式的話，只需要讓對應樣式給予特別名稱並且設定表單或者子元件的點擊事件來讓表單或者元件獲取特別名稱就能達成先前提到的目標，首先假設selector就是表單form下的輸入元件，那麼在這裡會以form的點擊事件為主，首先
+
+ - 將合法樣式和不合法樣式添加其他selector來當作條件，也就是form.was-validated
+
+```
+form.was-validated selector:invalid {
+  property1: value1,
+        .
+        .
+        .
+}
+form.was-validated selector:valid {
+  property1: value1,
+        .
+        .
+        .
+}
+```
+
+- 設定表單的點擊事件來替表單增加was-validated這樣式名稱來讓系統去執行上面提到的樣式
+```
+const submitButton = document.querySelector('#submit-button')
+submitButton.addEventListener('click', function onSubmitButtonClicked(event) {
+  form.classList.add('was-validated')
+})
+```
+
+5. 將合法訊息以及不合法訊息設置給對應輸入元件，並透過樣式將這些訊息設定為一開始不顯示，直到做提交才出現。在這裡會是class為valid-feedback的元件代表合法訊息，而invalid-feedback代表不合法訊息，將這些元件的display設置為none讓他們在一開始不出現。
+```
+// Inside html file
+<form novalidte>
+  <label for="name">姓名</label>
+  <input type="text" class="form-control" name="name" id="name" placeholder="你輸入你的姓名" required>
+  <div class="valid-feedback">
+  Good!
+  </div>
+  <div class="invalid-feedback">
+  This field is required!
+  </div>
+</form>
+
+
+// Inside css file
+.invalid-feedback, .valid-feedback {
+  display: none;
+  font-size: 0.8em;
+}
+.invalid-feedback {
+  color: red
+}
+.valid-feedback {
+  color: green
+}
+```
+
+6. 承第五點，為了達到直到做提交才出現這目標，必須做類似第四點要做的事情，也就是採用form.was-validated這選擇器名來當作條件，而其中initial會以display的預設值，也就是inline。
+
+```
+form.was-validated .form-control:invalid ~ .invalid-feedback,
+form.was-validated .form-control:valid ~ .valid-feedback {
+  display: initial;   /* 顯示 */
+}
+
+```
+
+
+## sibling combinator
+1. class 選擇器之間的運算符號
+2. 形式會是如下，會挑與A對應元素同階層且在對應元素之後的B對應元素
+```
+A ~ B {
+    property1: value1,
+        .
+        .
+        .
+}
+```
+
+3. 舉例：會直接挑選一個在p元素同階層且在p元素之後的span，也就是第四段的And here is a span.
+
+```
+// Inside css file
+p ~ span {
+  color: red;
+}
+
+// Inside html file
+<span>This is not red.</span>
+<p>Here is a paragraph.</p>
+<code>Here is some code.</code>
+<span>And here is a span.</span>
+```
+
+結果會是
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1635328112/blog/cssTag/siblingCSSExample_kbcwlq.png)
