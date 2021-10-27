@@ -205,7 +205,7 @@ p ~ span {
 <textarea class="form-control"></textarea>
 ```
 
-3. 舉例：首先用form建立一個表單，在這裡只要添加一個輸入元件來決定姓名，而一個輸入元件通常會綁定一些提示元件標籤和說明字元、輸入元件的驗證元件，所以為了好分類而透過form-group將相關的元件綁定在一塊管理，裡頭會定義提示使用者這是輸入姓名的輸入欄位、輸入欄位、驗證元件，分別由label、input、兩個div元件，label元件負責定義輸入提示，input元件則是定義輸入欄位、兩個div元件負責用Bootstrap內建的valid-feedback和invalid-feedback類別來建立驗證元件來呈現使用者輸入是否符合預期。
+3. 舉例：首先用form建立一個表單，在這裡只要添加一個輸入元件來決定姓名，而一個輸入元件通常會綁定一些提示元件標籤和說明字元、輸入元件的驗證訊息元件，所以為了好分類而透過form-group將相關的元件綁定在一塊管理，裡頭會定義提示使用者這是輸入姓名的輸入欄位、輸入欄位、驗證元件，分別由label、input、兩個div元件，label元件負責定義輸入提示，input元件則是定義輸入欄位、兩個div元件負責用Bootstrap內建的valid-feedback和invalid-feedback類別來建立驗證訊息元件並根據驗證結果來呈現訊息。
 
 ```
   <div class="contain">
@@ -230,3 +230,83 @@ p ~ span {
 ```
 
 ## Bootstrap 表單驗證
+
+1. Bootstrap提供一些helper class來建立表單驗證所需的元件，比如針對使用者輸入來顯示內容對錯的訊息、圖標、樣式。
+2. Bootstrap 主要用來驗證的 helper class：
+  - was-validated：會套用在表單上，通常用來告訴系統該表單已經在前端驗證過了，必須先讓表單出現這個類別才能讓下面的helper class在驗證時顯示正確的樣式。
+  - form-group：主要會套用在表單中一個負責給予輸入的control元件以及該control相關的元件(如使用提示元件、驗證訊息元件)，來讓被包含的元件根據control元件所獲取的內容驗證結果來給予正確的樣式，當主表單的類別為was-validated時，form-group對應元件就會根據使用者輸入內容來呈現樣式。
+  ```
+  form.was-validated .form-control:invalid {
+    border-color: red;
+  }
+
+  form.was-validated .form-control:valid {
+    border-color: green;
+  }
+  ```
+
+  - valid-feedback：主要會套用驗證訊息元件上，一開始該元件不會呈現，並會根據主表單是否為was-validated以及鄰近的control元件所獲取的內容是否正確，若為主表單是was-validated且鄰近的control元件所獲取的內容是正確的，就依照預設的display值來顯示。
+  ``` 
+  .invalid-feedback,
+  .valid-feedback {
+    display: none;
+    font-size: 0.8em;
+  }
+
+  form.was-validated .form-control:valid ~ .valid-feedback {
+    display: initial;
+  }
+  ```
+  - invalid-feedback：主要會套用驗證訊息元件上，一開始該元件不會呈現，並會根據主表單是否為was-validated以及鄰近的control元件所獲取的內容是否不正確，若為主表單是was-validated且鄰近的control元件所獲取的內容是不正確的，就依照預設的display值來顯示。
+
+  ```
+  .invalid-feedback,
+  .valid-feedback {
+    display: none;
+    font-size: 0.8em;
+  }
+
+  form.was-validated .form-control:invalid ~ .invalid-feedback {
+    display: initial;
+  }
+
+  ```
+- 完整樣式大致上會以下面為主：
+
+```
+input.form-control {
+  border: none;
+  border-bottom: 1px solid #757575;
+  background-color: #f5f5f5;
+}
+
+.invalid-feedback,
+.valid-feedback {
+  display: none;
+  font-size: 0.8em;
+}
+
+.invalid-feedback {
+  color: red;
+}
+
+.valid-feedback {
+  color: green;
+}
+
+form.was-validated .form-control:invalid ~ .invalid-feedback {
+  display: initial;
+}
+
+form.was-validated .form-control:valid ~ .valid-feedback {
+  display: initial;
+}
+
+form.was-validated .form-control:invalid {
+  border-color: red;
+}
+
+form.was-validated .form-control:valid {
+  border-color: green;
+}
+```
