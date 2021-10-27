@@ -184,3 +184,17 @@ p ~ span {
 結果會是
 
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1635328112/blog/cssTag/siblingCSSExample_kbcwlq.png)
+
+## Bootstrap 表格與表格驗證
+1. Bootstrap會透過form-group這個類別來包裝一個輸入欄位所需要的內容，比如輸入介面元件、提示字元(輸入介面元件的標籤和說明文字)、驗證文字，其形式會是如下：用標籤來表明input這輸入介面元件的標籤名稱、input就是輸入介面元件、後面兩個元件皆為驗證文字。
+```
+<form>
+  <div class=form-group>
+      <label for="name">姓名</label>
+      <input type="text" class="form-control" id="name" placeholder="請輸入你的全名 ..." required>
+      <div class="valid-feedback">OK!</div>
+      <div class="invalid-feedback">This field is required.</div>
+  </div>
+</form>
+```
+2. 每一個輸入介面
