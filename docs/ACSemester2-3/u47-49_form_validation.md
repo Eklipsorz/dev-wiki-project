@@ -185,7 +185,7 @@ p ~ span {
 
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1635328112/blog/cssTag/siblingCSSExample_kbcwlq.png)
 
-## Bootstrap 表格與表格驗證
+## Bootstrap 表單
 1. Bootstrap會透過form-group這個類別來包裝一個輸入欄位所需要的內容，比如輸入介面元件、提示字元(輸入介面元件的標籤和說明文字)、驗證文字，其形式會是如下：用標籤來表明input這輸入介面元件的標籤名稱、input就是輸入介面元件、後面兩個元件皆為驗證文字。
 ```
 <form>
@@ -197,4 +197,36 @@ p ~ span {
   </div>
 </form>
 ```
-2. 每一個輸入介面
+2. 表單下的任意一個能透過互動來操控特定資訊的編輯/讀取/輸入的元件都會用form-control這個類別來標記，尤其是input元件、select元件、textarea元件。
+
+```
+<input class="form-control"></input>
+<select class="form-control"></select>
+<textarea class="form-control"></textarea>
+```
+
+3. 舉例：首先用form建立一個表單，在這裡只要添加一個輸入元件來決定姓名，而一個輸入元件通常會綁定一些提示元件標籤和說明字元、輸入元件的驗證元件，所以為了好分類而透過form-group將相關的元件綁定在一塊管理，裡頭會定義提示使用者這是輸入姓名的輸入欄位、輸入欄位、驗證元件，分別由label、input、兩個div元件，label元件負責定義輸入提示，input元件則是定義輸入欄位、兩個div元件負責用Bootstrap內建的valid-feedback和invalid-feedback類別來建立驗證元件來呈現使用者輸入是否符合預期。
+
+```
+  <div class="contain">
+    <div class="row mx-2">
+      <div class="col-6">
+        <form novalidate action="/test" id="form">
+          <div class="form-group">
+            <label for="name">姓名</label>
+            <input type="text" class="form-control" placeholder="請輸入你的姓名..." id="name" required>
+            <div class="valid-feedback">
+              Good!!
+            </div>
+            <div class="invalid-feedback">
+              Please choose a username
+            </div>
+          </div>
+          <button class="btn btn-primary" type="submit">送出</button>
+        </form>
+      </div>
+    </div>
+  </div>
+```
+
+## Bootstrap 表單驗證
