@@ -52,3 +52,74 @@ npm run <command>
 <script src=/path3/bootstrap.js>
 ```
 
+## 函式物件的方法和屬性
+1. 在JS中，由於函式本身會被當成物件來看待，所以嚴格來說可以像物件那樣替函式添加屬性和方法，然而不允許直接在函式內部添加屬性和方法，如：
+
+```
+function functName() {
+
+	/* do something */
+	parameter1: value1
+}
+```
+
+2. 取而代之的方法為透過 pass by reference 或者以 exports 的形式來為函式物件增加屬性和方法，具體有三種方法：
+
+ - 方法1：在同一檔案內，將函式物件以reference形式指派給其他變數，再透過該變數對於物件的屬性/方法增加方式來間接為函式物件增加屬性/方法，如下所示
+
+ ```
+ function functName() {
+  	/* do something */
+  }
+
+ const testFunction = functName
+ testFunction.parameter1 = value1
+
+ ```
+
+ - 方法2：不同檔案的情況下，其中一個檔案A要把函式輸出給另一個檔案B當模組內容使用，那麼檔案A會透過 exports 這內建物件來將函式物件的reference儲存並傳遞給檔案B的require之回傳值，由負責接收回傳值的變數來儲存，接著由於是reference的因素，所以透過變數對於物件的屬性/方法增加方式來間接為函式物件增加屬性/方法，如下所示： 
+
+ ```
+  /* Inside one.js */
+  function functName() {
+	  /* do something */
+  }
+
+  exports = module.exports = functName
+
+  /* Inside two.js */
+
+  const mod = require('./one')
+  mod.parameter1 = value1
+
+  console.log(mod)   
+  /* 
+    顯示結果為 [Function: functName] {
+	      parameter1: value1
+    } 
+  */
+
+ ```
+ 
+
+ - 方法3：與方法2類似會是以模組內容的形式輸出給另一個檔案，不同的是先在輸出前於提供模組的檔案A間接對函式物件進行屬性/方法的增加，然後輸出其最後內容給另一個檔案B，形式如下：
+
+```
+  /* Inside one.js */
+  function functName() {
+	    /* do something */
+  }
+
+  exports = module.exports = functName
+  exports.parameter1 = value1
+
+  /* Inside two.js */
+
+  const mod = require('./one')
+  console.log(mod)   
+  /* 
+    顯示結果為 [Function: functName] {
+	      parameter1: value1
+    } 
+  */
+ ```
