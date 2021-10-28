@@ -52,6 +52,28 @@ npm run <command>
 <script src=/path3/bootstrap.js>
 ```
 
+## module.exports 
+1. 由Node.js所提供的module物件和其屬性exports，而exports預設為物件，exports如同名稱，會將一個模組(檔案)的指定內容輸出給另一個檔案來使用。
+2. 具體實現方法為先在檔案A用module.exports儲存要輸出的內容，而這內容會是檔案A作為模組能提供的內容，接著要載入檔案A的檔案B透過require獲取exports所儲存的內容。
+3. exports同樣地會如同其他變數那樣，會根據內容來變更自己的型別，主要會是物件，所以會是儲存輸出內容的reference，而檔案B同樣也會接收相同的reference，並且如同物件那般來使用
+4. 舉例：
+```
+  /* Inside one.js */
+  function functName() {
+	  /* do something */
+  }
+
+  exports = module.exports = functName
+
+  /* Inside two.js */
+
+  const mod = require('./one')
+  mod.parameter1 = value1
+
+```
+5. module.exports 有另一個簡寫名稱：exports
+
+
 ## 函式物件的方法和屬性
 1. 在JS中，由於函式本身會被當成物件來看待，所以嚴格來說可以像物件那樣替函式添加屬性和方法，然而不允許直接在函式內部添加屬性和方法，如：
 
@@ -123,3 +145,5 @@ function functName() {
     } 
   */
  ```
+
+
