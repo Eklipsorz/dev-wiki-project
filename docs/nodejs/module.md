@@ -34,12 +34,14 @@ Node.js的模組根據原不原生(native)分為兩種：原生模組(native mod
 require(id/path)
 ```
 ### require 判定檔案機制
-當在路徑Y執行Require(X)的JS程式碼時，會先檢查X是否為Node.js內建的模組，若是的話，就直接載入，若不是的話就會被當作非官方提供的模組，接著在判斷X的路徑是否為絕對路徑，是的話，將Y設定為'/'，但不論是不是，後續會接著以X的路徑形式來進行，而後續流程將以第二張圖來說明，第二張圖主要說明Handle Path and LOAD的流程。
+當在路徑Y執行Require(X)的JS程式碼時，會先檢查X是否為Node.js內建的模組，若是的話，就直接載入，若不是的話就會被當作非官方提供的模組，接著在判斷X的路徑是否為絕對路徑，是的話，將Y設定為'/'，但不論是不是，後續會接著以X的路徑形式來進行，若X是'/'、'./'、'../'來開頭的話，就會嘗試辨識指向檔案，若能辨識成功就會被載入，否則就會被當作NPM 模組來嘗試載入，都無法載入就會印出找不到的訊息，詳細過程可以看下面的判斷檔案類型小節，但若X不是'/'、'./'、'../'來開頭的話，就會嘗試以NPM模組來載入，若都無法載入就會印出找不到的訊息。
 
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1635152431/blog/nodejs/simpleRequireFlow_lm64kv.png)
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1635954539/blog/nodejs/simpleRequireFlow_nya7zz.png)
 
-首先它會檢查X的路徑是否為絕對路徑，是的話，就將Y設定為'/'，接著根據X指定的路徑來處理，若指定路徑為絕對路徑的話，會將絕對路徑X的'/'去除，並與Y進行合併，而Y此時是'/'，將X和Y結合成一個指向一個檔案的路徑，接著若檔案沒，若不是的話，就會根據副檔名來判斷是否json、node，若是其中一種便停止後續判斷而直接載入，但若指定路徑為相對路徑的話，就會根據Y和X給予的相對路徑來拼湊出新的檔案路徑來判斷檔案是否為JavaScript、json、node，都載入不到就試著將X當作NPM套件來載入，還是載入不到就直接印出找不到。
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1635154823/blog/nodejs/simpleIFileType_arw3xb.png)
+### 判斷檔案類型
+
+首先它會檢查X的路徑是否為絕對路徑，是的話，就將Y設定為'/'，接著根據X指定的路徑來處理，若指定路徑為絕對路徑的話，會將絕對路徑X的'/'去除，並與Y進行合併，而Y此時是'/'，將X和Y結合成一個指向一個檔案的路徑，若X的路徑是相對路徑的話，那麼就會根據Y和X給予的相對路徑來拼湊出新的檔案路徑，確定完檔案路徑，接著就是判斷指向的檔案是否為js、json、node，若是其中一種的話，就便停止後續判斷而直接載入，都載入不到的話，就會被系統視為無法辨識，接著就會嘗試將X當作NPM套件來載入，還是載入不到就直接印出找不到。
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1635952876/blog/nodejs/simpleFileIdentification_equh6a.png)
 
 舉例來說，當在/A/B/C路徑執行包含下面程式碼的JS檔，那麼根據require機制會組裝成/A/B/C/FILE的路徑來指向FILE這檔案，根據FILE的副檔名和內容來判定FILE是否為JS、JSON、node，若三種都不是的話，就改把X當作NPM套件來試著載入。
 
