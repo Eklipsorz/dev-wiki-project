@@ -48,6 +48,39 @@ selector:invalid {
 }
 ```
 
+## sibling combinator
+1. 是 class 用來與其他 class 進行連接/組合的符號(operator)，在這裡會挑同階層的元素。
+2. 形式會是如下，會挑與A對應元素X同階層且在對應元素X之後的對應元素Y，而對應元素Y正是B類別所對應的元素
+```
+A ~ B {
+    property1: value1,
+        .
+        .
+        .
+}
+```
+
+3. 舉例：會直接挑選一個在p元素同階層且在p元素之後的span，也就是第四段的And here is a span.
+
+```
+// Inside css file
+p ~ span {
+  color: red;
+}
+
+// Inside html file
+<span>This is not red.</span>
+<p>Here is a paragraph.</p>
+<code>Here is some code.</code>
+<span>And here is a span.</span>
+```
+
+結果會是
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1635328112/blog/cssTag/siblingCSSExample_kbcwlq.png)
+
+
+
 
 ## 手刻驗證功能
 1. 關閉瀏覽器對於前端的預設自動驗證功能(包含根據驗證結果來調整樣式的機制)，並讓瀏覽器不再第一時間對於沒通過驗證的表單進行樣式渲染和阻止提交事件的事件處理，由於這部分要自行決定驗證樣式，所以要藉由novalidate來實現
@@ -86,8 +119,7 @@ selector:valid {
 }
 ```
 
-4. 承第三點，若預期結果會是要輸入之後或者提交後才給予樣式的話，只需要在負責通知提交的元件上綁定點擊事件讓它去更動對應元件的類別名稱(如下面的第一個方法)或者更動表單本身的類別名稱(如下面的第二個方法)，一般來說會選擇後者，因爲可以透過賦予表單額外的類別來告訴系統這表單(form)已經做過驗證，若採用前者的話，每個表單下的子元件都必須添加額外類別，比起後者還更多餘。
-
+4. 承第三點，若預期結果會是要輸入之後或者提交後才給予樣式的話，只需要在負責通知提交的元件上綁定點擊事件讓它去更動對應元件的類別名稱(如下面的第一個方法)或者更動表單本身的類別名稱(如下面的第二個方法)，若採用前者的話，按下提交時每個表單下的子元件都必須添加額外類別，而若採用後者的話，只需要在按下提交時替表單(form)添加額外類別，就能讓當下需要驗證樣式的所有元件都能獲得其樣式。前者比起後者還更多餘，所以一般來說會選擇後者。
 ```
 // first method
 selector.className:invalid {
@@ -103,9 +135,8 @@ form.className selector:invalid {
 }
 ```
 
-5. 因此，在這裏會採用第四點所提到的後者形式，來展現，這裏會先替form增加額外的類別名稱來幫助系統判別什麼時候這個表單已經被驗證過，另外再透過提交事件或者某個元件的點擊事件來添加這額外的類別名稱，來產生出提交後才給予驗證樣式的效果：
- - 將合法樣式和不合法樣式添加其他selector來當作條件，也就是form.was-validated
-
+5. 在這裏會採用第四點所提到的後者形式來展現，這裏會先替表單(form)定義額外的類別名稱來幫助系統判別什麼時候這個表單已經被驗證過，另外再透過提交事件或者某個元件的點擊事件來添加這額外的類別名稱，來產生出提交後才給予驗證樣式的效果：
+ - 首先先定義表單的額外類別，並附加至其他元件的合法情況下的樣式和不合法情況下的樣式：讓他們能在表單的類別為was-validated，才開始按照合不合法來渲染。
 ```
 form.was-validated selector:invalid {
   property1: value1,
@@ -121,29 +152,24 @@ form.was-validated selector:valid {
 }
 ```
 
-- 設定表單的點擊事件來替表單增加was-validated這樣式名稱來讓系統去執行上面提到的樣式
+- 設定表單的點擊事件來替表單增加was-validated這樣式名稱來讓系統去執行上面提到的樣式，當使用者去點擊按鈕時，便會讓表單類別有了was-validated這項類別，這時selector的偽類就會開始進行合適的渲染
 ```
 const submitButton = document.querySelector('#submit-button')
 submitButton.addEventListener('click', function onSubmitButtonClicked(event) {
   form.classList.add('was-validated')
 })
 ```
-- 當使用者去點擊按鈕時，便會讓表單類別有了was-validated這項類別，這時selector的偽類就會開始進行合適的渲染
 
-5. 將合法訊息以及不合法訊息設置給對應輸入元件，並透過樣式將這些訊息設定為一開始不顯示，直到做提交才出現。在這裡會是class為valid-feedback的元件代表合法訊息，而invalid-feedback代表不合法訊息，將這些元件的display設置為none讓他們在一開始不出現。
+6. 除了selector本身對應的輸入元件要顯示驗證樣式以外，還得顯示該元件的獨立驗證訊息來當作該元件的額外驗證資訊，比如告知使用者目前輸入內容是合法的訊息、告知使用者目前輸入內容是非法的訊息，首先會先建立以下兩個區塊，前者區塊代表著合法訊息，後者區塊代表著非法訊息，兩個區塊類別分別為valid-feedback和invalid-feedback，這兩個樣式會在驗證前保持不顯示，直到表單出現提交事件才開始顯示，詳細內容可看第8點。
+
 ```
 // Inside html file
-<form novalidte>
-  <label for="name">姓名</label>
-  <input type="text" class="form-control" name="name" id="name" placeholder="你輸入你的姓名" required>
-  <div class="valid-feedback">
+ <div class="valid-feedback">
   Good!
-  </div>
-  <div class="invalid-feedback">
+ </div>
+ <div class="invalid-feedback">
   This field is required!
-  </div>
-</form>
-
+</div>
 
 // Inside css file
 .invalid-feedback, .valid-feedback {
@@ -157,48 +183,31 @@ submitButton.addEventListener('click', function onSubmitButtonClicked(event) {
   color: green
 }
 ```
+7. 最後再將這些訊息放在他們針對的輸入元件附近來方便管理
+```
+// Inside html file
+<form novalidte>
+  <label for="name">姓名</label>
+  <input type="text" class="form-control" name="name" id="name" placeholder="你輸入你的姓名" required>
+  <div class="valid-feedback">
+  Good!
+  </div>
+  <div class="invalid-feedback">
+  This field is required!
+  </div>
+</form>
+```
 
-6. 承第五點，為了達到直到做提交才出現合法訊息或者不合法訊息，必須做類似第四點要做的事情，也就是增加一些類別當作條件，在這裡會判斷現在表單類別是否為was-validated這選擇器名以及鄰近是否有control元件(輸入元件)當作條件，而其中initial會以display的預設值，也就是inline，若前面的條件都符合的話，就依照initial來顯示display
+8. 承第6-7點，為了達到直到做提交才出現合法訊息或者不合法訊息，必須做類似第5點要做的事情，也就是增加一些類別當作條件，在這裡會判斷現在表單類別是否為was-validated這選擇器名以及鄰近是否有control元件(輸入元件)當作條件，而其中initial會以display的預設值，也就是inline，若前面的條件都符合的話，就依照initial來顯示display
 
 ```
 form.was-validated .form-control:invalid ~ .invalid-feedback,
 form.was-validated .form-control:valid ~ .valid-feedback {
   display: initial;   /* 顯示 */
 }
-
 ```
 
 
-## sibling combinator
-1. 是 class 用來與其他 class 進行連接/組合的符號(operator)，在這裡會挑同階層的元素。
-2. 形式會是如下，會挑與A對應元素X同階層且在對應元素X之後的對應元素Y，而對應元素Y正是B類別所對應的元素
-```
-A ~ B {
-    property1: value1,
-        .
-        .
-        .
-}
-```
-
-3. 舉例：會直接挑選一個在p元素同階層且在p元素之後的span，也就是第四段的And here is a span.
-
-```
-// Inside css file
-p ~ span {
-  color: red;
-}
-
-// Inside html file
-<span>This is not red.</span>
-<p>Here is a paragraph.</p>
-<code>Here is some code.</code>
-<span>And here is a span.</span>
-```
-
-結果會是
-
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1635328112/blog/cssTag/siblingCSSExample_kbcwlq.png)
 
 ## Bootstrap 表單
 1. Bootstrap會透過form-group這個類別來包裝一個輸入欄位所需要的內容，比如輸入介面元件(control元件)、提示字元(輸入介面元件上的標籤和說明文字)、驗證訊息元件，其形式會是如下，首先會先建立類別form-group的div元件，並在裡頭建立用輸入介面元件(input元件)、提示字元元件(label元件)、驗證訊息元件(後面兩個div元件)。
