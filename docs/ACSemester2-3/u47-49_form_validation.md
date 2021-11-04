@@ -198,7 +198,7 @@ submitButton.addEventListener('click', function onSubmitButtonClicked(event) {
 </form>
 ```
 
-8. 承第6-7點，為了達到直到做提交才出現合法訊息或者不合法訊息，必須做類似第5點要做的事情，也就是增加一些類別當作條件，在這裡會判斷現在表單類別是否為was-validated這選擇器名以及鄰近是否有control元件(輸入元件)當作條件，而其中initial會以display的預設值，也就是inline，若前面的條件都符合的話，就依照initial來顯示display
+8. 承第6-7點，為了達到直到做提交才出現合法訊息或者不合法訊息，必須做類似第5點要做的事情，也就是增加一些類別當作條件，在這裡會判斷現在表單類別是否為was-validated這選擇器名以及鄰近是否有control元件(輸入元件)當作條件，而其中initial會以display的預設值，也就是inline，若前面的條件都符合的話，就依照initial來顯示display。另外為了將這些訊息綁定在特定一個元件，而使用.form-control:invalid、.form-control:valid、~ 來綁定，換言之，這些訊息只會顯示比較鄰近之輸入元件的相關驗證訊息。
 
 ```
 form.was-validated .form-control:invalid ~ .invalid-feedback,
@@ -258,7 +258,7 @@ form.was-validated .form-control:valid ~ .valid-feedback {
 1. Bootstrap提供一些helper class來建立表單驗證所需的元件，比如針對使用者輸入來顯示內容對錯的訊息、圖標、樣式。
 2. Bootstrap 主要用來驗證的 helper class：
   - was-validated：會套用在表單上，通常用來告訴系統該表單已經在前端驗證過了，必須先讓表單出現這個類別才能讓下面的helper class在驗證時顯示正確的樣式。
-  - form-group：主要會套用在表單中一個負責給予輸入的control元件以及該control相關的元件(如使用提示元件、驗證訊息元件)，來讓被包含的元件根據control元件所獲取的內容驗證結果來給予正確的樣式，當主表單的類別為was-validated時，form-group對應元件就會根據使用者輸入內容來呈現樣式。
+  - form-control：主要會套用在表單中一個負責給予輸入的control元件，來讓control元件根據輸入內容是否合法來給予正確的樣式，當主表單的類別為was-validated時，form-control對應元件就會根據使用者輸入內容來呈現樣式。
   ```
   form.was-validated .form-control:invalid {
     border-color: red;
