@@ -7,13 +7,23 @@ sidebar_position: 4
 
 ## 背景
 
-過去想要將多個獨立且語言形式皆不一樣的程式碼模組組合成一個大型系統，往往都需要改寫這些模組(Module)的原始程式碼，並使他們合併成一個大型系統或者一個新的模組(New Module)，而這樣的改寫和合併總會花上大量時間才能完成。
+過去為了要將多個獨立且語言形式皆不一樣的程式碼模組組合成擁有多個特定功能的單獨大型系統，往往都需要改寫這些模組(Module)的原始程式碼，並使他們合併成一個大型系統或者一個新的模組(New Module)，而這樣的改寫和合併總會花上大量時間才能完成。
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636099819/blog/middleware/merge2NewModule_us6gfy.png)
 
 
 ## Middleware 的出現
 
-因此就有人想著，在不改寫這些程式碼模組或者保留其模組的功用的情況下，來針對每個模組的輸入輸出規格和所使用的資源是什麼來額外建立一個程式碼模組在不同模組之間擔任介面，透過這個介面讓不同程式碼模組能夠相互合作組合成新的功能或者形成合併後會有的功能，將這些模組和多個介面組合在一起就能構成一個新的模組或者系統，而這個系統通常本身會是Middleware，而Middleware本身存在這多個功能給予使用者使用，而這些功能會對應著一個模組集合以及介面集合，當使用者去使用著透過Middleware去使用某個功能時，該Middleware就會去呼叫對應的模組們來透過介面進行互動來給予對應的功能，並將功能對應結果回應給Middleware，再由Middleware回應結果給使用者。
+因此就有人想著，在不改寫這些程式碼模組或者保留其模組的功用的情況下，來額外開發多個程式模組來擔任其他模組間的仲介，而這些仲介正是Middleware，通常仲介們會在兩個模組之間，並且為了讓其中一個模組X能夠更好使用另一個模組Y而提供偏易於模組X使用的函式，而這些函式會封裝模組Y的功能，這時模組X只需要呼叫仲介所提供的函式來呼叫，就能獲得模組X所能提供的對應功能。
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636113062/blog/middleware/simpleMiddleware_saw0df.png)
+
+
+同樣地，甚至可以將仲介擺放於使用者和模組們之間，為了讓使用者(User)能夠更好地使用模組們所組合出來的功能而提供偏易於使用者的函式或者使用方法，而這些函式和使用方法會封裝這些模組所要能夠組合出來的功能，如下圖的Function1至Function N"，每個Function會對應一個模組集合和仲介集合，這些集合當中會有幾個模組來從分配到仲介集合中挑出仲介來相互合作，進而提供對應的Function所要有的功能，所以當使用者對這個仲介呼叫或者使用其中一個Function時，便會調用對應的模組集合和仲介集合，由他們組合出對應的Function功能並回傳給仲介，然後再由仲介回傳功能或者結果給使用者
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636114216/blog/middleware/user_set_middleware_jv0iut.png)
+
+
+來針對每個模組的輸入輸出規格和所使用的資源是什麼來額外建立一個程式碼模組在不同模組之間擔任介面，透過這個介面讓不同程式碼模組能夠相互合作組合成新的功能或者形成合併後會有的功能，將這些模組和多個介面組合在一起就能構成一個新的模組或者系統，而這個系統通常本身會是Middleware，而Middleware本身存在這多個功能給予使用者使用，而這些功能會對應著一個模組集合以及介面集合，當使用者去使用著透過Middleware去使用某個功能時，該Middleware就會去呼叫對應的模組們來透過介面進行互動來給予對應的功能，並將功能對應結果回應給Middleware，再由Middleware回應結果給使用者。
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636100923/blog/middleware/middleware2NewModule_n8h1jk.png)
 
 
