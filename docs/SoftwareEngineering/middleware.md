@@ -65,5 +65,8 @@ function objectBFunction(parameter2) {
 
 2. Middleware 也有中(仲)介層、介面的稱呼，而這個稱呼相對於被封裝的對象，比如對象A是被Middleware封裝的對象，那麼就可以稱對象A的介面、仲介層就是Middleware，想要使用對象A的功能，只需要使用介面、仲介曾即可間接調用。
 
+3. 另外也有將使用者、仲介軟體、對應程式模組所要提供的功能轉換為請求(Request)、仲介軟體(Middleware)、回應(Response)，其中請求由於使用者請求仲介軟體來獲取對應功能，而功能又是從對應程式模組所回傳的功能，因此乾脆將使用者請求對應功能簡化為請求，而回應的功能簡化為回應。
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636120588/blog/middleware/req_res_middleware_ml8hxi.png)
+
 ## 參考資料
 1. [What is middleware exactly?](https://stackoverflow.com/questions/2904854/what-is-middleware-exactly)
