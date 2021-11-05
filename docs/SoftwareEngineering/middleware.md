@@ -18,81 +18,52 @@ sidebar_position: 4
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636113062/blog/middleware/simpleMiddleware_saw0df.png)
 
 
-同樣地，甚至可以將仲介擺放於使用者和模組們之間，為了讓使用者(User)能夠更好地使用模組們所組合出來的功能而提供偏易於使用者的函式或者使用方法，而這些函式和使用方法會封裝這些模組所要能夠組合出來的功能，如下圖的Function1至Function N"，每個Function會對應一個模組集合和仲介集合，這些集合當中會有幾個模組來從分配到仲介集合中挑出仲介來相互合作，進而提供對應的Function所要有的功能，所以當使用者對這個仲介呼叫或者使用其中一個Function時，便會調用對應的模組集合和仲介集合，由他們組合出對應的Function功能並回傳給仲介，然後再由仲介回傳功能或者結果給使用者
+同樣地，甚至可以將仲介擺放於使用者和模組們之間，為了讓使用者(User)能夠更好地使用模組們所組合出來的功能而提供偏易於使用者的函式或者使用方法，而這些函式和使用方法會封裝這些模組所要能夠組合出來的功能，如下圖的Function1至Function N"，每個Function會對應一個模組集合和仲介集合，這些集合當中會有幾個模組來從分配到仲介集合中挑出仲介來相互合作，進而提供對應的Function所要有的功能，所以當使用者對這個仲介呼叫或者使用其中一個Function時，便會調用對應的模組集合和仲介集合，由他們組合出對應的Function功能並回傳給仲介，然後再由仲介回傳功能或者結果給使用者，透過仲介軟體的幫助，可以不必改寫每個獨立的程式模組就獲得合併後的系統會有的功能。
 
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636114216/blog/middleware/user_set_middleware_jv0iut.png)
-
-
-來針對每個模組的輸入輸出規格和所使用的資源是什麼來額外建立一個程式碼模組在不同模組之間擔任介面，透過這個介面讓不同程式碼模組能夠相互合作組合成新的功能或者形成合併後會有的功能，將這些模組和多個介面組合在一起就能構成一個新的模組或者系統，而這個系統通常本身會是Middleware，而Middleware本身存在這多個功能給予使用者使用，而這些功能會對應著一個模組集合以及介面集合，當使用者去使用著透過Middleware去使用某個功能時，該Middleware就會去呼叫對應的模組們來透過介面進行互動來給予對應的功能，並將功能對應結果回應給Middleware，再由Middleware回應結果給使用者。
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636100923/blog/middleware/middleware2NewModule_n8h1jk.png)
-
-
-
-
-
-這些模負責模組溝通的模組組的原始程式碼，就
-
-
-就針對每個模組的輸入輸出規格和所使用的資源是什麼來額外建立一個程式碼模組在不同模組之間擔任介面或者，
-
-
-
-
-每一個套件都能透過介面去調用自己難以調用的另一個套件功能來使用，
-
-
-
-
-
-
-接著利用這個構成介面的程式碼套件概念，來建立一個大型系統，而這個大型系統本身也是一個介面，而使用者只需要透過這個介面執行想要的功能，就會去呼叫多個未修改的對應套件，且這些對應套件又會透過額外的介面進行溝通。
-
-
-
-
-
-在這裏介面主要會實現在兩個模組之間(如下圖)，介面會封裝其中一個模組(如下圖模組2)，
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636100309/blog/middleware/middleware_jzkfy1.png)
-
-而封裝形式會以介面自身專屬概念、語法、功能來將模組2封裝成能讓模組1直接使用的形式，通常會是對應模組1的函式或者API，形式會是如同以下，但實際上會是比較複雜的封裝形式，而
-```
-function applicationLayerFunction(parameter) {
-  function systemLayerFunction(parameter) {
-
-  } 
-}
-```
-
-
-
-
 
 
 
 
 ## Middleware 簡介
-具體來說，Middleware 是一種
+從前面兩小節可以得知以下小節：
+1. Middleware 是額外建立的程式模組
+2. Middleware 本身會為了易於對象A方便使用而封裝對象B的功能的軟體或者程式碼模組
+3. 當對象A想使用對象B的功能，只需透過Middleware即可間接調用對象B的對應功能
+4. 對象A並不限於人類和電腦程式，對象B肯定限於電腦程式，只是這兩者若要直接進行互動，肯定要花更多時間去讓彼此改變以此更能辨識彼此以及相互使用。
 
-來使用，通常會在兩個套件之間建立這樣子的介面，而其中介面會封裝其中一個套件(下圖的套件2)的功能，而介面使用會偏易於另一個套件(下圖的套件1)，使另一個套件(下圖的套件1)方便從介面去使用套件(下圖的套件2)的功能。
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636100309/blog/middleware/middleware_jzkfy1.png)
+同時在這裡會額外封裝所要做到的事情
 
-接著透過
+### 封裝所要做到的事情
+Middleware 的建立會基於封裝來呼叫對應功能，而封裝在這裡是指以對象A能夠辨識的概念、語法、功能來將對象B的概念、語法、功能包起來用，包裝形式會如同下列函式來包裝並放在Middleware給予對象A來呼叫，前面的objectAFunction是只有對象A能夠辨識的語法，而parameter1就是對象A傳過來的參數，而objectBFunction則是只有對象B能夠辨識的語法或者說對象B原本就提供的函式，只是對象B的函式對於parameter的形式可能會是對象A無法執行提供的形式，這時會透過Middleware本身的功能將對象A傳過來的parameter1轉變為對象所能辨識的形式。
 
-多個產品並讓他們合併成一個大型系統
-保持產品的原樣，針對每個產品的輸入輸出標準在產品之間建立一個另一個軟體產品
-
-1. 中間層，通常是指層級關係中的兩個層級之間的層級，在電腦科學裡頭，是指系統軟體和應用軟體之間的層級或者軟體。
-2. 這個層級會以自身專屬概念、語法、功能來將系統軟體層級封裝成能讓應用軟體直接使用的形式，通常會是對應系統軟體功能的函式或者API，形式會是如同以下，但實際上會是比較複雜的封裝形式，
 ```
-function applicationLayerFunction(parameter) {
-  function systemLayerFunction(parameter) {
-
-  } 
+function objectAFunction(parameter1) {
+  parameter2 = convert(parameter1)
+  call objectBFunction(parameter2) 
 }
 ```
 
-而應用軟體只需要使用中間層所提供的形式就能讓應用軟體使用對應形式的系統軟體功能，也就是說中間層是一個讓應用軟體層使用系統軟體功能的介面。
+透過這樣子的包裝，對象A只需要呼叫objectAFunction(parameter1)就能讓Middleware去呼叫對象B去執行objectBFunction函式，然後再由那個函式回傳結果給Middleware，但objectBFunction回傳的something_A不一定會是對象A能夠辨識的形式，因此又得像參數那樣進行轉換，來讓形式轉換成對象A能夠辨識的。
 
+```
+function objectBFunction(parameter2) {
+  // do something
+  return something_A
+}
+
+```
+
+然而實際封裝情況會比以上說明的還要更複雜，在這裡只是大概論述一些重點，從這些重點當中，Middleware 要能完整實現封裝得必須做以下事情：
+1. Middleware 必須很了解對象A和B這兩者的輸入輸出格式和所要的資源種類為何
+2. Middleware 必須要將對象A傳過來的參數轉變為對象B能夠辨識的形式
+3. Middleware 必須要將對象B回傳過來的的結果轉變為對象A能夠辨識的形式
+
+
+## 名詞解釋
+1. Middleware： middle代表著中間的，ware是從 software 轉變過來的，組合在一起就是中間的軟體或者承擔仲介的軟體，而中間和仲介則是對於兩個對象之間的，也就是分別為兩個對象之間的軟體或者兩個對象之間的仲介，而這個仲介會提供易於某一個對象使用的方法，而這些方法會封裝另一個對象所能做的事情。
+
+2. Middleware 也有中(仲)介層、介面的稱呼，而這個稱呼相對於被封裝的對象，比如對象A是被Middleware封裝的對象，那麼就可以稱對象A的介面、仲介層就是Middleware，想要使用對象A的功能，只需要使用介面、仲介曾即可間接調用。
 
 ## 參考資料
 1. [What is middleware exactly?](https://stackoverflow.com/questions/2904854/what-is-middleware-exactly)
