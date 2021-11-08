@@ -25,7 +25,7 @@ sidebar_position: 4
 
 ## 資料流
 1. 英文為data flow，別名為data binding
-2. data flow 和 data binding 在基於將資料存取和管理獨立於UI的程式碼模組(被稱之為Data Model)之下， 是指著(負責管理資料存取，所有模組要存取都要經由Data Model才能存取) Data Model 和 UI 保持著一致性的行為，所有跟Data Model的UI會按照資料來變動，而所有UI會按照資料來變動。
+2. data flow 和 data binding 在基於將資料存取和管理獨立於UI的程式碼模組(被稱之為Data Model)之下， 是指著(負責管理資料存取，所有模組要存取都要經由Data Model才能存取) Data Model 和 UI 保持著一致性的行為，所有跟Data Model的UI會按照資料來同步變動 或者 所有UI會按照資料來同步變動。
 3. Data Flow/Data binding 主要具有兩種方向：
  -  從Data Model出發，每一次Data Model只要一更新，就隨後更新UI，也就是Data Model -> UI
  -  從UI出發，每一次UI只要一更新，就隨後更新Data Model，也就是UI -> Data Model
@@ -40,5 +40,110 @@ sidebar_position: 4
 
 
 
+## 由資料模型來同步畫面
+1. 隸屬於one-way data flow，而資料模組是指負責管理/存取資料的程式模組
+2. 這種模式下的Data flow會從Data Model -> template/template logic -> 畫面 來進行
+3. 其中template是指模板網頁內容，而template logic定義將資料模組下的動態資料與template合併時所需要處理的判斷或者邏輯/顯示內容時需要處理的判斷或程式邏輯，如if、for
 
 
+
+## Model
+1. 思考重點：
+  - 原始資料長什麼樣子？
+  - 最後要放進畫面 template 的資料有哪些、是什麼資料型別？
+  - 資料與另一種資料的對應關係是什麼(如商品資料以及購物車資料)
+  - 因此，資料要如何整理和轉換，才能更容易的存取並放進template進行渲染
+2. 多個資料表盡量去重複，並抓一個可以辨別且獨立的屬性值當作key值來分割出原始資料和延伸性的資料
+
+## 循序存取
+1. 英文為Sequential access。
+2. 指的是要存取某項位置X下的內容時，必須要先經過從位置X前的連續位置，比如說位置有5個位置，分別為位置0、位置1、位置2、位置3、位置4，要存取位置3的內容，必須先經過位置0~2才能夠存取位置3的內容
+
+
+## 隨機存取
+1. 英文為Random Access
+2. 指的是存取位置下的內容時，
+
+
+## 將陣列轉為物件
+1. 形式為如下：其中轉換後的物件為productMap
+```
+// 將 products 陣列 轉換成 物件格式的資料，以方便存取
+productMap = {}
+products.forEach(product => {
+  productMap[product.id] = product
+})
+```
+
+2. productMap物件會擁有數個product.id的屬性，比如product-1、product-2、product-3、product-4
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636390157/blog/week3workshop/objectResult_h2k6ob.png)
+
+3. 好處為：
+  - 可以利用物件對屬性值的索引來實現隨機存取，比如要存取第四個產品的資訊，只需要告訴系統要存取的產品編號是什麼就能直接存取，透過這樣子可以盡可能減少循序存取的效能浪費
+  ```
+  // first way
+  productMap['product-4']
+  
+  // second way
+  productId = 'product-4'
+  productMap[productId]
+  ```
+  
+
+## View 畫面渲染
+1. 找出不一樣的地方和一樣的地方進行歸納，一樣的地方當作template來處理，不一樣的地方試著用template logic來處理
+
+## innerHTML清空原因
+1. 形式為如下，productListElement.innerHTML會在處理前會被清空
+```
+productListElement.innerHTML = ''
+  
+  products.forEach(product => {
+    const isSoldOut = tempProductRemainingMap[product.id] === 0;
+    productListElement.innerHTML += `
+      <div class="col-3">
+         <div class="card disabled">
+            <img src=${product.imgUrl} class="card-img-top">
+            <div class="card-body">
+              <h5 class="card-title">${product.name} </h5>
+              <p class="card-text">
+                ${product.price} 元
+              </p>
+              <p class="card-text">
+                可訂購數量 ${tempProductRemainingMap[product.id]} 份
+              </p>
+              <button
+                id=${product.id}
+                class="btn btn-primary add-to-cart-button ${isSoldOut ? 'disabled' : ''}"
+               >
+                ${isSoldOut ? '已售完' : '加入購物車'}
+              </button>
+            </div>
+          </div>
+        </div>
+    `
+  })
+```
+
+2. 這樣做的原因是為了怕過去的渲染內容會累加至這或者避免過去重複商品也同時和目前商品資料出現在這
+
+
+
+## Controller 事件處理
+1. 根據重畫方式，有兩種策略：
+  - 僅修改的地方需要重畫，不變的地方就不重複重畫
+  - 不分修不修改，一律重畫全部
+2. 重畫方式得必須根據專案下所採用的data flow來決定，若採用於從Data Model來更新UI，那麼重畫方式勢必會先更新Data Model，然後再重畫
+3. react 是採用一律重畫的策略，而vue則是採用於僅修改的地方需要重畫，不變的地方就不重複重畫，vue會監聽資料來更新，但兩者都偏易於實現單向資料流。
+
+## 剩餘可訂購數功能在資料上如何定義
+1. 資料定義一個可由product-id當索引值的物件，其物件存放剩餘庫存量，其中product-id會當這物件
+```
+    tempProductRemainingMap = {}
+
+    products.forEach(product => {
+      productMap[product.id] = product
+      tempProductRemainingMap[product.id] = product.inventory
+    })
+    
+```
