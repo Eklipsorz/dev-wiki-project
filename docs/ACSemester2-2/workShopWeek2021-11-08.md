@@ -6,8 +6,12 @@ sidebar_position: 4
 
 
 ## HTML vs. DOM 
-1. HTML：用文字和標籤描述的網頁草圖
-2. DOM： 將標籤、文字轉換成物件節點並依據草稿來構成的實體模型，而模型會是以樹狀結構
+1. HTML：用文字和標籤描述的網頁草圖，標籤會使文字在呈現上具有特殊意義或擁有特殊功能
+2. DOM： 將標籤、文字轉換成物件節點並依據草圖來構成的實體模型，而模型會是以樹狀結構
+3. 當瀏覽器成功索取HTML時，會先將HTML轉換為DOM來方便渲染網頁的畫面，爾後所有對於網頁上的變更、存取、渲染皆是根據DOM進行，而非根據HTML
+
+## HTML 和 DOM 兩者間關係
+草稿和依據草稿來畫出的實體模型
 
 
 ## template 
@@ -25,14 +29,16 @@ sidebar_position: 4
 
 ## 資料流
 1. 英文為data flow，別名為data binding
-2. data flow 和 data binding 在基於將資料存取和管理獨立於UI的程式碼模組(被稱之為Data Model)之下， 是指著(負責管理資料存取，所有模組要存取都要經由Data Model才能存取) Data Model 和 UI 保持著一致性的行為，所有跟Data Model的UI會按照資料來同步變動 或者 所有UI會按照資料來同步變動。
-3. Data Flow/Data binding 主要具有兩種方向：
- -  從Data Model出發，每一次Data Model只要一更新，就隨後更新UI，也就是Data Model -> UI
- -  從UI出發，每一次UI只要一更新，就隨後更新Data Model，也就是UI -> Data Model
- 
-4. 若 框架X 或 模組X 能輕易做出其中任一方向，代表該 框架X 或 模組X 是容易讓開發者做到one-way data flow / one-way data binding這件事情，而若框架X 或 模組X 能輕易做出兩種方向，代表該 框架X 或 模組X 是容易讓開發者做到two-way data flow / two-way data binding。
+2. 在資料模組獨立於UI呈現的情況下，資料管理和UI呈現會是不同的程式碼模組，但問題是UI本身會依賴著資料管理模組的資料來做變動，而資料也有可能依賴UI本身變動而改變自己的資料，在這裏資料會有不同的變更/對應流向，一種是資料模組一變動就跟著渲染跟資料相關的UI，另一種則是資料相關的UI只要變動而渲染就跟著變動資料模組的資料，而資料在資料模組和UI呈現中以其中一個方向來做變更和對應的行為就叫做Data Flow/Data Flow
 
-5. 通常Data Flow/Data Binding本身是指著保持一致性的行為，而不是指著具備某種功能或者性質，若要稱呼某框架或者某模組是一個one-way data bind模組/框架是不太嚴謹的句型，比較正確的描述是該框架或者某模組是很容易做到one-way data bind這行為
+變更/對應方向稱之為Data Flow/Data Binding
+3. 總結一下，在資料模組獨立於UI呈現的情況下，Data Flow/Data Binding是指著資料本身在資料模組和UI中以特定方向來做變更和對應的行為，而特定方向又分為兩種方向：
+ - 從資料模組出發，每一次資料模組的資料只要一更新，就隨後更新UI，也就是資料模組 -> UI
+ - 從UI出發，每一次UI只要一更新，就隨後更新資料模組，也就是UI -> 資料模組
+
+4. 若 框架X 或 模組X 能輕易做出其中任一流向，代表該 框架X 或 模組X 是容易讓開發者做到one-way data flow / one-way data binding這件事情，而若框架X 或 模組X 能輕易做出兩種方向，代表該 框架X 或 模組X 是容易讓開發者做到two-way data flow / two-way data binding。
+
+5. 通常Data Flow/Data Binding本身是行為，而不是指著具備某種功能或者性質，若要稱呼某框架或者某模組是一個one-way data bind模組/框架是不太嚴謹的句型，比較正確的描述是該框架或者某模組是很容易做到one-way data bind這行為
 
 ### 參考資料
 1. [簡單聊一下 one-way data flow、two-way data binding 與前端框架](https://devs.tw/post/40)
