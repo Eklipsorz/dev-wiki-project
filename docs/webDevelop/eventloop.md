@@ -6,13 +6,35 @@ sidebar_position: 1
 
 
 
-## Event loop 簡介
+## Event loop 背景
+電腦上會有許多種類的工作或者任務會如同生產線一般上的產品那樣，由生產線的滾輪帶動這些工作至負責執行處理的工作人員(實體CPU)，實際上生產線會以Queue來實現，每一個Queue會對應一個實體CPU來處理，而分配任務至Queue則是由Scheduler來處理，這些實體CPU碰到這些工作或者任務時，會執行並做些處理，然後再換下一個工作或者任務來處理，直到所有任務被完成，然而當有一個工作本身是依賴於I/O設備且在生產線正被實體CPU所執行處理時，由於這個工作必須等到I/O設備回應它，它才能讓實體CPU繼續處理，在回應之前，它後頭的任務(如下圖中的Task 1 至 Task N)全部會被它一個任務(I/O Task)給延宕，且在CPU等待該任務的期間是空閒的。
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636558109/blog/event/eventloop/CPUQueue_heh0gr.png)
+
+為了進一步利用CPU空閒時間來處理後續的Task 1 至 Task N，作業系統會將這個I/O 任務另外放進另一個Queue
+
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636557741/blog/event/eventloop/beforeEnqueue_kzf6yl.png)
+
+而當有一個工作本身是依賴於I/O設備並且在生產線中正被實體CPU所執行處理，而這個工作必須等到I/O設備回應它，它才能讓實體
+
+
+被實體CPU所執行，而當一個工作本身是依賴於I/O設備並且給予實體CPU執行時，有可能一大半的執行時間都在等待I/O設備回應該工作，而排
+
+
+Event loop 本身是個分發事件何時執行的設計概念或者程式設計
 說明event loop 是電腦科學名詞，它為了實現輪詢而會建立一個空間來存放....
 
 它具有多種event loop和空間來進行
 
+
+## Event Loop 誕生
+
+
+
 ## Event loop 運作程序
 說明event loop如何運作
+
+## 實現 Event loop 的重點 
 
 ## 在JavaScript中的它
 為了進一步了解它，會先從JavaScript如何執行、如何面對任務、在Node.js又是如何
