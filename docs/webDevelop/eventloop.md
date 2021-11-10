@@ -9,11 +9,18 @@ sidebar_position: 1
 ## Event loop 背景
 電腦上會有許多種類的工作或者任務會如同生產線一般上的產品那樣，由生產線的滾輪帶動這些工作至負責執行處理的工作人員(實體CPU)，實際上生產線會以Queue來實現，每一個Queue會對應一個實體CPU來處理，而分配任務至Queue則是由Scheduler來處理，這些實體CPU碰到這些工作或者任務時，會執行並做些處理，然後再換下一個工作或者任務來處理，直到所有任務被完成，然而當有一個工作本身是依賴於I/O設備且在生產線正被實體CPU所執行處理時，由於這個工作必須等到I/O設備回應它，它才能讓實體CPU繼續處理，在回應之前，它後頭的任務(如下圖中的Task 1 至 Task N)全部會被它一個任務(I/O Task)給延宕，且在CPU等待該任務的期間是空閒的。
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636558109/blog/event/eventloop/CPUQueue_heh0gr.png)
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636557741/blog/event/eventloop/afterEnqueue_qc5xr0.png)
 
-為了進一步利用CPU空閒時間來處理後續的Task 1 至 Task N，作業系統會將這個I/O 任務另外放進另一個Queue
+為了進一步利用CPU空閒時間來處理後續的Task 1 至 Task N，作業系統會將I/O 種類的任務另外放進另一個Queue來處理，等到CPU處理完一段時間再回過頭依序檢查看看每一個I/O任務上是否已經等到對應I/O設備的回應，若等到回應時，會將任務重新排進對應CPU的Queue或者當場執行，通常來會為了增加效能而重新讓Scheduler根據任務性質來排進哪一個CPU的Queue。
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636561209/blog/event/eventloop/reEnqueue_gdhp2t.png)
+
+## 事件
+然而這種可以延宕實體CPU的並不侷限於上述的I/O種類任務，還有由I/O本身被某些行為給觸發出來的信號，然後再由信號來執行的特定任務X，在這裏的信號會當作是事件(event)，而為了執行特定工作，勢必會產生出必須要監聽某種信號/事件的任務，以及事件被監聽到的所要做的任務(也就是上述提到的特定任務X)，監聽事件任務本身和等待I/O回應的任務一樣，必須要一直等待著事件發生才有所進展，而特定任務X本身就只是隨機且不可預期什麼時候會執行，但會因此造成一些執行結果上的同步問題。
 
 
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636557741/blog/event/eventloop/beforeEnqueue_kzf6yl.png)
+
+
 
 而當有一個工作本身是依賴於I/O設備並且在生產線中正被實體CPU所執行處理，而這個工作必須等到I/O設備回應它，它才能讓實體
 
