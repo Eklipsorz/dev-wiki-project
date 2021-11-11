@@ -38,15 +38,12 @@ while (lock) {}
   // access resource 
   lock = false
 ```
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636645008/blog/event/eventloop/lockExample_hpjnkk.png)
 
-而當任務X要去執行的時候會因為lock為true而一直跑無限迴圈，直到任務1存取完資源時，就便將lock設定為false，使任務X能夠從無限迴圈跳開去存取資源。
-
-// 上圖
-
-但這只是建立在其他任務會先於任務X存取內容之下，沒辦法無法完全保證任務X不會去修改內容，
+而當任務X要去執行的時候會因為lock為true而一直跑無限迴圈，直到任務1存取完資源時，就便將lock設定為false，使任務X能夠從無限迴圈跳開去存取資源，但這只是建立在其他任務會先於任務X存取內容之下，沒辦法無法完全保證任務X不會去修改內容，需要一個手段能夠控制任務X
 ### 事件系統
 
-事件本身和事件的特定任務X之間會構成一種事件系統，，主要大致上分為兩種，但在這文章中會探討於第二點。
+事件本身和事件的特定任務X之間的互動會構成一種事件系統，主要大致上分為兩種，但在這文章中只探討於第二點。
 1. 由硬體和作業系統所內建的事件系統：當事件發生時，會以 "中斷(interrupt)" 目前系統的執行並讓系統保存目前執行狀態X轉由處理事件，隨後處理完就藉由先前執行狀態X還原當時的狀態去繼續執行著當時的任務，而這樣子的好處是避免系統一直產生詢問事件是否發生的任務在Queue。
 
 // 上圖
@@ -64,25 +61,35 @@ while (lock) {}
 說明event loop如何運作
 
 ## 實現 Event loop 的重點 
+queue
+單執行緒
+解決的問題
 
 ## 在JavaScript中的它
 為了進一步了解它，會先從JavaScript如何執行、如何面對任務、在Node.js又是如何
-
+1. 簡介 JavaScript 簡介、JavaScript 工作模式 皆為在瀏覽器處理。
 
 ## JavaScript 簡介
 主要說明JavaScript 是單執行緒和原因、瀏覽器執行它
-
+1. JavaScript的本質 - 單執行緒
+2. 為啥是單執行緒
+3. 它能夠產生多執行緒嗎？ 
 
 ## JavaScript 工作模式
-JavaScript 單執行
+JavaScript 單執行緒
+介紹任務有哪種？同步任務/異步任務
+簡介如何處理
 
 ### JavaScript 面對同步任務
+介紹JavaScript如何處理
 
 ### 那 JavaScript 如何面對異步任務
-event loop 
+介紹JavaScript如何處理
+1. 如何在瀏覽器運作Event loop的形式
+
 
 ## Event Loop 在 Node.js 上
-
+如何在Node.js實現Event Loop
 
 ## 補充資料
 
