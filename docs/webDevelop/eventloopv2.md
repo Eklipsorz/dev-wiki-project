@@ -38,15 +38,21 @@ JavaScript的出生是因應想要讓使用者對網頁內容進行某些互動�
 ## JavaScript 如何實現同步執行
 首先電腦本身只能看懂由0和1所構成的機械碼，它不會明白JavaScript的語法在講些什麼，而當時設計者為了讓開發者能夠快速開發來強占瀏覽器的市場而捨棄較嚴謹的編譯語言，改由直譯語言，其中編譯語言是一種事先將程式的語法(偏易於人類看懂的語法)轉譯成機械能看懂的形式，並直接讓執行環境去執行的，但由於可以事先轉譯，基本會要求開發者寫出的程式碼語法要先滿足一定程度的規則才能成功轉譯成機械能看懂的形式，比如要求開發者告知每個資料和變數的資料型別是什麼。而直譯語言則是不用事先編譯成機械碼，而是透過一個程式X來一行一行邊讀取程式碼邊轉譯成機械碼來執行，而這個程式X會是解釋器，通常執行成本會比編譯語言來得高，但透過不煩瑣的規則來讓開發者能夠快速開發。
 
-實際上來說，瀏覽器會提供JavaScript解釋器以及讓它在瀏覽器建立一個Main Thread來滿足JavaScript的直譯和單一執行緒這兩個先決條件，
+實際上來說，瀏覽器會提供JavaScript解釋器(常以一個專門解析的JavaScript引擎來代表)以及讓它在瀏覽器建立一個Main Thread來滿足JavaScript的直譯和單一執行緒這兩個先決條件，當瀏覽器讀取JavaScript程式碼的時候，瀏覽器會先丟給JavaScript引擎去解析當前程式碼並轉譯成機械碼至Main Thread來執行，而執行方式就是將機械碼以另一個thread形式去丟給Scheduler給實體CPU執行。
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636724367/blog/event/eventloop/simpleBrowserSystem_kt2jov.png)
 
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636723597/blog/event/eventloop/BrowserSystem_ia4wp2.png)
+在這裏由於瀏覽器本身就只有Main Thread這一個能夠執行JavaScript，而JavaScript本身是依照一行一行來讀取並轉譯執行，也就是說同一個時間內只會有一個任務(夾帶著轉譯後的JavaScript)能夠被Main Thread執行，而後一個任務(夾帶著轉譯後的另一個JavaScript)必須等它被Main Thread完成才能被執行，從這樣子來看，就是個典型的同步執行，只是Main Thread儼然對他們而言就是個實體CPU
 
-
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636723597/blog/event/eventloop/SimpleBrowserSystem_spngtv.png)
-而執行緒對於程式碼而言，就是能夠被CPU的執行形式，所以執行緒也就間接被程式碼當作是另一種實體CPU，只是由於只有一個執行緒，所以本身就像一個實體CPU下的同步執行，
 
 ### Call Stack
+雖說JavaScript本身就是只能在同一個時間內只能夠執行一個任務，但當遇到函式呼叫時，必須先將目前呼叫的函式X紀錄下來並放進一個呼叫堆疊(Call Stack)以避免在該函式X中呼叫另一個函式Y後，並讓函式Y執行完而不
+
+// 問題描述
+
+//上例子
+
+
+
 
 ### 惹人厭的blocking
 
