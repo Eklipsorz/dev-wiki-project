@@ -41,10 +41,27 @@ JavaScript的出生是因應想要讓使用者對網頁內容進行某些互動�
 實際上來說，瀏覽器會提供JavaScript解釋器(常以一個專門解析的JavaScript引擎來代表)以及讓它在瀏覽器建立一個Main Thread來滿足JavaScript的直譯和單一執行緒這兩個先決條件，當瀏覽器讀取JavaScript程式碼的時候，瀏覽器會先丟給JavaScript引擎去解析當前程式碼並轉譯成機械碼至Main Thread來執行，而執行方式就是將機械碼以另一個thread形式去丟給Scheduler給實體CPU執行。
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636724367/blog/event/eventloop/simpleBrowserSystem_kt2jov.png)
 
-在這裏由於瀏覽器本身就只有Main Thread這一個能夠執行JavaScript，而JavaScript本身是依照一行一行來讀取並轉譯執行，也就是說同一個時間內只會有一個任務(夾帶著轉譯後的JavaScript)能夠被Main Thread執行，而後一個任務(夾帶著轉譯後的另一個JavaScript)必須等它被Main Thread完成才能被執行，從這樣子來看，就是個典型的同步執行，只是Main Thread儼然對他們而言就是個實體CPU
+在這裏由於瀏覽器本身就只有Main Thread這一個能夠執行JavaScript，而JavaScript本身是依照一行一行來讀取並轉譯執行，也就是說同一個時間內只會有一個任務(夾帶著轉譯後的JavaScript)能夠被Main Thread執行，而後一個任務(夾帶著轉譯後的另一個JavaScript)必須等它被Main Thread完成才能被執行，從這樣子來看，就是個典型的同步處理，只是Main Thread儼然對他們而言就是個實體CPU
+
+### 同步處理的常見問題 - Blocking
+根據同步處理的特性：
+>同步處理下的任務們只會在同一個時間點內執行一個任務，而且每一個任務皆必須等待上一個的任務結束才能執行
+
+當目前執行的任務一直使用著CPU資源或者佔用著CPU並向外部請求時，會阻塞(block)後續的任務(程式碼)沒辦法及時執行，而這個現象叫做阻塞(Blocking)，以下用程式碼來示範，下面分別會從foo.com、bar.com、qux.com取得資料，並列印出來，過程中會因為getSync佔用著CPU資源去索求外部資源，並等待外部發送回應給getSync，其結果就是整個程式的執行會因為前面三段getSync而產生阻塞現象。
 
 
-### Call Stack
+```
+let foo = $.getSync('//foo.com')
+let bar = $.getSync('//bar.com')
+let qux = $.getSync('//qux.com')
+
+console.log(foo)
+console.log(bar)
+console.log(qux)
+```
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636733654/blog/event/eventloop/BlockingExample_z4gh1m.gif)
+
+## Call Stack
 當遇到函式呼叫時，會先將目前呼叫的函式X紀錄下來並放進(Push)一個呼叫堆疊(Call Stack)，而當在目前函式X中遇到了return 或者 沒東西可讓函式X執行，就表示該函式X要回傳或者結束執行，此時就會從堆疊移出(Pop)最上面的函式X(也就是目前函式X)，而通常檔案本身也可以視作為一個大函式-main function，當瀏覽器執行這個檔案時就便是呼叫了大函式，
 
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636727784/blog/event/eventloop/CallStackDiagram_akoh7f.png)
@@ -82,27 +99,17 @@ console.log('end')
 
 而funct3執行完畢後，也沒呼叫什麼以及執行什麼，此時Call Stack會移出目前最上面的函式-funct3()，而系統會在移出後自動抓最上面的函式-funct2()來返回funct2()呼叫funct3()的地方，接著funct2()也沒呼叫什麼以及執行什麼，此時Call Stack會移出目前最上面的函式-funct2()，而系統會在移出後自動抓最上面的函式funct1()來返回funct1()呼叫funct2()的地方，接著funct1()也沒呼叫什麼以及執行什麼，就便讓Call Stack移除目前最上面的函式-funct1()，最後回到main function呼叫funct1()的地方，隨後在印個end這字串
 
-### 惹人厭的blocking
-
+### Call Stack 極端例子 - 不斷地呼叫
+當函式一直不斷地呼叫時，會不斷往Call Stack推入更多函式，這會使得Call Stack本身被佔用，以下面的程式碼做為例子，程式碼會先定義funct1()，其內部會是呼叫funct1()，接著在呼叫funct1()，最後結果會是讓funct1()不斷被自己呼叫，直到被開發者中斷、系統自己中斷才停止。
 ```
 function funct1() {
     funct1()
 }
 
-function doTask1() {
-    // do something
-}
-
-function doTask2() {
-    // do something
-}
-
 funct1()
-doTask1()
-doTask2()
 ```
 
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636730817/blog/event/eventloop/blockingExample_srq2to.gif)
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636732264/blog/event/eventloop/infExample_boi9hh.gif)
 
 ## JavaScript 如何實現異步執行
 
