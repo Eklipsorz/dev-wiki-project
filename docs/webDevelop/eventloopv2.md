@@ -45,12 +45,40 @@ JavaScript的出生是因應想要讓使用者對網頁內容進行某些互動�
 
 
 ### Call Stack
-雖說JavaScript本身就是只能在同一個時間內只能夠執行一個任務，但當遇到函式呼叫時，必須先將目前呼叫的函式X紀錄下來並放進一個呼叫堆疊(Call Stack)以避免在該函式X中呼叫另一個函式Y後，並讓函式Y執行完而不
+當遇到函式呼叫時，會先將目前呼叫的函式X紀錄下來並放進(Push)一個呼叫堆疊(Call Stack)，而當在目前函式X中遇到了return 或者 沒東西可讓函式X執行，就表示該函式X要回傳或者結束執行，此時就會從堆疊移出(Pop)最上面的函式X(也就是目前函式X)，而通常檔案本身也可以視作為一個大函式-main function，當瀏覽器執行這個檔案時就便是呼叫了大函式，
 
-// 問題描述
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636727784/blog/event/eventloop/CallStackDiagram_akoh7f.png)
 
-//上例子
 
+而當大函式/main function執行完畢時，便也會從Call Stack移出它。
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636727969/blog/event/eventloop/popMainFunction_op58q2.png)
+
+### Call Stack 例子
+
+
+
+```
+function funct1() {
+    console.log('funct1')
+    funct2()
+}
+
+function funct2() {
+    console.log('funct2')
+    funct3()
+}
+
+function funct3() {
+    console.log('funct3')
+}
+
+funct1()
+console.log('end')
+```
+
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636728641/blog/event/eventloop/CallStackExample_kay9ld.gif)
 
 
 
