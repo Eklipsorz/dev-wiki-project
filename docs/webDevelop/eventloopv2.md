@@ -55,9 +55,7 @@ JavaScript的出生是因應想要讓使用者對網頁內容進行某些互動�
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636727969/blog/event/eventloop/popMainFunction_op58q2.png)
 
 ### Call Stack 例子
-
-
-
+在這裏我們建立三個函式分別為funct1()、funct2()、funct3()，然後在定義他們之後呼叫他們去執行來觀察他們與Call Stack之間發生什麼事情，範例程式碼如下：
 ```
 function funct1() {
     console.log('funct1')
@@ -77,8 +75,12 @@ funct1()
 console.log('end')
 ```
 
+在這裏是採用Loupe平台來觀測程式碼和Call Stack之間的互動，在這個平台中並不會把main function特意顯示，程式碼結果如下，首先系統會先呼叫funct1()，執行funct1後便將funct1()推入在Call Stack中去紀錄，然後去印funct1這字串，接著funct1()又呼叫funct2()，這時會將funct2()推入在Call Stack中紀錄，funct2()會在funct1()之上，然後去印funct2這字串，最後再由funct2()呼叫funct3()，這時會將funct3()推入在Call Stack中紀錄，funct3()會在funct2()之上，然後去印funct3這字串。
+
 
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636728641/blog/event/eventloop/CallStackExample_kay9ld.gif)
+
+而funct3執行完畢後，也沒呼叫什麼以及執行什麼，此時Call Stack會移出目前最上面的函式-funct3()，而系統會在移出後自動抓最上面的函式-funct2()來返回funct2()呼叫funct3()的地方，接著funct2()也沒呼叫什麼以及執行什麼，此時Call Stack會移出目前最上面的函式-funct2()，而系統會在移出後自動抓最上面的函式funct1()來返回funct1()呼叫funct2()的地方，接著funct1()也沒呼叫什麼以及執行什麼，就便讓Call Stack移除目前最上面的函式-funct1()，最後回到main function呼叫funct1()的地方，隨後在印個end這字串
 
 
 
@@ -94,14 +96,39 @@ console.log('end')
 ### setTimeOut
 
 ## 什麼是事件
+然而這種可以延宕實體CPU的任務並不侷限於上述的I/O種類任務，還有由I/O本身或者某些程式被某些行為給觸發出來的信號，然後再由藉由攔截信號來執行的特定任務X，在這裏的信號會當作是 "事件(event)" ，而為了執行特定工作X，勢必會產生出一個機制來監聽某種信號/事件和產生對應的特定任務X，而通常會使用兩種方式來實現：
+1. pull (polling)：由系統在固定時間內產生詢問I/O設備和某些程式是否要產生事件/信號，若詢問成功便會直接執行對應I/O設備，但詢問失敗會容易造成不必要的效能損益，尤其是I/O設備和某些程式不止於1種，可能總加起來的數量會是N個，那麼詢問的任務數量在固定時間內也是N個
+2. push：當事件發生時，由發送信號來源的I/O設備和某些程式主動通知系統事件發生了，要系統處理一下事件，而在事件發生前，系統可以做自己的事情，而發生的當下就會去處理事件，系統可以挑時間去處理，隨後處理完系統再回到當時處理前的工作狀態。
+
 
 ### 事件是同步執行？還是異步執行？
  
 ## 事件會發生什麼問題
+另外值得一提的是當特定任務X本身是由非系統本身的事件所觸發時，其(比如滑鼠點擊事件)事件會變得不可預知且有可能影響著其他任務所存取的內容和結果而使系統變得更不穩定(這問題被稱之Critical-Section Problem，其中Critical-Section是指多個任務共享的資源)，比如說有一個任務1想要存取某個資源下的X值來處理自己的任務內容，而唯獨只有X=1的時候才能讓任務1正常運作。
+
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636642604/blog/event/eventloop/criticalSectionExample1_zflvd8.png)
+
+然而突如其來的特定任務X想要修改該資源下的X值，使值從1轉換為2，由於兩個任務同時都各由獨立的CPU資源來執行，先後順序會無法從中定義，但若是先從特定任務X執行或者在執行任務1的存取X值的同時下任務X就已經修改的話，任務1會讀取到X=2，而這樣的讀取結果會根據前面所定下的規則-唯獨只有X=1的時候才能讓任務1正常運作，讓任務1呈現的結果是不正常或者無法正常執行任務1。
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636642604/blog/event/eventloop/criticalSectionExample2_jnecq7.png)
+
+
 
 ## 系統如何解決問題
 
 ### lock 
+lock 這一個機制會允許其他程式鎖住要存取容易被特定任務X改變的資料，而只要被鎖住並不會讓其他任務去存取或者變更，拿上面的例子來說明的話，就是用以下類似的代碼來實現，在任務1和特定任務X的程式碼塞入while、適當的lock、存取資源的方式(如下程式碼)，其中兩方都能夠共享存取資源resource，而lock會是他們之間能夠辨識的變數，兩者執行之前的lock值會是false，當其中一方改變了lock值，另一方能夠看到變動，所以在這裏只要讓任務1先去執行下面程式碼就能透過lock設定為true來鎖住資源，
+```
+while (lock) {}
+  lock = true
+  // access resource 
+  lock = false
+```
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636645008/blog/event/eventloop/lockExample_hpjnkk.png)
+
+而當任務X要去執行的時候會因為lock為true而一直跑無限迴圈，直到任務1存取完資源時，就便將lock設定為false，使任務X能夠從無限迴圈跳開去存取資源，但這只是建立在其他任務會先於任務X存取內容之下，沒辦法無法完全保證任務X不會去修改內容，需要一個手段能夠控制任務X
+
 
 ### event loop
 
