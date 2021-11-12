@@ -82,10 +82,27 @@ console.log('end')
 
 而funct3執行完畢後，也沒呼叫什麼以及執行什麼，此時Call Stack會移出目前最上面的函式-funct3()，而系統會在移出後自動抓最上面的函式-funct2()來返回funct2()呼叫funct3()的地方，接著funct2()也沒呼叫什麼以及執行什麼，此時Call Stack會移出目前最上面的函式-funct2()，而系統會在移出後自動抓最上面的函式funct1()來返回funct1()呼叫funct2()的地方，接著funct1()也沒呼叫什麼以及執行什麼，就便讓Call Stack移除目前最上面的函式-funct1()，最後回到main function呼叫funct1()的地方，隨後在印個end這字串
 
-
-
 ### 惹人厭的blocking
 
+```
+function funct1() {
+    funct1()
+}
+
+function doTask1() {
+    // do something
+}
+
+function doTask2() {
+    // do something
+}
+
+funct1()
+doTask1()
+doTask2()
+```
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636730817/blog/event/eventloop/blockingExample_srq2to.gif)
 
 ## JavaScript 如何實現異步執行
 
