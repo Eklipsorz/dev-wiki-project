@@ -190,7 +190,7 @@ while (lock) {}
 
 
 ### simple event loop
-event loop 本身是運用一個佇列(Queue)和從佇列中挑出一個最前面的元素來將原本設定為異步處理的任務轉換成以同步處理的任務，從而解決Critical Section Problem 以及 鎖帶來的Blocking問題，具體方式如下
+event loop 在這裏是指負責分發適當任務執行的迴圈，本身會運用一個佇列(Queue)和從佇列中挑出一個最前面的元素來將原本設定為異步處理的任務轉換成以同步處理的任務，從而解決Critical Section Problem 以及 鎖帶來的Blocking問題，具體方式如下
 
 會透過一個佇列(Queue)和從佇列中挑出最前面的元素
 
