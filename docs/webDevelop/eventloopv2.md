@@ -152,29 +152,46 @@ result = resource.modifyXValue(2)
 // Critical Section
 ```
 
-若這兩個任務同時都各由獨立的CPU資源來執行，先後順序會無法從中定義，但若是先從特定任務X執行或者在執行任務1的存取X值的同時下任務X就已經修改的話，任務1會讀取到X=2，而這樣的讀取結果會根據前面所定下的規則-唯獨只有X=1的時候才能讓任務1正常運作，讓任務1呈現的結果是不正常或者無法正常執行任務1。
-
+若這兩個任務同時都各由獨立的CPU資源來執行，執行先後順序會無法從中定義，但若是先從特定任務X執行或者在執行任務1的存取X值的同時下任務X就已經修改的話，任務1只會讀取X=2，而非是讓任務1讀取X=1，這樣子的存取很有可能會讓任務1的執行結果是不如預期，甚至無法正常執行
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636642604/blog/event/eventloop/criticalSectionExample2_jnecq7.png)
 
-
-
 ## 系統如何解決問題
+面對這樣子的Critical-Section Problem，系統主要有兩種方式，第一種使用鎖(lock)機制，讓先存取資源的人能夠鎖住資源，不讓其他人在同時間使用資源，第二種使用事件迴圈(event loop)，這種會強制將要存取Critical Section的任務轉換為同步處理，透過同步處理的特性-同一時間只允許一個任務執行，不過這兩種只是阻止同時間的修改，若先修改同一份資源的任務先執行的話，還是會讓後面執行的任務會出現不如預期的問題，拿先前的問題例子中的任務1和任務X，任務1只要先存取資源Y，就能皆能透過這上述任意方式來保證任務1再存取的同時間不會有任務X來存取或者修改，但是如果任務X先於任務1的話，那麼任務1到最後還是會取到X=2，為此，就有人提出另一種event loop來解決。
+
 
 ### lock 
-lock 這一個機制會允許其他程式鎖住要存取容易被特定任務X改變的資料，而只要被鎖住並不會讓其他任務去存取或者變更，拿上面的例子來說明的話，就是用以下類似的代碼來實現，在任務1和特定任務X的程式碼塞入while、適當的lock、存取資源的方式(如下程式碼)，其中兩方都能夠共享存取資源resource，而lock會是他們之間能夠辨識的變數，兩者執行之前的lock值會是false，當其中一方改變了lock值，另一方能夠看到變動，所以在這裏只要讓任務1先去執行下面程式碼就能透過lock設定為true來鎖住資源，
+由於資源本身的存取是透過Critical Section來達成，因此可以被視作為資源的代言人，而 lock 這一個機制會允許任何一個先存取到Critical Section的程式替這個Critical Section或者對應的資源上鎖，使得後面想要存取同一個資源的任務都會被鎖給擋住(Blocked)，而當上鎖該資源並存取資源的任務只要存取完畢，便會把鎖解開讓後面的任務去存取，當然先搶到的任務可以擁有先鎖住資源的權利。
+
+
+以問題例子上的任務1和任務X為例的話，會宣告兩個任務都能辨識的lock變數以及基於lock的while來實現lock
+
+
+-被特定任務X改變的資料，而只要被鎖住並不會讓其他任務去存取或者變更，拿上面的例子來說明的話，就是用以下類似的代碼來實現，在任務1和特定任務X的程式碼塞入while、適當的lock、存取資源的方式(如下程式碼)，其中兩方都能夠共享存取資源resource，而lock會是他們之間能夠辨識的變數，兩者執行之前的lock值會是false，當其中一方改變了lock值，另一方能夠看到變動，所以在這裏只要讓任務1先去執行下面程式碼就能透過lock設定為true來鎖住資源，
 ```
+// 任務1的Critical Section
 while (lock) {}
   lock = true
-  // access resource 
+  resource = getResourceById(id)
+  result = resource.getXValue()
+  lock = false
+
+// 任務X的Critical Section
+while (lock) {}
+  lock = true
+  resource = getResourceById(id)
+  result = resource.modifyXValue(2)
   lock = false
 ```
+
+
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636645008/blog/event/eventloop/lockExample_hpjnkk.png)
 
 而當任務X要去執行的時候會因為lock為true而一直跑無限迴圈，直到任務1存取完資源時，就便將lock設定為false，使任務X能夠從無限迴圈跳開去存取資源，但這只是建立在其他任務會先於任務X存取內容之下，沒辦法無法完全保證任務X不會去修改內容，需要一個手段能夠控制任務X
 
 
-### event loop
+### simple event loop
 
+### complex event loop
 
 ## JavaScript 的 event loop
 1. 是採用event loop
