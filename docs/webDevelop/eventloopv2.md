@@ -197,15 +197,32 @@ event loop 在這裏是指負責分發適當任務執行的迴圈，本身會運
 所有放在佇列中的任務全都會如同步處理那樣：
 >同步處理下的任務們只會在同一個時間點內執行一個任務，而且每一個任務皆必須等待上一個的任務結束才能執行
 
-而這樣子的處理也避免使用鎖以及鎖帶來的阻塞現象，當然也得要考量每一個被執行的任務是否本身就是個阻塞其他任務的任務。這方法本身效能會因受限於只有單執行緒能執行以及無法完全避免Critical Section Problem帶來的不可預期之執行結果。
+而這樣子的處理也避免使用鎖以及鎖帶來的阻塞現象，當然也得要考量每一個被執行的任務是否本身就是個阻塞其他任務的任務。這方法本身效能會因受限於只有單執行緒能執行以及像鎖那樣無法完全避免Critical Section Problem帶來的不可預期之執行結果。
 
 ### complex event loop
-為了進一步提升效能和緩解Critical Section Problem帶來的不可預期之執行結果，就額外添加多執行緒以及額外Queue來延遲真正造成不可預期的任務
-## JavaScript 的 event loop
+為了進一步提升效能和緩解Critical Section Problem帶來的不可預期之執行結果，就額外添加多執行緒以及額外Queue來延遲真正造成不可預期的任務，在這裏由一個主要執行緒來根據哪些任務是真正容易對共用資源造成不可預期的任務來分發至不同地方來執行：擁有多個執行緒的空間(Thread Pool)、暫緩執行用的空間，通常會是對某些內容進行寫入、刪除、變更的功能會被歸納成容易對共用資源造成不可預期的任務，讀取、修改某副本內容、沒涉及共用資源的功能則是歸納成較安全的任務(Thread-safe)，
+
+，而通常會是對某些內容進行寫入、刪除、變更的功能會被歸納在這，根據是不是來放進兩個不同管道進行處理，分別為存放多個且處于可用的執行緒之空間(Thread Pool)和一個獨立的Queue，首先一開始還是會由每一次由事件觸發而衍生出事件處理任務都放入任務佇列，由主要執行緒(Main Thread)從佇列中挑選第一個任務並判別其性質，若是不會對共用資源造成任何修改的任務，則會被放入Thread Pool，在這裏會分配多個執行緒去執行任務，而若主要執行緒判別任務為會對共用資源造成任何修改的任務，則放入另一個Queue等待適當時機回到Main Thread執行
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636803337/blog/event/eventloop/complexEventLoop_ocm5jl.png)
+
+
+
+
+
+，而放進Thread Pool的任務則是分配多個執行緒來執行，執行完之後便回到Main Thread做最後的處理和回傳。
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636804100/blog/event/eventloop/threadPoolOnEventLoop_rmfugm.png)
+
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636804544/blog/event/eventloop/queueOnEventLoop_ilrszi.png)
+
+## JavaScript 的事件
+
+### JavaScript 的Event Loop
 1. 是採用event loop
 2. 實際運作方式
 
 ### setTimeOut
 
-## Node.js 的 event loop
-1. 運作方式
+
