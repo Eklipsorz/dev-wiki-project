@@ -190,7 +190,7 @@ while (lock) {}
 
 
 ### simple event loop
-event loop 在這裏是指負責分發適當任務執行的迴圈，本身會運用一個佇列(Queue)、從佇列中挑出一個最前面的元素、挑出的元素只給一個執行緒來執行這三個因素來將原本設定為異步處理的任務轉換成以同步處理的任務，從而解決Critical Section Problem 以及 鎖帶來的Blocking問題，具體方式如下，每一次由事件觸發而衍生出事件處理任務皆放入任務佇列(Task Queue)，而負責轉交給Scheduler或者執行任務的執行緒只會有一個，當中會從佇列的最前面任務挑出來放入至執行緒去做執行或者分派給Scheduler去執行，當執行完之後便會挑選下一個在佇列的任務，直到清空。
+event loop 是指著負責分發適當任務執行的流程迴圈，也就是會重複做相同分發任務執行，只是任務會隨著分發而有所不同，本身會運用一個佇列(Queue)、從佇列中挑出一個最前面的元素、挑出的元素只給一個執行緒來執行這三個因素來將原本設定為異步處理的任務轉換成以同步處理的任務，從而解決Critical Section Problem 以及 鎖帶來的Blocking問題，具體方式如下，每一次由事件觸發而衍生出事件處理任務皆放入任務佇列(Task Queue)，而負責轉交給Scheduler或者執行任務的執行緒只會有一個，當中會從佇列的最前面任務挑出來放入至執行緒去做執行或者分派給Scheduler去執行，當執行完之後便會挑選下一個在佇列的任務，直到清空。
 
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636798774/blog/event/eventloop/simpleEventLoop_jdc87i.png)
 
