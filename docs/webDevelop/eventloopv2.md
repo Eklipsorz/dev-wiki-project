@@ -257,7 +257,7 @@ elementX.addEventListener('click', function onElementXClicked(event) {
 當瀏覽器按照event flow傳遞事件/信號的時候，若單純由JavaScript負責接收事件/信號與事件處理的話，會因爲只有執行環境(瀏覽器)為它提供的Main Thread只有一個而容易發生Blocking的現象，讓後續的任務無法繼續做。
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636816028/blog/event/eventloop/baseBrowserModel_akh3kj.png)
 
-因此瀏覽器為了補足這塊而提供一些Web API讓JavaScript能夠額外建立thread去處理接收事件/信號與事件處理，但這些thread本身並不夠直接執行這些事件處理，因為若由它處理就有可能違背JavaScript的設計初衷，比如只允許單個執行緒來對DOM節點做操作，必須讓這些thread將事件處理轉交給Main thread，由JavaScript引擎親自執行，但直接轉交又會打亂Main thread對於其他任務的執行，因此在這裏會引用event loop的分發概念來試著將事件處理轉交給Main thread，在這裏所採用的event loop架構會是上述提到的simple event loop，會建立一個Task Queue來接收所有被觸發的事件處理，若Task Queue不為空的話，event loop會一直檢測Call Stack是否為空，接著等Call Stack為空時，便從Queue分發事件處理至Stack來執行。
+因此瀏覽器為了補足這塊而提供一些Web API讓JavaScript能夠額外建立thread去處理接收事件/信號與事件處理，但這些thread本身並不夠直接執行這些事件處理，因為若由它處理就有可能違背JavaScript的設計初衷，比如只允許單個執行緒來對DOM節點做操作，必須讓這些thread將事件處理轉交給Main thread，由JavaScript引擎親自執行，但直接轉交又會打亂Main thread對於其他任務的執行，因此在這裏會引用event loop的分發概念來試著將事件處理轉交給Main thread，在這裏所採用的event loop架構會是上述提到的simple event loop，會建立一個Task Queue或者CallBack Queue(由於事件綁定的函式是屬於callback類型函式，而該Queue又是專門存放這類型，所以得名)來接收所有被觸發的事件處理，若Task Queue不為空的話，event loop會一直檢測Call Stack是否為空，接著等Call Stack為空時，便從Queue分發事件處理至Stack來執行。
 
 
 在這裏我們從上述描述建構瀏覽器所提供的WebAPI、Task Queue以及JS本身的Call Stack、Main thread，首先當還沒有任何事件綁定和沒有事件的話，瀏覽器會繼續按照JavaScript的特性來一行又一行轉譯並放入Main Thread來執行，其中Call Stack也塞滿了一些函式以及目前所讀取的檔案本身-Main Function。
@@ -278,23 +278,29 @@ elementX.addEventListener('click', function onElementXClicked() {
 這時會觸發event loop本身的檢測，它會檢查Call Stack是否為空，但Task Queue為空的時候，就不會特意檢查Call Stack，當Call Stack為空時，就便從Task Queue抽出第一個函式-onElementXClicked，執行完就換下一個任務，直到清空Task Queue
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636821626/blog/event/eventloop/dispatchEventHandler_uibmen.png)
 
+### Event Loop 例子
 
+在這裏以HTML形式設定兩個按鈕元件，它們的id分別為testbtn1、testbtn2，而JavaScript則是為這兩個按鈕添加點擊事件，而對應的事件處理皆為onClick，接著我輪流點testbtn1、testbtn2，一直到點擊第五次，也就是點擊完testbtn1就停下了。
 
 ```
+// inside js 
+
 $.on('#testbtn1', 'click', function onClick() {
     console.log('button1 is clicked')
 });
 $.on('#testbtn2', 'click', function onClick() {
     console.log('button2 is clicked')
 });
+
+// inside html 
+
+<button id="testbtn1">button1</button>
+<button id="testbtn2">button2</button>
 ```
 
+影片可以點擊下方來看，首先瀏覽器上的JavaScript遇到事件綁定時會呼叫瀏覽器下的Web API去替那個兩個按鈕增加點擊事件，接著當點擊testbtn1時，瀏覽器負責管理事件接收和處理的執行緒會將testbtn1點擊事件時對應的函式-onClick放入至Callback Queue，接著再點擊testbtn2時，瀏覽器會把testbtn2點擊時對應的函式-onClick放入至Callback Queue，然後隨著後續的點擊來把對應的函式放入至Queue，過程中，負責管理事件接收和處理的執行緒會把Queue的第一個函式放入至Call Stack來執行，隨後執行完就被移出，再挑下一個在Queue的函式，直到Queue被清空。
+[點擊我看例子](https://youtu.be/50zxZ7GawmA)
 
-### Event Loop 例子
-
-
-1. 是採用event loop
-2. 實際運作方式
 
 ### setTimeOut
 
