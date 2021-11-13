@@ -160,13 +160,11 @@ result = resource.modifyXValue(2)
 
 
 ### lock 
-由於資源本身的存取是透過Critical Section來達成，因此可以被視作為資源的代言人，而 lock 這一個機制會允許任何一個先存取到Critical Section的程式替這個Critical Section或者對應的資源上鎖，使得後面想要存取同一個資源的任務都會被鎖給擋住(Blocked)，而當上鎖該資源並存取資源的任務只要存取完畢，便會把鎖解開讓後面的任務去存取，當然先搶到的任務可以擁有先鎖住資源的權利。
+由於資源本身的存取是透過Critical Section來達成，因此可以被視作為資源的代言人，而 lock 這一個機制會允許任何一個先存取到Critical Section的程式替這個Critical Section或者對應的資源上鎖，使得後面想要存取同一個資源的任務都會被鎖給擋住(Blocked)，而當上鎖該資源並存取資源的任務只要存取完畢，便會把鎖解開讓後面的任務去存取，當然先搶到的任務可以擁有先鎖住資源的權利。除了上述之外，鎖本身會阻塞(Block)想要存取同一個資源的任務，因此若想要存取同一個資源的任務一多的時候，效能很有可能會因為阻塞而衰減。
 
 
-以問題例子上的任務1和任務X為例的話，會宣告兩個任務都能辨識的lock變數以及基於lock的while來實現lock
+以問題例子上的任務1和任務X為例，具體實現會是宣告兩個任務都能辨識的lock變數以及基於lock的while來實現lock，將這些分別放置在兩個任務對於同份資源的Critical Section中(內容如下)，而一開始的lock值會是false，當其中一方改變了lock值，另一方能夠看到變動。
 
-
--被特定任務X改變的資料，而只要被鎖住並不會讓其他任務去存取或者變更，拿上面的例子來說明的話，就是用以下類似的代碼來實現，在任務1和特定任務X的程式碼塞入while、適當的lock、存取資源的方式(如下程式碼)，其中兩方都能夠共享存取資源resource，而lock會是他們之間能夠辨識的變數，兩者執行之前的lock值會是false，當其中一方改變了lock值，另一方能夠看到變動，所以在這裏只要讓任務1先去執行下面程式碼就能透過lock設定為true來鎖住資源，
 ```
 // 任務1的Critical Section
 while (lock) {}
@@ -183,13 +181,19 @@ while (lock) {}
   lock = false
 ```
 
+所以在這裏只要讓任務1先去執行下面程式碼就能透過lock設定為true來鎖住資源Y，而當任務X要去執行的時候會因為lock為true而一直跑無限迴圈，直到任務1存取完資源Y時，
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636795235/blog/event/eventloop/lockExample_y0f60k.png)
 
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636645008/blog/event/eventloop/lockExample_hpjnkk.png)
+，直到任務1存取完資源時，就便將lock設定為false，使任務X能夠從無限迴圈跳開去修改資源Y的X值為2
 
-而當任務X要去執行的時候會因為lock為true而一直跑無限迴圈，直到任務1存取完資源時，就便將lock設定為false，使任務X能夠從無限迴圈跳開去存取資源，但這只是建立在其他任務會先於任務X存取內容之下，沒辦法無法完全保證任務X不會去修改內容，需要一個手段能夠控制任務X
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636795564/blog/event/eventloop/lockExample2_nt7vjj.png)
 
 
 ### simple event loop
+event loop 本身是運用一個佇列(Queue)和從佇列中挑出一個最前面的元素來將原本設定為異步處理的任務轉換成以同步處理的任務，從而解決Critical Section Problem 以及 鎖帶來的Blocking問題，具體方式如下
+
+會透過一個佇列(Queue)和從佇列中挑出最前面的元素
+
 
 ### complex event loop
 
