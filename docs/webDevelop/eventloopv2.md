@@ -219,9 +219,9 @@ Thread Pool本身是由固定數量的執行緒組成，平時會保持著可幫
 
 ## JavaScript 的事件
 
-在這裏的JavaScript由於本身時常應用於瀏覽器，所以會以瀏覽器的事件來進行說明，首先當瀏覽器將網頁上所有元件轉換成適當的實體模型以及計算每個元件的實體位置、大小等資訊時，便賦予網頁上的所有元件在執行環境(瀏覽器)上是具有事件接收和事件觸發的物件，而所有對事件/信號的發送會由瀏覽器(瀏覽器還調用著作業系統的API來接收信號)負責轉送。
+在這裏的JavaScript由於本身時常應用於瀏覽器，所以會以瀏覽器的事件來進行說明，首先當瀏覽器將網頁上所有元件轉換成適當的實體模型以及計算每個元件的實體位置、大小等資訊時，便賦予網頁上的所有元件在執行環境(瀏覽器)上是具有事件接收和事件觸發的物件，而所有對事件/信號的發送會由瀏覽器(瀏覽器還調用著作業系統的API來接收信號)負責轉送。 
 
-也就是說當使用者對著元件X進行點擊且設定以下事件綁定時，由於addEventListener本身會先建立專屬於元件X的EventListener物件，該物件會以清單的形式來紀錄元件X上所有綁定的事件種類和對應事件處理內容，而瀏覽器實際上會在利用先前提到的資訊計算、實體模型去判斷這個點擊信號是屬於哪個DOM物件，然後鎖定該DOM物件就檢測其物件是否有相關事件物件(比如EventListener物件)，若有的話，就根據事件種類來找尋對應的函式來當作事件處理，在這裏函式會是onElementXClicked，所以點擊元件後會顯示hi這字串
+也就是說當使用者對著元件X進行點擊且設定名為onElementXClicked函式來當作事件發生所要做的處理時，addEventListener本身會先建立專屬於元件X的EventListener物件，該物件會以清單的形式來紀錄元件X上所有綁定的事件種類和對應事件處理內容，而瀏覽器實際上會在利用先前提到的資訊計算、實體模型去判斷這個點擊信號是屬於哪個DOM物件，然後鎖定該DOM物件就檢測其物件是否有相關事件物件(比如EventListener物件)，若有的話，就根據事件種類來找尋對應的函式來當作事件處理，在這裏函式會是onElementXClicked，所以點擊元件後會顯示hi這字串
 ```
 elementX.addEventListener('click', function onElementXClicked(event) {
   console.log('hi)
@@ -253,7 +253,46 @@ elementX.addEventListener('click', function onElementXClicked(event) {
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1630599039/blog/event/currentPropagationPath_kopcrh.png)
 
 
-### JavaScript 的Event Loop
+### JavaScript 的 Event Loop
+當瀏覽器按照event flow傳遞事件/信號的時候，若單純由JavaScript負責接收事件/信號與事件處理的話，會因爲只有執行環境(瀏覽器)為它提供的Main Thread只有一個而容易發生Blocking的現象，讓後續的任務無法繼續做。
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636816028/blog/event/eventloop/baseBrowserModel_akh3kj.png)
+
+因此瀏覽器為了補足這塊而提供一些Web API讓JavaScript能夠額外建立thread去處理接收事件/信號與事件處理，但這些thread本身並不夠直接執行這些事件處理，因為若由它處理就有可能違背JavaScript的設計初衷，比如只允許單個執行緒來對DOM節點做操作，必須讓這些thread將事件處理轉交給Main thread，由JavaScript引擎親自執行，但直接轉交又會打亂Main thread對於其他任務的執行，因此在這裏會引用event loop的分發概念來試著將事件處理轉交給Main thread，在這裏所採用的event loop架構會是上述提到的simple event loop，會建立一個Task Queue來接收所有被觸發的事件處理，若Task Queue不為空的話，event loop會一直檢測Call Stack是否為空，接著等Call Stack為空時，便從Queue分發事件處理至Stack來執行。
+
+
+在這裏我們從上述描述建構瀏覽器所提供的WebAPI、Task Queue以及JS本身的Call Stack、Main thread，首先當還沒有任何事件綁定和沒有事件的話，瀏覽器會繼續按照JavaScript的特性來一行又一行轉譯並放入Main Thread來執行，其中Call Stack也塞滿了一些函式以及目前所讀取的檔案本身-Main Function。
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636820736/blog/event/eventloop/eventLoopinJS_eftuh5.png)
+
+
+若JavaScript檔案中的程式碼包含以下並且讓瀏覽器讀取到時，這段程式碼會間接呼叫WebAPI中的DOM來將onElementXClicked當作是特定元件X的點擊事件所要做的處理，並建立額外Thread去負責管理每個元件的事件接收和事件處理。
+```
+elementX.addEventListener('click', function onElementXClicked() {
+  // do something
+})
+```
+
+當特定元件X被點擊一次的時候，會將對應點擊事件的函式-onElementXClicked放到Task Queue，接著點第二次，就放入第二個相同函式，最後點第三次，就放第三個相同函式，
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636821626/blog/event/eventloop/generateEventHandler_npw18g.png)
+
+這時會觸發event loop本身的檢測，它會檢查Call Stack是否為空，但Task Queue為空的時候，就不會特意檢查Call Stack，當Call Stack為空時，就便從Task Queue抽出第一個函式-onElementXClicked，執行完就換下一個任務，直到清空Task Queue
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636821626/blog/event/eventloop/dispatchEventHandler_uibmen.png)
+
+
+
+```
+$.on('#testbtn1', 'click', function onClick() {
+    console.log('button1 is clicked')
+});
+$.on('#testbtn2', 'click', function onClick() {
+    console.log('button2 is clicked')
+});
+```
+
+
+### Event Loop 例子
+
+
 1. 是採用event loop
 2. 實際運作方式
 
