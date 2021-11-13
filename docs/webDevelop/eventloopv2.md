@@ -302,9 +302,42 @@ $.on('#testbtn2', 'click', function onClick() {
 [點擊我看例子](https://youtu.be/50zxZ7GawmA)
 
 
-### setTimeOut
+### setTimeout
+setTimeout 本身是瀏覽器的WebAPI所提供的定時器，當瀏覽器在JavaScript檔案讀取到以下格式時，便會呼叫WebAPI下的setTimeout來執行，此時瀏覽器會建立一個thread去按照secs秒數來等待，等到時間到的時候會把指定函式-funct 放入至Task Queue或者CallBack Queue，而指定函式會跟其他上述提到的事件處理函式一樣，等到Call Stack為空才會將Queue的funct移到Main Thread來執行，而Call Stack會放上funct。 
+```
+setTimeout(function funct() {
+    // do something
+}, secs)
+```
 
+### setTimeout 例子1
+設定一個等待1秒才執行的計時器，首先當瀏覽器的JavaScript引擎讀取到setTimeout和1000時，就便呼叫瀏覽器的WebAPI-setTimeout來建立一個thread來實現計時器，一開始會按照1000ms來等待，接著時間一到就把對應的函式-timeout放入至Callback Queue，然後等到Call Stack為空時，就把Queue中的timeout函式放到Main Thread來執行。
+```
+setTimeout(function timeout() {
+    console.log('delay 1 sec');
+}, 1000);
+
+console.log('Hello!');
+```
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636826224/blog/event/eventloop/setTimeout1sec_s5m432.gif)
+
+### setTimeout 例子2
+設定一個等待0秒才執行的計時器，雖然看形式上會是先於顯示Hello，但實際上還得瀏覽器還得呼叫、對應函式放入Queue、等待Call Stack為空才能正式執行，所以基本上會慢於顯示Hello。 
+```
+setTimeout(function timeout() {
+    console.log('delay 0 sec');
+}, 0);
+
+console.log('Hello!');
+```
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1636826230/blog/event/eventloop/setTimeout0sec_dkuv8i.gif)
 
 
 ## 參考資料
 1. [Event dispatch and DOM event flow](https://www.w3.org/TR/DOM-Level-3-Events/#event-flow)
+2. [event: pull vs. push](https://softwareengineering.stackexchange.com/questions/363397/how-does-an-event-listener-work)
+3. [Concurrency vs Event Loop vs Event Loop + Concurrency](https://medium.com/@tigranbs/concurrency-vs-event-loop-vs-event-loop-concurrency-eb542ad4067b)
+4. [Event Queue](https://gameprogrammingpatterns.com/event-queue.html)
+5. [Event loop、Call Stack 與 Task Queue](https://gist.github.com/librarylai/de189c3b53a3c6a24d40f2f6a10ee08c)
+6. [Tasks, microtasks, queues and schedules](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/)
+7. [jserv 對於event loop + Thread pool的課程作業](https://hackmd.io/@jwang0306/sehttpd)
