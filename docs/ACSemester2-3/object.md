@@ -5,22 +5,6 @@ sidebar_position: 22
 
 ## 物件概念
 
-
-## polymorphism
-1. the fact that something such as an animal or organism can exist in different forms
-2. 描述同種性質的東西可以以不同形式、外形、結構來呈現/存在，比如同屬於動物的東西可以以有翅膀、有魚鰭、有爪子的形式來存在
-
-
-## object copy
-1. 將一個物件複製成另一個物件的方法，在這裡由於每一個物件都具有屬性和方法，若物件A被複製成物件B，那麼這兩個物件所擁有屬性名稱、對應屬性值、方法名稱、對應方法皆會一樣。
-2. 但若屬性值或者對應方法本身是一個參照或者一個記憶體位址的話，那麼物件A和物件B很有可能會一起共享著同一個參照或者同一個記憶體位址，只要任何一方針對該參照對應的內容做更動，另一方就即可透過同一個參照看到更動內容，而這就是淺拷貝(Shadow Copy)
-3. 若物件A被複製成物件B時，也連同替物件A的所有參照對應的物件進行複製：將整個內容複製給物件B，進而讓雙方不再共享同一個參照或者同一個記憶體位址，那麼任何一方做任何更動時不會影響另一方的內容
-
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1637855634/blog/SE/deep_copy_whhuov.png)
-
-### 參考資料
-1. [object copy](https://en.wikipedia.org/wiki/Object_copying#Shallow_copy)
-
 ## object oriented language
 1. 物件導向語言是一種以物件(object)來當做程式開發上的基本單位，而物件上主要有以下性質：
   - 在這裡一個物件都如同世界上的每一個物件那樣，具有能夠進一步描述自己的屬性(property)以及進一步描述自己能做些什麼事情的方法(method)
@@ -71,7 +55,33 @@ function person (name, email) {
 }
 ```
 
-### prototype 相關術語
+### 透過prototype來建立實體
+
+
+
+### Object.prototype 屬性移除/增加
+在JavaScript中可以在執行過程對特定原型進行屬性/方法上的增加和移除，通常增加方式為以下形式，其中constructor為作為原型定義的建構函式，prototype則是指constructor所擁有的原型物件，key則是該原型物件的屬性，而value就是對應值，由此來對特定屬性來填入任意值或者任意物件
+
+```
+constructor.prototype.key = value
+```
+
+而移除方式為以下形式，其中delete為刪除特定屬性的關鍵字，而constructor.prototype則是指建構函式所擁有的原型物件，key則是該物件上的屬性，由此來刪掉特定屬性(含屬性值)
+```
+delete constructor.prototype.key
+```
+
+## prototype 實作繼承方式
+每一個prototype的定義皆用函式內容來定義，透過
+
+> prototype：本身是用以實現某些物件概念的第一個實體物件，本身會是定義這個物件概念擁有的屬性和方法，實際上，該物件是第一個透過能夠建立某種物件概念的Constructor之實體物件，但本質上並不能完全是一般實體物件，此外，它代表著每一個物件所屬於的物件概念是為何。
+
+### prototype 子類
+
+### prototype 實作繼承例子
+
+
+## prototype 相關術語
 1. prototype：本身是用以實現某些物件概念的第一個實體物件，本身會是定義這個物件概念擁有的屬性和方法，實際上，該物件是第一個透過能夠建立某種物件概念的Constructor之實體物件，但本質上並不能完全是一般實體物件，此外，它代表著每一個物件所屬於的物件概念是為何。
 2. Constructor.prototype: 每一個構造函式(Constructor)能夠具有的屬性之一，會指向該構造函式自己本身所具有的原型物件(prototype)，然而在語法上是可以允許一般函式是擁有prototype屬性
 - 若是以一般函式(未以new來構成構造函數)的話，由於會指向構建function的函式所具有的原型物件，而那個原型物件正好是JavaScript Object本身。
@@ -128,25 +138,20 @@ console.log(Manager.__proto__ instanceof Object)
   - Object.getPrototypeOf(obj) ：根據obj物件所對應的構造函式來獲取函式所擁有的原型
   - Object.setPrototypeOf(obj, prototype)：對obj物件所對應的構造函式所擁有的原型設定成指定原型prototype
 
-### Object.prototype 屬性移除/增加
-在JavaScript中可以在執行過程對特定原型進行屬性/方法上的增加和移除，通常增加方式為以下形式，其中constructor為作為原型定義的建構函式，prototype則是指constructor所擁有的原型物件，key則是該原型物件的屬性，而value就是對應值，由此來對特定屬性來填入任意值或者任意物件
-
-```
-constructor.prototype.key = value
-```
-
-而移除方式為以下形式，其中delete為刪除特定屬性的關鍵字，而constructor.prototype則是指建構函式所擁有的原型物件，key則是該物件上的屬性，由此來刪掉特定屬性(含屬性值)
-```
-delete constructor.prototype.key
-```
-
-## prototype 實作繼承方式
-
-### prototype 子類
-
-### prototype 實作繼承例子
 
 
-## __proto__ 作用
+## 補充知識
+### polymorphism
+1. the fact that something such as an animal or organism can exist in different forms
+2. 描述同種性質的東西可以以不同形式、外形、結構來呈現/存在，比如同屬於動物的東西可以以有翅膀、有魚鰭、有爪子的形式來存在
 
-Object.prototype 代表 Object 的原型物件，其本身是實體物件。
+
+### object copy
+1. 將一個物件複製成另一個物件的方法，在這裡由於每一個物件都具有屬性和方法，若物件A被複製成物件B，那麼這兩個物件所擁有屬性名稱、對應屬性值、方法名稱、對應方法皆會一樣。
+2. 但若屬性值或者對應方法本身是一個參照或者一個記憶體位址的話，那麼物件A和物件B很有可能會一起共享著同一個參照或者同一個記憶體位址，只要任何一方針對該參照對應的內容做更動，另一方就即可透過同一個參照看到更動內容，而這就是淺拷貝(Shadow Copy)
+3. 若物件A被複製成物件B時，也連同替物件A的所有參照對應的物件進行複製：將整個內容複製給物件B，進而讓雙方不再共享同一個參照或者同一個記憶體位址，那麼任何一方做任何更動時不會影響另一方的內容
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1637855634/blog/SE/deep_copy_whhuov.png)
+
+參考資料：
+1. [object copy](https://en.wikipedia.org/wiki/Object_copying#Shallow_copy)
