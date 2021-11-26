@@ -33,7 +33,7 @@ sidebar_position: 22
   - Polymorphism：允許多個物件整合成一個同種性質(某些屬性和方法相同的)的物件A，而物件A藉由相同性質以及附加額外屬性和方法來衍生多個物件們
 3. 由於軟體開發上是以物件為基本單元來開發，但電腦是無法直接辨識物件以及不知道如何實作物件背後的屬性和方法，因此必須事先告知電腦電腦物件是什麼樣子，而根據程式語言是否為直譯或者編譯來區分成兩種主要方法：
   - class-based：僅限於編譯語言，在編譯時期是先定義每一個物件是什麼樣子、具有哪些屬性和方法、與其他物件又具有什麼關係
-  - prototype-based：僅限於直譯語言，在執行期間先定義一個可擴充的實體來代表著物件X，而這個實體正是原型機(prototype，可藉由其本身來慢慢演進成對應物件的原型物件)，藉由執行過程中添加屬性和方法來慢慢讓這個物件成形，而實現Inheritance和Polymorphism則是藉由對於物件的deep copy來做。
+  - prototype-based：僅限於直譯語言，prototype 在執行期間代表物件概念X的實體物件，而這個實體正是原型機(prototype，可藉由其本身來慢慢演進成對應物件的原型物件)，而該實體可藉由執行過程中添加屬性和方法來慢慢讓這個物件成形，並且允許每個物件都擁有prototype來指定物件所屬的物件概念，從而實現定義物件，而實現Inheritance和Polymorphism則是藉由對於物件的deep copy來做。
 
 ### 參考資料
 1. [prototype based vs. class based inheritance](https://stackoverflow.com/questions/816071/prototype-based-vs-class-based-inheritance)
@@ -43,4 +43,18 @@ sidebar_position: 22
 ## JavaScript 物件導向
 1. JavaScript 由於本身是直譯語言，只能以ProtoType-based 風格來實現物件導向這概念，但後來為了讓更多人適應JS而在ES2015之後提供class這關鍵字，但實際上只是被封裝後的語法糖(Syntactic Sugar)，其本質仍為ProtoType-based
 
-// 理解子類別/繼承/多型/一般物件所擁有屬性和方法
+2. 	prototype：原意是為了實現某些概念或想法而實做出來的第一個實體物，而往後的開發或者進展將會以該實體物為主，在這裡是以實現某些物件概念的第一個實體物件，本身會是定義這個物件概念擁有的屬性和方法，任意物件都擁有著prototype這屬性，而這屬性正是指定這物件是屬於哪一種物件概念，而屬性值會是代表該物件概念的實體物件，當任意物件透過prototype去指定任意一個物件概念，就能擁有(共享)該物件概念所擁有的屬性和方法，如物件1的prototype設定為物件2的prototype，那麼這兩個物件就能擁有(共享)同一個物件概念所擁有的屬性和方法，prototype屬性的設定方法：
+	- 當透過new方法時，就會按照constructor綁定的prototype來設定
+	- 直接透過prototype屬性值來設定
+
+
+3. 然而實際上prototype在概念上仍屬於實體物件，本質上仍需要額外內容來定義prototype具體所擁有的屬性和方法，當有了prototype具體的定義之後，就能依據其定義來建構出代表物件概念的prototype實體，而JS具體定義prototype所擁有的屬性和方法是透過函式和函式名稱來實現，函式名稱代表著prototype的名稱，而函式本身為該prototype的constructor - 負責建立對應prototype實體物件的函式，其中key為屬性或者方法，而value可以填入原型、物件、函式等
+```
+function prototype1 () {
+  this.key1 = value1
+  this.key2 = value2
+        .
+        .
+        .
+}
+```
