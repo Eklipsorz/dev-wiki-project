@@ -104,7 +104,7 @@ console.log(Manager.prototype instanceof Employee)
 ```
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1637937478/blog/prototype/constructorExample_ha30k1.png)
 
-3. Instance.\__proto__: 是任何物件的屬性之一，指向物件所屬的構造函數所擁有的原型物件(prototype)
+3. Instance.\_\_proto\_\_: 是任何物件的屬性之一，指向物件所屬的構造函數所擁有的原型物件(prototype)
  - 若將Instance設定為構造函式 Manager時，由於構造函式本身是物件，所以系統會根據構造 "構造函式Manager" 的構造函式來找，但該構造函式Manager本身就是函式，系統會最終找上構造 "函式" 的構造函式，而它所擁有的原型正是JavaScript Object。
 ```
 function Employee() {
@@ -124,9 +124,21 @@ console.log(Manager.__proto__ instanceof Object)
 ```
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1637938539/blog/prototype/__proto___example_mw95l5.png)
 
-4. Object.\[\[prototype\]\]：是ECMAScript標準下的產物，等同於Object.\__proto__，並指派Object.getPrototypeOf() 和 Object.setPrototypeOf()來存取每一個物件下所擁有的構造函數所擁有的原型，但由於大部分瀏覽器在推廣之前就已經先用\__proto__來代替它實現。
+4. Object.\[\[prototype\]\]：是ECMAScript標準下的產物，等同於Object.\_\_proto\_\_，並指派Object.getPrototypeOf() 和 Object.setPrototypeOf()來存取每一個物件下所擁有的構造函數所擁有的原型，但由於大部分瀏覽器在推廣之前就已經先用\_\_proto\_\_來代替它實現：
+  - Object.getPrototypeOf(obj) ：根據obj物件所對應的構造函式來獲取函式所擁有的原型
+  - Object.setPrototypeOf(obj, prototype)：對obj物件所對應的構造函式所擁有的原型設定成指定原型prototype
 
 ### Object.prototype 屬性移除/增加
+在JavaScript中可以在執行過程對特定原型進行屬性/方法上的增加和移除，通常增加方式為以下形式，其中constructor為作為原型定義的建構函式，prototype則是指constructor所擁有的原型物件，key則是該原型物件的屬性，而value就是對應值，由此來對特定屬性來填入任意值或者任意物件
+
+```
+constructor.prototype.key = value
+```
+
+而移除方式為以下形式，其中delete為刪除特定屬性的關鍵字，而constructor.prototype則是指建構函式所擁有的原型物件，key則是該物件上的屬性，由此來刪掉特定屬性(含屬性值)
+```
+delete constructor.prototype.key
+```
 
 ## prototype 實作繼承方式
 
