@@ -56,7 +56,40 @@ function person (name, email) {
 ```
 
 ### 透過prototype來建立實體
+JavaScript允許開發者使用new關鍵字和代表prototype的函式來建立符合prototype的實體物件，在這裡的new會建立一個空實體物件並將value1, value2,... 等參數傳入至function prototype1 ()，而傳入進去的空實體物件在函式會是由this變數來儲存，在這裡會定義著該實體物件會有哪些新的屬性和方法，並按照指示將value1, value2,... 傳入至對應的新屬性和方法。
 
+```
+function prototype1 (value1, value2, ....) {
+  this.key1 = value1
+  this.key2 = value2
+        .
+        .
+        .
+}
+
+const instance = new prototype1(value1, value2, ....)
+```
+
+另外JavaScript對於prototype的建構式的引數和參數之間的數量給予一定的彈性，不必兩者的數量一致就能允許執行，會按照對應位置來將引數對應至參數，而沒配到對的參數或者引數，會按照預設行為來處置，若有參數沒配到引數的話，其參數會被設定成undefined，而引數沒配到參數的話，就當即跳過。
+
+題外話：此時若該實體物件是該prototype的第一個實體物件，那麼該實體就即可代表著prototype。
+### 例子：透過prototype來建立實體
+首先定義一個名為Employee的Prototype建構式，並試著用new和Prototype建構式來建立參數和引數數目不同的情況，一開始會沒給定引數(沒加括號)，接著給予空引數，緊接著給一個引數，這個動作會持續到增加第四個引數，其結果來看的話，沒給定引數會跟給予空引的結果都皆為沒給定對應的引數而讓參數為undefined，而給予一個引數的情況則是讓第一個參數有了配對而除他以外的參數皆為undefined，給予兩個引數，則都沒顯示undefined，若給予多於參數數量的引數，則會跟給予合適引數的情況一樣，每個參數都沒undefined，只是額外的引數會當即跳過。
+```
+function Employee(name, dept) {
+	this.name = name
+	this.dept = dept;
+}
+
+console.log(new Employee())
+console.log(new Employee)
+console.log(new Employee('sloth'))
+console.log(new Employee('sloth', 'test'))
+console.log(new Employee('sloth', 'test', 'test1'))
+console.log(new Employee('sloth', 'test', 'test1', 'test2'))
+```
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1637945033/blog/prototype/newInstanceExample_dv9x64.png)
 
 
 ### Object.prototype 屬性移除/增加
@@ -138,8 +171,11 @@ console.log(Manager.__proto__ instanceof Object)
   - Object.getPrototypeOf(obj) ：根據obj物件所對應的構造函式來獲取函式所擁有的原型
   - Object.setPrototypeOf(obj, prototype)：對obj物件所對應的構造函式所擁有的原型設定成指定原型prototype
 
-
-
+參考資料：
+1. [js中\_\_proto\_\_和prototype的区别和关系？](https://www.zhihu.com/question/34183746)
+2. [What is the difference between prototype and \_\_proto\_\_ in JavaScript?
+](https://javascript.plainenglish.io/proto-vs-prototype-in-js-140b9b9c8cd5)
+3. [深入了解物件模型](https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Guide/Details_of_the_Object_Model)
 ## 補充知識
 ### polymorphism
 1. the fact that something such as an animal or organism can exist in different forms
