@@ -73,7 +73,7 @@ function person (name, email) {
 
 ### prototype 相關術語
 1. prototype：本身是用以實現某些物件概念的第一個實體物件，本身會是定義這個物件概念擁有的屬性和方法，實際上，該物件是第一個透過能夠建立某種物件概念的Constructor之實體物件，但本質上並不能完全是一般實體物件，此外，它代表著每一個物件所屬於的物件概念是為何。
-2. Constructor.prototype: 每一個構造函式(Constructor)能夠具有的屬性之一，會指向該構造函式或者所具有的原型物件(prototype)，然而在語法上是可以允許一般函式是擁有prototype屬性
+2. Constructor.prototype: 每一個構造函式(Constructor)能夠具有的屬性之一，會指向該構造函式自己本身所具有的原型物件(prototype)，然而在語法上是可以允許一般函式是擁有prototype屬性
 - 若是以一般函式(未以new來構成構造函數)的話，由於會指向構建function的函式所具有的原型物件，而那個原型物件正好是JavaScript Object本身。
 ```
 function example(parameter1) {
@@ -104,8 +104,27 @@ console.log(Manager.prototype instanceof Employee)
 ```
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1637937478/blog/prototype/constructorExample_ha30k1.png)
 
-3. Instance.\__proto__:
-在class-based 系統中，可以藉由編譯時期就能定義每一個物件的類別是什麼或者物件是以什麼物件概念來實現，
+3. Instance.\__proto__: 是任何物件的屬性之一，指向物件所屬的構造函數所擁有的原型物件(prototype)
+ - 若將Instance設定為構造函式 Manager時，由於構造函式本身是物件，所以系統會根據構造 "構造函式Manager" 的構造函式來找，但該構造函式Manager本身就是函式，系統會最終找上構造 "函式" 的構造函式，而它所擁有的原型正是JavaScript Object。
+```
+function Employee() {
+	this.name = "";
+	this.dept = "general";
+}
+
+function Manager() {
+	Employee.call()
+	this.reports = [];
+}
+
+Manager.prototype = new Employee;
+
+console.log(Manager.__proto__ instanceof Employee)
+console.log(Manager.__proto__ instanceof Object)
+```
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1637938539/blog/prototype/__proto___example_mw95l5.png)
+
+4. Object.\[\[prototype\]\]：是ECMAScript標準下的產物，等同於Object.\__proto__，並指派Object.getPrototypeOf() 和 Object.setPrototypeOf()來存取每一個物件下所擁有的構造函數所擁有的原型，但由於大部分瀏覽器在推廣之前就已經先用\__proto__來代替它實現。
 
 ### Object.prototype 屬性移除/增加
 
