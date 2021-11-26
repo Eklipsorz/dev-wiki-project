@@ -43,12 +43,15 @@ sidebar_position: 22
 ## JavaScript 物件導向
 1. JavaScript 由於本身是直譯語言，只能以ProtoType-based 風格來實現物件導向這概念，但後來為了讓更多人適應JS而在ES2015之後提供class這關鍵字，但實際上只是被封裝後的語法糖(Syntactic Sugar)，其本質仍為ProtoType-based
 
-2. 	prototype：原意是為了實現某些概念或想法而實做出來的第一個實體物，而往後的開發或者進展將會以該實體物為主，在這裡是以實現某些物件概念的第一個實體物件，本身會是定義這個物件概念擁有的屬性和方法，任意物件都擁有著prototype這屬性，而這屬性正是指定這物件是屬於哪一種物件概念，而屬性值會是代表該物件概念的實體物件，當任意物件透過prototype去指定任意一個物件概念，就能擁有(共享)該物件概念所擁有的屬性和方法，如物件1的prototype設定為物件2的prototype，那麼這兩個物件就能擁有(共享)同一個物件概念所擁有的屬性和方法，prototype屬性的設定方法：
+
+## prototype 
+prototype 的 原意是為了實現某些概念或想法而實做出來的第一個實體物，而往後的開發或者進展將會以該實體物為主，在這裡是以實現某些物件概念的第一個實體物件，本身會是定義這個物件概念擁有的屬性和方法，任意物件都擁有著prototype這屬性，而這屬性正是指定這物件是屬於哪一種物件概念，而屬性值會是代表該物件概念的實體物件，當任意物件透過prototype去指定任意一個物件概念，就能擁有(共享)該物件概念所擁有的屬性和方法，如物件1的prototype設定為物件2的prototype，那麼這兩個物件就能擁有(共享)同一個物件概念所擁有的屬性和方法，prototype屬性的設定方法：
 	- 當透過new方法時，就會按照constructor綁定的prototype來設定
 	- 直接透過prototype屬性值來設定
 
 
-3. 然而實際上prototype在概念上仍屬於實體物件，本質上仍需要額外內容來定義prototype具體所擁有的屬性和方法，當有了prototype具體的定義之後，就能依據其定義來建構出代表物件概念的prototype實體，而JS具體定義prototype所擁有的屬性和方法是透過函式和函式名稱來實現，函式名稱代表著prototype的名稱，而函式本身為該prototype的constructor - 負責建立對應prototype實體物件的函式，其中key為屬性或者方法，而value可以填入原型、物件、函式等
+### prototype 定義
+然而實際上prototype在概念上仍屬於實體物件，本質上仍需要額外內容來定義prototype具體所擁有的屬性和方法，當有了prototype具體的定義之後，就能依據其定義來建構出代表物件概念的prototype實體，而JS具體定義prototype所擁有的屬性和方法是透過函式和函式名稱來實現，函式名稱代表著prototype的名稱，而函式本身為該prototype的constructor - 負責建立對應prototype實體物件的函式，其中key為屬性或者方法，而value可以填入原型、物件、函式等，該函式若是以constructor形式來執行，會回傳一個prototype名為prototype1的物件
 ```
 function prototype1 () {
   this.key1 = value1
@@ -58,3 +61,28 @@ function prototype1 () {
         .
 }
 ```
+
+### prototype 例子
+假設要定義一個名為person的prototype，在這個定義中會有名字和電子郵件，那麼內容會是如下，當person被當作以constructor形式來執行時，就回傳一個prototype名為person的物件
+```
+function person (name, email) {
+  this.name = name
+  this.email = email
+}
+```
+
+### Object.prototype
+
+
+### Object.prototype 屬性移除/增加
+
+## prototype 實作繼承方式
+
+### prototype 子類
+
+### prototype 實作繼承例子
+
+
+## __proto__ 作用
+
+Object.prototype 代表 Object 的原型物件，其本身是實體物件。
