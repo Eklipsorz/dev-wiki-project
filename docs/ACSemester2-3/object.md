@@ -26,8 +26,8 @@ sidebar_position: 22
 
 
 最後由於軟體開發上是以物件為基本單元來開發，但電腦是無法直接辨識物件以及不知道如何實作物件背後的屬性和方法，因此必須事先告知電腦物件是什麼的概念，而根據程式語言是否為直譯或者編譯來區分成兩種主要方法：
-  - class-based：僅限於編譯語言，在編譯時期是先以類別來定義每一個物件是什麼樣子、具有哪些屬性和方法、與其他物件又具有什麼關係，執行時期則是按照具體定義/類別來執行。
-  - prototype-based：僅限於直譯語言，由於不存在編譯時期，所以並沒辦法更早一步去定義物件，只能在執行期間產生出代表物件概念X的實體物件，而這個實體正是原型機(prototype，可藉由其本身來慢慢演進成對應物件的原型物件)，而該實體可藉由執行過程中添加屬性和方法來慢慢讓這個物件成形，並且允許每個物件都相關的屬性值來物件所屬的物件概念，從而實現定義物件的繼承，過程中，可能會使用物件的deep copy來實現Inheritance和Polymorphism，以避免多個物件共享於同一個參照或者同一個記憶體區塊。
+  - class-based：通常僅限於編譯語言，在編譯時期是先以類別來定義每一個物件是什麼樣子、具有哪些屬性和方法、與其他物件又具有什麼關係，執行時期則是按照具體定義/類別來執行。
+  - prototype-based：通常僅限於直譯語言，由於不存在編譯時期，所以並沒辦法更早一步去定義物件，只能在執行期間產生出代表物件概念X的實體物件，而這個實體正是原型機(prototype，可藉由其本身來慢慢演進成對應物件的原型物件)，而該實體可藉由執行過程中添加屬性和方法來慢慢讓這個物件成形，並且允許每個物件都相關的屬性值來物件所屬的物件概念，從而實現定義物件的繼承，過程中，可能會使用物件的deep copy來實現Inheritance和Polymorphism，以避免多個物件共享於同一個參照或者同一個記憶體區塊。
 
 ### 參考資料
 1. [prototype based vs. class based inheritance](https://stackoverflow.com/questions/816071/prototype-based-vs-class-based-inheritance)
@@ -66,7 +66,7 @@ function person (name, email) {
 ```
 
 ### 透過prototype來建立實體
-JavaScript允許開發者使用new關鍵字和代表prototype的函式來建立符合prototype的實體物件，在這裡的new會建立一個空實體物件並將value1, value2,... 等參數傳入至function prototype1 ()，而傳入進去的空實體物件在函式會是由this變數來儲存，在這裡會定義著該實體物件會有哪些新的屬性和方法，並按照指示將value1, value2,... 傳入至對應的新屬性和方法。
+JavaScript允許開發者使用new關鍵字和代表prototype的函式來建立符合prototype的實體物件，在這裡的new會建立一個空實體物件，接著設定該物件的__proto__屬性為對應的prototype(new關鍵字之後的prototype名稱)，並將該空實物物件和value1, value2,... 等參數傳入至function prototype1 ()，而傳入進去的空實體物件在函式會是由this變數來儲存，在這裡會定義著該實體物件會有哪些新的屬性和方法，並按照指示將value1, value2,... 傳入至對應的新屬性和方法。
 
 ```
 function prototype1 (value1, value2, ....) {
@@ -124,6 +124,9 @@ delete constructor.prototype.key
 ### prototype chain
 而在JS的prototype-based的物件導向風格，一切都只能從執行中來決定每一種物件概念的prototype(相當於class-based的class)以及定義每一個prototype之間的關係，定義每一個prototype之間的關係會模仿著class-based的類別鏈概念而構建出一種可以在執行中來決定關係，也就是原型鏈(prototype chain)，透過賦予每個實體物件一些屬性以及方法來將實體物件綁定於代表物件概念A的prototype A來描述這些實體物件是屬於物件概念A的產物，而prototype A本身又是實體物件，所以可以進一步找到prototype A 是屬於哪個物件概念，後面prototype可以依此類推，那麼每當建立實體或者存取實體便會依據著這原型鏈來從中定義這實體物件究竟繼承了什麼以及哪些屬性和方法是被繼承的。
 
+題外話：若持續對著該Object探尋著它的prototype則會找到null。
+
+
 ### prototype 實現方式
 從前面來描述來看，原型鏈(prototype chain)是定義藉由層狀結構來定義每一個物件所屬的prototype跟其他prototype存在著什麼樣的繼承關係，在JS世界中，原型鏈(prototype chain)最頂端的prototype會是JavaScript Object本身，而所有的物件都皆從Object來進行著繼承或者串連成原型鏈。JS具體構成繼承或者原型鏈的方式會是使用著代表物件概念的prototype名稱和每個函式所擁有的prototype屬性來設定原型鏈，但這只是設定原型鏈，物件屬性還未真的繼承，必須再讓繼承的物件透過call和base方法去讓自己屬性去呼叫被繼承方的constructor來設定繼承的物件的屬性和方法為何，才能算真正的繼承。
 
@@ -168,11 +171,72 @@ function prototype2(something2) {
 prototype2.prototype = prototype
 ```
 
-
-題外話：若持續對著該Object探尋著它的prototype則會找到null。
 ### prototype 子類
+在ES2015之後，JS就提供一系列class-based會用到的關鍵字和語法來封裝prototype based的概念，這些class-based關鍵字和語法在JS上就相當於語法糖的存在，在這裡若用上這些語法糖時，會用類別(class)稱呼prototype，而子類別(class)就是指繼承於其他prototype的prototype，拿上述的語法來當例子，要用class-based的語法定義兩個prototype/類別會是如下，
 
-### prototype 實作繼承例子
+```
+class prototype1 {
+  constructor(something1) {
+    // defefine something1
+  }
+}
+
+class prototype2 {
+  constructor(something1) {
+
+  }
+}
+
+/* 
+以上相等於下者
+function prototype1(something1) {
+  // define something1
+}
+
+function prototype2(something2) {
+ 
+}
+
+*/ 
+```
+其中每一個class下會有constructor這函式，這是對應類別的建構函式，當使用new 關鍵字來配合著 prototype 名稱就會呼叫著對應constructor來建立物件，而建立過程會如同建立prototype對應的實體物件一樣。
+
+```
+let object1 = new prototype1()
+// call constructor of class prototype1
+```
+
+接著若要透過class-based語法來進一步實現繼承功能，會使用到extends和super這兩個關鍵字，其中extends是用來指示目前類別/prototype是繼承哪一個類別/prototype，而super則是代表著被繼承的prototype物件本身，在這裡一樣會定義兩個prototype，分別名為prototype1和prototype2，不同的事情就是透過extends來讓prototype2去繼承prototype1所擁有的屬性和方法，在這裡，prototype1會是prototype2的父類別，而prototype2就是prototype1的子類別，最後再讓prototype2的實體物件透過super來呼叫prototype1的constructor來讓該實體物件正式獲取prototype1所擁有的屬性和方法。
+
+```
+class prototype1 {
+  constructor(something1) {
+    // defefine something1
+  }
+}
+
+class prototype2 {
+  constructor(something1) {
+    super(something3)
+  }
+}
+
+
+/* 
+以上相等於下者
+function prototype1(something1) {
+  // define something1
+}
+
+function prototype2(something2) {
+  prototype1.call(this, something3)
+}
+
+prototype2.prototype = prototype
+*/ 
+```
+
+### prototype屬性：prototype vs. class
 
 
 ## prototype 相關術語
