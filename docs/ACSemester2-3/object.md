@@ -3,7 +3,7 @@ sidebar_position: 22
 ---
 
 
-## 物件概念
+## JavaScript 的 prototype 簡介
 
 ## object oriented language
 一個軟體的開發過程若都經由人類決定以及執行的話，那麼遲早會為了加速軟體的開發效率，而讓軟體的開發方式易於人類理解和使用，而物件導向語言正是其中一個案例，以易於人類理解的物件概念來建構出一項語言，在使用這項語言中會以物件(object)為一個開發上的基本單位，換言之，所有的程式碼皆會以物件本身來開發。
@@ -29,8 +29,8 @@ sidebar_position: 22
   - class-based：通常僅限於編譯語言，在編譯時期是先以類別來定義每一個物件是什麼樣子、具有哪些屬性和方法、與其他物件又具有什麼關係，執行時期則是按照具體定義/類別來執行。
   - prototype-based：通常僅限於直譯語言，由於不存在編譯時期，所以並沒辦法更早一步去定義物件，只能在執行期間產生出代表物件概念X的實體物件，而這個實體正是原型機(prototype，可藉由其本身來慢慢演進成對應物件的原型物件)，而該實體可藉由執行過程中添加屬性和方法來慢慢讓這個物件成形，並且允許每個物件都相關的屬性值來物件所屬的物件概念，從而實現定義物件的繼承，過程中，可能會使用物件的deep copy來實現Inheritance和Polymorphism，以避免多個物件共享於同一個參照或者同一個記憶體區塊。
 
-### 參考資料
-1. [prototype based vs. class based inheritance](https://stackoverflow.com/questions/816071/prototype-based-vs-class-based-inheritance)
+參考資料：
+[prototype based vs. class based inheritance](https://stackoverflow.com/questions/816071/prototype-based-vs-class-based-inheritance)
 
 
 
@@ -237,7 +237,7 @@ prototype2.prototype = prototype
 ```
 
 ### prototype屬性：prototype vs. class
-
+prototype 和 ES2015所提供的語法糖在prototype相關屬性的設定大致上都會是一致，但除了屬性和方法在實際原型上的儲存會是不一樣以外，當使用prototype原生語法去定義每一個prototype會有的屬性和方法時，其constructor.prototype、object.\_\_proto\_\_會是prototype名稱和其擁有的屬性和方法，而當使用class語法糖去定義時，其constructor.prototype、object.\_\_proto\_\_只會是prototype名稱，不會儲存它所擁有的屬性和方法。
 
 ## prototype 相關術語
 1. prototype：本身是用以實現某些物件概念的第一個實體物件，本身會是定義這個物件概念擁有的屬性和方法，實際上，該物件是第一個透過能夠建立某種物件概念的Constructor之實體物件，但本質上並不能完全是一般實體物件，此外，它代表著每一個物件所屬於的物件概念是為何。
