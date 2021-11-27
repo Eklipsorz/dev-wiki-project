@@ -125,30 +125,48 @@ delete constructor.prototype.key
 而在JS的prototype-based的物件導向風格，一切都只能從執行中來決定每一種物件概念的prototype(相當於class-based的class)以及定義每一個prototype之間的關係，定義每一個prototype之間的關係會模仿著class-based的類別鏈概念而構建出一種可以在執行中來決定關係，也就是原型鏈(prototype chain)，透過賦予每個實體物件一些屬性以及方法來將實體物件綁定於代表物件概念A的prototype A來描述這些實體物件是屬於物件概念A的產物，而prototype A本身又是實體物件，所以可以進一步找到prototype A 是屬於哪個物件概念，後面prototype可以依此類推，那麼每當建立實體或者存取實體便會依據著這原型鏈來從中定義這實體物件究竟繼承了什麼以及哪些屬性和方法是被繼承的。
 
 ### prototype 實現方式
-從前面來描述來看，原型鏈(prototype chain)是定義藉由層狀結構來定義每一個物件所屬的prototype跟其他prototype存在著什麼樣的繼承關係，在JS世界中，原型鏈(prototype chain)最頂端的prototype會是JavaScript Object本身，而所有的物件都皆從Object來進行著繼承或者串連成原型鏈。JS具體構成繼承或者原型鏈的方式會是使用著prototype名稱和每個函式所擁有的prototype屬性來，在這裡假設定二個用來定義prototype內容的函式，這兩個prototype的名稱分別為prototype1和prototype2，
+從前面來描述來看，原型鏈(prototype chain)是定義藉由層狀結構來定義每一個物件所屬的prototype跟其他prototype存在著什麼樣的繼承關係，在JS世界中，原型鏈(prototype chain)最頂端的prototype會是JavaScript Object本身，而所有的物件都皆從Object來進行著繼承或者串連成原型鏈。JS具體構成繼承或者原型鏈的方式會是使用著代表物件概念的prototype名稱和每個函式所擁有的prototype屬性來設定原型鏈，但這只是設定原型鏈，物件屬性還未真的繼承，必須再讓繼承的物件透過call和base方法去讓自己屬性去呼叫被繼承方的constructor來設定繼承的物件的屬性和方法為何，才能算真正的繼承。
+
+所以若要讓屬於prototype A的實體物件A去繼承實體物件B所屬的prototype B之屬性和方法，整體來說有兩個首要任務：
+1. 將prototype B 設定在prototype A本身對應的constructor的prototype屬性，從而構成Object->B->A這原型鏈
+2. 在prototype A本身對應的constructor中設定方法來呼叫prototype B對應的constructor，並把想傳入的參數以及prototype A實體物件傳入進去，讓prototype B的constructor去將參數值設定只有它擁有的屬性和方法並增加至prototype A實體物件，使得prototype A實體物件擁有prototype B的屬性和方法。
+
+舉一個例子： 在這裡假設有二個用來定義prototype內容的函式(建構函式)，這兩個prototype的名稱分別為prototype1和prototype2，而建構函式的參數分別為something1和something2，這些是用來設定建立對應實體時所要有的實際屬性和實際方法，
 ```
-function prototype1(something) {
-  // define something
+function prototype1(something1) {
+  // define something1
 }
 
-function prototype2(something) {
+function prototype2(something2) {
 
 }
 ```
-當要定義名為prototype2的prototype去繼承prototype1的屬性和方法時，會透過函式特有的prototype屬性來繼承
+當要定義名為prototype2的prototype去繼承prototype1的屬性和方法時，會透過函式特有的prototype屬性來實現繼承，這時就定義了Object->prototype1->prototype2這原型鏈。
+
 ```
-function prototype1(something) {
-  // define something
+function prototype1(something1) {
+  // define something1
 }
 
-function prototype2(something) {
+function prototype2(something2) {
 
 }
 
 prototype2.prototype = prototype
+```
+緊接著就是為prototype2的實體物件去(繼承)增加只有prototype1會有的屬性和方法並依據prototype2的constructor給定的參數來賦予，在這裡會在prototype2使用call來實現，當要建立prototype2的實體物件時，prototype2會呼叫prototype1的建構式，並且將prototype2對應的實體物件和參數傳入至prototype1的建構函式，讓它去為prototype2對應的實體物件增加屬性以及根據參數來設定屬性值，當執行完call的實體物件就會擁有著prototype1會有的屬性和方法。
 
 ```
+function prototype1(something1) {
+  // define something1
+}
 
+function prototype2(something2) {
+  prototype1.call(this, something3)
+}
+
+prototype2.prototype = prototype
+```
 
 
 題外話：若持續對著該Object探尋著它的prototype則會找到null。
