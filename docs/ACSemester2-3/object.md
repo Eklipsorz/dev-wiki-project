@@ -308,11 +308,13 @@ console.log(Manager.__proto__ instanceof Object)
 
 
 ### object copy
-1. 將一個物件複製成另一個物件的方法，在這裡由於每一個物件都具有屬性和方法，若物件A被複製成物件B，那麼這兩個物件所擁有屬性名稱、對應屬性值、方法名稱、對應方法皆會一樣。
-2. 但若屬性值或者對應方法本身是一個參照或者一個記憶體位址的話，那麼物件A和物件B很有可能會一起共享著同一個參照或者同一個記憶體位址，只要任何一方針對該參照對應的內容做更動，另一方就即可透過同一個參照看到更動內容，而這就是淺拷貝(Shadow Copy)
-3. 若物件A被複製成物件B時，也連同替物件A的所有參照對應的物件進行複製：將整個內容複製給物件B，進而讓雙方不再共享同一個參照或者同一個記憶體位址，那麼任何一方做任何更動時不會影響另一方的內容
+1. 將一個物件A所擁有的內容複製到另一個物件B，在這裡由於每一個物件都具有屬性和方法，若物件A內容被複製到成為物件B的屬性和方法，那麼這兩個物件所擁有屬性名稱、對應屬性值、方法名稱、對應方法皆會一樣。
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1638015712/blog/prototype/begintoCopy_wtckkf.png)
+2. 但若屬性值或者對應方法本身是一個參照或者一個記憶體位址的話，那麼物件A和物件B很有可能會一起共享著同一個參照或者同一個記憶體位址，只要任何一方針對該參照對應的內容做更動，另一方就即可透過同一個參照看到更動內容，而若拷貝結果是這樣，那麼該拷貝方式就即為淺度拷貝(Shadow Copy)
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1638015712/blog/prototype/ShadowCopyResult_gchjms.png)
+3. 若物件A內容被複製成為物件B的屬性和方法時，也連同替物件A的所有參照對應的物件內容進行複製，而非單純複製參照位址：將整個內容複製給物件B，進而讓雙方不再共享同一個參照或者同一個記憶體位址，那麼任何一方做任何更動時不會影響另一方的內容，而若拷貝結果是這樣，那麼該拷貝方式就即為深度拷貝(Deep Copy)
 
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1637855634/blog/SE/deep_copy_whhuov.png)
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1638015711/blog/prototype/DeepCopyResult_wgeumz.png  )
 
 參考資料：
 1. [object copy](https://en.wikipedia.org/wiki/Object_copying#Shallow_copy)
