@@ -334,6 +334,11 @@ GET /todos/:id
       todoModel.findById(id)
         .exec()
         .then(todo => {
+          // 這裡的todo會是Document Instance
+          // console.log(todo instanceof todoModel)         result: true
+          // console.log(todo instanceof mongoose.Model)    result: true
+          // console.log(todo instanceof mongoose.Document) result: true
+    
           todo.name = name
           return todo.save()
         })
