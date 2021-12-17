@@ -57,6 +57,15 @@ sidebar_position: 34
 3. Cookie 可自由讓使用者或者瀏覽器來決定其內容的去留
 
 ## session
+1. 原意為為從事某項活動的一段時間或者從事某項活動的會議，在這裡會將活動設定為每一次伺服器和客戶端之間的連線活動，而會議則是引申為代表兩者間在連線時的互動紀錄，前兩者合再一起就是伺服器和客戶端之間的連線活動時紀錄。
+2. 其紀錄由伺服器端進行，可儲存客戶端和伺服器連線時的互動狀態
+3. 由於伺服器本身會處理大量的請求，也意味著有大量的Session儲存在伺服器，所以為了提供穩定的服務，會替每個session安排超時時間，當session紀錄到達時間時，就從伺服器釋放
 
 
 ## cookie 和 session 之間的應用
+1. 應用於伺服器和客戶端之間的憑證系統，主要分為：
+  - Cookie-based Authentication ：由客戶端提供的cookie內容來認證其對象在伺服器是否為合法對象
+  - Token-based authentication
+2. Cookie-based Authentication : 由於cookie是存放客戶端和伺服器端的連線互動時的狀態，很容易被其他電腦獲取其cookie，通常會在cookie內容上加密或者不在cookie儲存敏感性資料，取而代之的是，伺服器本身會以類似的陣列形式來儲存敏感性資料，而cookie就儲存其資料在陣列上的位置。
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1639747105/blog/http/cookie_session_tgjczs.png)
