@@ -22,30 +22,11 @@ sidebar_position: 13
   - Resource Server：存放Resource Owner所擁有的私人資源之伺服器，同時會驗證Authorization Client的Authorization Token是否合法。
 
 4. 其他用詞：
-  - Authorization Grant：用來證明Resource Owner賦予應用程式一定程度的授權、同意應用程式去做某些處理和存取一定範圍內的資源，通常會由Authorization Server根據Resource Owne的同意情況來給予Grant
+  - Authorization Grant：用來證明Resource Owner賦予應用程式一定程度的授權、同意應用程式去做某些處理和存取一定範圍內的資源，通常會由Authorization Server根據Resource Owne的同意情況來將Grant給予Web Application
+  - Authorization Code：主要功用如同Authorization Grant的功能一樣，只是差別在於該Code會是透過Authorization Server來傳送至使用者，然後再由使用者傳送給Web Application
   - Redirect URI（Callback URL）：指定在使用者驗證完使用者身份並獲得Grant後會導向的頁面，該頁面會是由第三方來提供
   - Access Token：Authorization Server在確定Authorization Client本身是合法且其擁有的Grant是合法後所簽發給Authorization Client的Token，本身由於安全問題，該Token只會維持一段時間能夠使用，過期就無法使用
   - Scope：使用者許可給Authorization Client/第三方使用的資源範圍，通常會是以清單形式來表示scope，而內容則為可以取得使用者的名稱、可以編輯使用者的大頭貼、可以刪除我的某則貼文
-
-
-## OAuth 一般流程
-1. 首先當使用者點擊Sign in with xxxx時，就表示使用者正要使用xxxx服務(如Google、FB)所授權的資訊認證來當做目前網站的會員資料認證
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1640538440/blog/OAuth/mediumExample_bqqckm.png)
-2. 當點擊之後，便是發送請求至對應目前網站的伺服器，而伺服器的路由處理就是向xxxx服務的認證伺服器(Authorization Server)並提供對應的認證資料1給對方伺服器
-3. 伺服器會檢驗認證資訊1中的Client ID、Client Secret是否合法，若合法就設定Redirect URI和Response Type，其中這兩個分別為指定當使用者在xxxx服務的登入認證成功時所要導向的網址以及Authorization Server所要回應給Web Application的Grant種類是為何
-4. 將使用者頁面導向xxxx服務的登入頁面
-5. 使用者在登入頁面輸入帳密並提交至Authorization Server做身份驗證
-6. Authorization Server檢驗帳密是否合法，若合法就繼續下一步，否則就停留或者中斷
-7. Authorization Server詢問使用者哪些資料要提供給網站
-8. 使用者提交資料授權範圍(Scope)至Authorization Server後，就會依照Redirect URI來導向另一個頁面，若授權範圍影響著認證或者不同意的話，會直接回報錯誤訊息
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1640541206/blog/OAuth/ScopeExample_mcoxbj.png)
-9. Authorization Server給予Web Application一份Authorization Grant來表示使用者同意Web Application來代替使用者去獲取對應範圍的資料以及進一步的資料認證
-10. Web Application傳遞認證資訊2來索要Access Token
-11. Authorization Server檢驗認證資訊2是否合法，若合法就繼續做下一步，若不合法就不允許發放Access Token
-12. Authorization Server發放Access Token和Refresh Token至Web Application
-13. Web Application透過Access Token來向Resource Server索要對應範圍(Scope)的使用者資料做認證
-14. Resource Server 會檢驗Access Toke，若合法就繼續做下一步，若不合法就不允許發放對應資料
-15. Resource Server 發放對應使用者資料
 
 
 ## OAuth Authorization Code Flow 流程
@@ -65,24 +46,23 @@ sidebar_position: 13
 11. 使用者向Web Application發送GET /RedirectURI?code=xxx
 12. Web Application收到請求便向Authorization Server發送POST /token以及傳送使用者傳遞過來的Authorization Code、自己所擁有的Client ID和Client Secret
 13. Authorization Server收到請求便檢驗Authorization Code、Client ID、Client Secret是否合法，若不合法就中斷，若合法就繼續下一步
-14. Authorization Server核可後便發送Access Token(這裡的值會是aaa)至Web Application，此時Web Application才有權利向Resource Server索要合法範圍的使用者資料
+14. Authorization Server核可後便發送Access Token(這裡的值會是aaa)和Refresh Token至Web Application，此時Web Application才有權利向Resource Server索要合法範圍的使用者資料
 15. Web Application發送GET /Resource?access_token=aaa至Resource Server
 16. Resource Server檢驗access_token是否合法，若不合法就中斷，若合法就繼續下一步
 17. Resource Server核可後便傳遞對應的使用者資料
 18. Web Application收到後便確定帳號驗證成功，同時許可使用者可以登入該Web Application
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1640626928/blog/OAuth/AuthFlowPart2_odneud.png)
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1640628119/blog/OAuth/AuthFlowPart2_hhxhnp.png)
 
 ## OAuth Refresh Token流程
-1. Authorization Server為了讓Web Application能夠再申請另一份短期的Access Token而提供一個Refresh Token至Web Application，而當Web Application所擁有的Access Token是過期的話，那麼其Application就會向Authorization Server重新申請一份新的Access Token，提交的資料有Refresh Token和Grant，Authorization Server收到這些資料並審核成功的話，並會給予新的Access Token至Web Application
-2. 流程為如下，以Access Token過期後為主：
+1. 由於每一份Access Token都有時限，超過一定時間就會過期變得無法讓任何一方透過它來要求資源，Authorization Server為了讓Web Application能夠再申請另一份短期的Access Token而提供一個Refresh Token至Web Application，而當Web Application所擁有的Access Token是過期的話，那麼其Application就會向Authorization Server重新申請一份新的Access Token，提交的資料有Refresh Token和Grant，Authorization Server收到這些資料並審核成功的話，並會給予新的Access Token至Web Application
+2. 好處是：不須經過使用者來重新同意來延長Access Token使用
+3. 流程為如下，以Access Token過期後為主：
   - Web Application拿過期的Access Token去向Resource Server索要對應使用者資料
   - Resource Server回報錯誤並告知Web Application目前所擁有的Access Token已經過期，無法再有權利索要資料
-  - Web Application向Authorization Server發送索要新的Access Token之請求，並傳送Refresh Token和Grant至該Server
-  - Authorization Server收到並檢驗Refresh Token和Grant是否合法，若合法就繼續做下一步，若不合法就不允許發放新的Access Token
+  - Web Application向Authorization Server發送索要新的Access Token之請求，並傳送Refresh Token和Code至該Server
+  - Authorization Server收到並檢驗Refresh Token和Code是否合法，若合法就繼續做下一步，若不合法就不允許發放新的Access Token
   - Authorization Server審核成功並發送新的Access Token至Web Application
   - Web Application以新的Access Token來向Resource Server索要對應使用者資料
   - Resource Server檢驗新的Access Token是否合法，若合法就繼續做下一步，若不合法就不允許發放對應資料
   - Resource Server審核成功就回傳對應使用者資料至Web Application
-
-
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1640612655/blog/OAuth/RefreshAuthFlow_etiz47.png)
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1640628454/blog/OAuth/RefreshAuthFlow_oscggl.png)
