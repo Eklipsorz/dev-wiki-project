@@ -24,7 +24,7 @@ sidebar_position: 13
 4. 其他用詞：
   - Authorization Grant：用來證明Resource Owner賦予應用程式一定程度的授權、同意應用程式去做某些處理和存取一定範圍內的資源，通常會由Authorization Server根據Resource Owne的同意情況來給予Grant
   - Redirect URI（Callback URL）：指定在使用者驗證完使用者身份並獲得Grant後會導向的頁面，該頁面會是由第三方來提供
-  - Access Token：Authorization Server在確定Authorization Client本身是合法且其擁有的Grant是合法後所簽發給Authorization Client的Token
+  - Access Token：Authorization Server在確定Authorization Client本身是合法且其擁有的Grant是合法後所簽發給Authorization Client的Token，本身由於安全問題，該Token只會維持一段時間能夠使用，過期就無法使用
   - Scope：使用者許可給Authorization Client/第三方使用的資源範圍，通常會是以清單形式來表示scope，而內容則為可以取得使用者的名稱、可以編輯使用者的大頭貼、可以刪除我的某則貼文
 
 
@@ -42,9 +42,25 @@ sidebar_position: 13
 9. Authorization Server給予Web Application一份Authorization Grant來表示使用者同意Web Application來代替使用者去獲取對應範圍的資料以及進一步的資料認證
 10. Web Application傳遞認證資訊2來索要Access Token
 11. Authorization Server檢驗認證資訊2是否合法，若合法就繼續做下一步，若不合法就不允許發放Access Token
-12. Authorization Server發放Access Token至Web Application
-13. Web Application透過Access Token來索要對應範圍(Scope)的使用者資料做認證
-14. Authorization Server 會檢驗Access Toke，若合法就繼續做下一步，若不合法就不允許發放對應資料
-15. Authorization Server發放對應使用者資料
+12. Authorization Server發放Access Token和Refresh Token至Web Application
+13. Web Application透過Access Token來向Resource Server索要對應範圍(Scope)的使用者資料做認證
+14. Resource Server 會檢驗Access Toke，若合法就繼續做下一步，若不合法就不允許發放對應資料
+15. Resource Server 發放對應使用者資料
 
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1640540290/blog/OAuth/AuthFlow_djhfdf.png)
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1640611025/blog/OAuth/AuthFlow_sbdpyc.png)
+
+
+## OAuth Refresh Token流程
+1. Authorization Server為了讓Web Application能夠再申請另一份短期的Access Token而提供一個Refresh Token至Web Application，而當Web Application所擁有的Access Token是過期的話，那麼其Application就會向Authorization Server重新申請一份新的Access Token，提交的資料有Refresh Token和Grant，Authorization Server收到這些資料並審核成功的話，並會給予新的Access Token至Web Application
+2. 流程為如下，以Access Token過期後為主：
+  - Web Application拿過期的Access Token去向Resource Server索要對應使用者資料
+  - Resource Server回報錯誤並告知Web Application目前所擁有的Access Token已經過期，無法再有權利索要資料
+  - Web Application向Authorization Server發送索要新的Access Token之請求，並傳送Refresh Token和Grant至該Server
+  - Authorization Server收到並檢驗Refresh Token和Grant是否合法，若合法就繼續做下一步，若不合法就不允許發放新的Access Token
+  - Authorization Server審核成功並發送新的Access Token至Web Application
+  - Web Application以新的Access Token來向Resource Server索要對應使用者資料
+  - Resource Server檢驗新的Access Token是否合法，若合法就繼續做下一步，若不合法就不允許發放對應資料
+  - Resource Server審核成功就回傳對應使用者資料至Web Application
+
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1640612655/blog/OAuth/RefreshAuthFlow_etiz47.png)
