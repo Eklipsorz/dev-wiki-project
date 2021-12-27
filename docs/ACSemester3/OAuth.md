@@ -47,8 +47,30 @@ sidebar_position: 13
 14. Resource Server 會檢驗Access Toke，若合法就繼續做下一步，若不合法就不允許發放對應資料
 15. Resource Server 發放對應使用者資料
 
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1640611025/blog/OAuth/AuthFlow_sbdpyc.png)
 
+## ## OAuth Authorization Code方式
+1. 
+
+## OAuth Authorization Code流程 - part1
+1. 首先當使用者點擊Sign in with xxxx按鈕時，就表示使用者正要使用xxxx服務(如Google、FB)所授權的資訊認證來當做目前網站的會員資料認證，同時也表示著使用者向Web Application發送GET /xxxx/loginAuth服務要求xxxx服務的資訊認證來做登入認證
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1640538440/blog/OAuth/mediumExample_bqqckm.png)
+2. 當Web Application收到請求後，便回傳ClientID以及要求使用者導向Authorization Server下的/authorization
+3. 使用者收到導向請求便向Authorization Server發送GET /authorization請求以及附帶ClientID
+4. Authorization Server收到後便檢驗ClientID是否合法並辨識為該使用者為OAuth協定下的Resource Owner
+5. 辨識為合法後，Authorization Server要求使用者填寫帳密
+6. 使用者提交帳密至Authorization Server
+7. Authorization Server檢驗帳密，看是否合法，若不是合法就要求重新輸入，合法的話就繼續下一步
+8. Authorization Server會顯示Web Application想要存取何種資料並詢問願不願意，若拒絕的話，OAuth認證就結束
+9. 使用者向Authorization Server表示願意
+10. Authorization Server會生成一個Authorization code並請求使用者導向至RedirectURI?code=xxx，RedirectURI會是指Web Application
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1640626647/blog/OAuth/AuthFlowPart1_mkitpy.png)
+
+
+
+
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1640625741/blog/OAuth/AuthFlowPart2_r2mmwb.png)
 
 ## OAuth Refresh Token流程
 1. Authorization Server為了讓Web Application能夠再申請另一份短期的Access Token而提供一個Refresh Token至Web Application，而當Web Application所擁有的Access Token是過期的話，那麼其Application就會向Authorization Server重新申請一份新的Access Token，提交的資料有Refresh Token和Grant，Authorization Server收到這些資料並審核成功的話，並會給予新的Access Token至Web Application
