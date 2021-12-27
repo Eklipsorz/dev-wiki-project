@@ -48,10 +48,7 @@ sidebar_position: 13
 15. Resource Server 發放對應使用者資料
 
 
-## ## OAuth Authorization Code方式
-1. 
-
-## OAuth Authorization Code流程 - part1
+## OAuth Authorization Code Flow 流程
 1. 首先當使用者點擊Sign in with xxxx按鈕時，就表示使用者正要使用xxxx服務(如Google、FB)所授權的資訊認證來當做目前網站的會員資料認證，同時也表示著使用者向Web Application發送GET /xxxx/loginAuth服務要求xxxx服務的資訊認證來做登入認證
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1640538440/blog/OAuth/mediumExample_bqqckm.png)
 2. 當Web Application收到請求後，便回傳ClientID以及要求使用者導向Authorization Server下的/authorization
@@ -61,16 +58,19 @@ sidebar_position: 13
 6. 使用者提交帳密至Authorization Server
 7. Authorization Server檢驗帳密，看是否合法，若不是合法就要求重新輸入，合法的話就繼續下一步
 8. Authorization Server會顯示Web Application想要存取何種資料並詢問願不願意，若拒絕的話，OAuth認證就結束
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1640541206/blog/OAuth/ScopeExample_mcoxbj.png)
 9. 使用者向Authorization Server表示願意
-10. Authorization Server會生成一個Authorization code並請求使用者導向至RedirectURI?code=xxx，RedirectURI會是指Web Application
-
+10. Authorization Server會生成一個Authorization code並請求使用者導向至/RedirectURI?code=xxx，RedirectURI會是指Web Application
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1640626647/blog/OAuth/AuthFlowPart1_mkitpy.png)
-
-
-
-
-
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1640625741/blog/OAuth/AuthFlowPart2_r2mmwb.png)
+11. 使用者向Web Application發送GET /RedirectURI?code=xxx
+12. Web Application收到請求便向Authorization Server發送POST /token以及傳送使用者傳遞過來的Authorization Code、自己所擁有的Client ID和Client Secret
+13. Authorization Server收到請求便檢驗Authorization Code、Client ID、Client Secret是否合法，若不合法就中斷，若合法就繼續下一步
+14. Authorization Server核可後便發送Access Token(這裡的值會是aaa)至Web Application，此時Web Application才有權利向Resource Server索要合法範圍的使用者資料
+15. Web Application發送GET /Resource?access_token=aaa至Resource Server
+16. Resource Server檢驗access_token是否合法，若不合法就中斷，若合法就繼續下一步
+17. Resource Server核可後便傳遞對應的使用者資料
+18. Web Application收到後便確定帳號驗證成功，同時許可使用者可以登入該Web Application
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1640626928/blog/OAuth/AuthFlowPart2_odneud.png)
 
 ## OAuth Refresh Token流程
 1. Authorization Server為了讓Web Application能夠再申請另一份短期的Access Token而提供一個Refresh Token至Web Application，而當Web Application所擁有的Access Token是過期的話，那麼其Application就會向Authorization Server重新申請一份新的Access Token，提交的資料有Refresh Token和Grant，Authorization Server收到這些資料並審核成功的話，並會給予新的Access Token至Web Application
