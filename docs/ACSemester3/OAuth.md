@@ -29,11 +29,12 @@ sidebar_position: 13
   - Scope：使用者許可給Authorization Client/第三方使用的資源範圍，通常會是以清單形式來表示scope，而內容則為可以取得使用者的名稱、可以編輯使用者的大頭貼、可以刪除我的某則貼文
 
 
-## OAuth Authorization Code Flow 流程
+## OAuth Authorization Flow 預先設定
+在這裡是假定Web Application已經和Authorization Server確定Web Application能夠要的資料、擁有的RedirectURI、域名等資訊，在這裡分為前後流程，前面流程是描述著Resource Owner在與Web Application、Authorization Server進行登入驗證來替索要Web Application拿到Authorization Code，而後面流程則是描述著Web Application拿到Authorization Code來索要Access Token，並接著和Resource Server發出對應使用者的資源，最後允許使用者登入，流程如下：
 1. 首先當使用者點擊Sign in with xxxx按鈕時，就表示使用者正要使用xxxx服務(如Google、FB)所授權的資訊認證來當做目前網站的會員資料認證，同時也表示著使用者向Web Application發送GET /xxxx/loginAuth服務要求xxxx服務的資訊認證來做登入認證
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1640538440/blog/OAuth/mediumExample_bqqckm.png)
-2. 當Web Application收到請求後，便回傳ClientID以及要求使用者導向Authorization Server下的/authorization
-3. 使用者收到導向請求便向Authorization Server發送GET /authorization請求以及附帶ClientID
+2. 當Web Application收到請求後，便回傳ClientID以及要求使用者導向Authorization Server下的/authorization以及附帶ClientID、RedirectURI(若Web Application沒預先設定的話)至客戶端
+3. 使用者收到導向請求便向Authorization Server發送GET /authorization請求
 4. Authorization Server收到後便檢驗ClientID是否合法並辨識為該使用者為OAuth協定下的Resource Owner
 5. 辨識為合法後，Authorization Server要求使用者填寫帳密
 6. 使用者提交帳密至Authorization Server
@@ -42,7 +43,7 @@ sidebar_position: 13
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1640541206/blog/OAuth/ScopeExample_mcoxbj.png)
 9. 使用者向Authorization Server表示願意
 10. Authorization Server會生成一個Authorization code並請求使用者導向至/RedirectURI?code=xxx，RedirectURI會是指Web Application
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1640626647/blog/OAuth/AuthFlowPart1_mkitpy.png)
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1640678353/blog/OAuth/AuthFlowPart1_kgdq1x.png)
 11. 使用者向Web Application發送GET /RedirectURI?code=xxx
 12. Web Application收到請求便向Authorization Server發送POST /token以及傳送使用者傳遞過來的Authorization Code、自己所擁有的Client ID和Client Secret
 13. Authorization Server收到請求便檢驗Authorization Code、Client ID、Client Secret是否合法，若不合法就中斷，若合法就繼續下一步
@@ -66,3 +67,24 @@ sidebar_position: 13
   - Resource Server檢驗新的Access Token是否合法，若合法就繼續做下一步，若不合法就不允許發放對應資料
   - Resource Server審核成功就回傳對應使用者資料至Web Application
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1640628454/blog/OAuth/RefreshAuthFlow_oscggl.png)
+
+## OAuth Authorization Flow 沒預先設定 
+在這裡是假定Web Application已經註冊Authorization Server的Client ID，但Web Application沒和Authorization Server確定Web Application能夠要的資料、擁有的RedirectURI，與預先設定的流程多增加Web Application和Authorization Server之間的設定和協商，所以前半段的流程會是不太一樣，而後半段流程會與預先設定的流程一樣，在這裡只貼前半段流程：
+1. Resource Owner向Web Application發出GET /xxxx/loginAuth請求
+2. Web Application收到便向Authorization Server發出登入認證請求，並傳送ClientID、Client Secret、Scope、RedirectURI
+3. Authorization Server檢驗ClientID和Secret，並設定對應的Scope和RedirectURI，最後向Web Application發出成功處理
+4. Web Application收到成功回應時便請求使用者導向Authorization Server所擁有的/authorization以及賦予它一個ClientID
+5. 使用者向著Authorization Server 發出 GET /authorization請求並夾帶著ClientID
+6. Authorization Server檢驗ClientID是否合法，若合法就繼續做下一步，若不合法就中斷
+7. Authorization Server核可後便要求使用者填寫帳密
+8. 使用者提交帳密
+9. Authorization Server檢驗帳密是否合法，若合法就繼續做下一步，若不合法就回到登入頁面
+10. Authorization Server呈現一個畫面來告知 使用者 Web Application想要的資料有哪些，並徵詢使用者的意見
+11. 使用者向Authorization Server表示同意
+12. Authorization Server便產生Authorization Code並根據事先設定好的RedirectURI來請求使用者導向RedirectURI?code=xxx
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1640679847/blog/OAuth/NoDefaultAuthFlowPart1_tkoz0f.png)
+
+## OAuth 參考資料
+1. [帮你深入理解OAuth2.0协议](https://blog.csdn.net/seccloud/article/details/8192707)
+2. [简述 OAuth 2.0 的运作流程](https://www.barretlee.com/blog/2016/01/10/oauth2-introduce/)
+3. [OAuth 授权的工作原理是怎样的？足够安全吗？](https://www.zhihu.com/question/19781476)
