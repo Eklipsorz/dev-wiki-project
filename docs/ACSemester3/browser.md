@@ -29,3 +29,14 @@ sidebar_position: 19
 
 ### 參考資料
 1. [Inside look at modern web browser (part 3)](https://developers.google.com/web/updates/2018/09/inside-browser-part3)
+
+
+
+## Call stack
+1. 每一次要執行某種內容區塊的程式碼，會先該區塊存放在stack上，等到執行完畢才從stack移出該區塊，主要存放所有目前被呼叫卻沒執行完畢的內容區塊
+2. 內容區塊種類主要分為：Global Execution Context 、Function Execution Context
+3. 由於第一點的特性，也可以代表著哪些區塊還需要執行以及定義執行順序，換言之，所有要被執行的程式碼區塊必須先於call stack出現才能夠被執行
+
+
+### 參考資料
+1. [JS 原力覺醒 Day03 - 執行環境與執行堆疊](https://ithelp.ithome.com.tw/articles/10216450)
