@@ -4,3 +4,28 @@ sidebar_position: 19
 
 # browser 新知和技術
 
+
+## 瀏覽器的process
+1. 主要分為四種：
+  - Browser  Process：主要負責處理瀏覽器本身能提供的功能(如書籤、我的最愛、UI功能)以及負責處理一些不可見且需要獲取作業系統權限才能做的任務，如網路請求和檔案存取，
+  - Renderer Process：負責處理網頁畫面渲染的工作和事件處理
+  - Plugin Process：負責處理網頁所使用的插件或者負責執行插件功能的工作
+  - GPU Process：負責調用GPU資源來支援其他工作，主要會支援HTML、CSS等圖形化元素的渲染
+
+### 參考資料
+1. [What is the GPU process in Chrome's task manager and why does it hog up so much RAM?](https://www.quora.com/What-is-the-GPU-process-in-Chromes-task-manager-and-why-does-it-hog-up-so-much-RAM)
+2. [Inside look at modern web browser (part 1)](https://developers.google.com/web/updates/2018/09/inside-browser-part1)
+
+
+## Renderer Process
+1. 負責處理：
+  - Parsing：將一份網頁解析成DOM Tree、CSSOM Tree、Render Tree
+  - Layout： 並根據前者資訊來做相對應的網頁元素間之位置計算、大小計算、如何擺放
+  - Paint： 最後按照指定顏色和位置在指定的pixel位置畫出指定畫面
+  - 同時也會負責執行同份網頁下的JavaScript
+2. 該Process本身內含著Main Thread、Worker Threads等執行緒來執行，而Process最主要的執行會是由Main Thread來執行，而其Thread會是每一個網頁(tab)都各一個。
+
+* 為啥Renderer Process會負責執行同份網頁下的JavaScript呢？這是因為JavaScript本身被允許改變DOM Tree、CSSOM Tree、Render Tree的結構，比如document.write()，而這些資訊若被改變的話，那麼其畫面也會跟著改變，所以為了更加有效率地使用這樣子的變化才將執行JavaScript任務分配給Renderer Process
+
+### 參考資料
+1. [Inside look at modern web browser (part 3)](https://developers.google.com/web/updates/2018/09/inside-browser-part3)
