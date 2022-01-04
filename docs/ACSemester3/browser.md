@@ -40,3 +40,12 @@ sidebar_position: 19
 
 ### 參考資料
 1. [JS 原力覺醒 Day03 - 執行環境與執行堆疊](https://ithelp.ithome.com.tw/articles/10216450)
+
+
+## GPU (Graphics Processing Unit)
+1. 原本設計於處理畫面渲染的處理實體單位，一個單位具有多個核心(主要負責處理/執行工作的部分)
+2. 與CPU的核心相比而言，每一個GPU的核心被設計成只能夠處理較為簡單的運算，但卻可以透過核心數量來合併一個大型處理單位來處理較為複雜的運算，比如多個GPU核心一起解決同一個問題
+3. 除了畫面渲染之外，也能透過自身特性來處理較為複雜的問題和運算
+4. 參考資料
+[What is the GPU process in Chrome's task manager and why does it hog up so much RAM?](https://www.quora.com/What-is-the-GPU-process-in-Chromes-task-manager-and-why-does-it-hog-up-so-much-RAM)
+
