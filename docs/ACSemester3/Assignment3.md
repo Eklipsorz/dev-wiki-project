@@ -77,6 +77,25 @@ new ObjectId(id)
 ```
 查明誰是this
 
+
+## Mongoose find 細節
+1. Mongoose find 無法直接使用objectId("....")來代表_id搜尋，必須是以_id.toString()才能對應
+2. ObjectId.equals(ObjectId) 可比對兩個ObjectId物件上所代表的ID是否一樣，若一樣的話，會回傳true，不一樣就會回傳false
+```
+item._id.equals(record.categoryId)
+```
+## regex 抓不到Query String
+1. 若將regex應用至express上的路由上，會因為系統會自動獲取Query String內而在設定上無法透過regex來撈取Query String
+2. 案例：拿下面來說，預計會抓取到GET locathost/?category=xxx這請求，但由於設定上不允許對應，所以這路由處理會是失效的，不論請求是否如預期那樣時，皆無法觸發以下請求
+```
+router.get(/^\/\?category\=.*$/, (req, res) => {
+  .....
+})
+```
+
+3. 參考資料
+[ObjectID()](http://mongodb.github.io/node-mongodb-native/api-bson-generated/objectid.html#equals)
+
 ## handlebars parent context
 1. handlebars 會依據block helper的切分而將渲染檔案切割成parent context和child context，其中child context會是每個block helper能夠處理的內容，當這些helper執行時，往往只能夠辨識它們能理解的關鍵字(如this、root、../等)，若遇到變數名稱，會直接視為空值或者不存在。
 
@@ -227,3 +246,21 @@ start 1 end start 2 end start d end start 4 end start 5 end start 6 end
 ### parent context and child context 參考資料
 1. [https://handlebarsjs.com/api-reference/data-variables.html#root](https://handlebarsjs.com/api-reference/data-variables.html#root)
 2. [Handlebars Scope Issue: Can't access template variable from embedded `each`](https://stackoverflow.com/questions/32796559/handlebars-scope-issue-cant-access-template-variable-from-embedded-each)
+
+
+## Bad Request 
+1. 一種狀態碼所表示的狀態，描述著伺服器無法處理由客戶製造的錯誤請求(請求內出現錯誤的語法、格式、錯誤路由、錯誤的輸入內容)，對應狀態碼為400
+2. passport.js 本地端的Bad Request 案例(如下)
+  - 使用者未輸入完帳密就請求驗證
+
+3. 設定passport.js本地端對應的Bad Request的flash message為badRequestMessage屬性值，要在路由那邊來設定，並且該訊息會使用flash所建立的error種類陣列來存放內容。
+  ```
+    router.post('/login', passport.authenticate('local', {
+      failureFlash: true,
+      failureRedirect: '/users/login',
+      successRedirect: '/',
+      badRequestMessage: 'You need to input account and password'
+    }))
+
+  ```
+  [passport js missing credentials](https://stackoverflow.com/questions/34511021/passport-js-missing-credentials)
