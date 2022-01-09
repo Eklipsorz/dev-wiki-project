@@ -99,4 +99,131 @@ context               // parent of parent context A
   - ../ 使用parent context所能夠辨識的變數內容，../可以重複疊加，比如../../就指名要parent context的parent context。
 
 
-5. 舉例
+5. 舉例：
+
+```
+{ 
+   rootPath: '../../../', 
+   navigation: { all: { 'a': { sublinks: [Object] }
+}
+
+Here is your rootPath variable: {{rootPath}}
+
+{{#each navigation.all}}
+
+    top-level rootPath 1: {{../rootPath}}      <!-- works -->
+    top-level rootPath 2: {{@root.rootPath}}   <!-- works -->
+
+    {{#if sublinks}}
+
+            {{#each sublinks}}
+                sub-level rootPath 1: {{@root.rootPath}}  <!-- works -->
+                sub-level rootPath 2: {{../../rootPath}}  <!-- works -->
+            {{/each}}
+
+    {{/if}}
+
+{{/each}} 
+```
+
+結果為如下：
+```
+Here is your rootPath variable: ../../../ 
+
+top-level rootPath 1: ../../../ 
+top-level rootPath 2: ../../../ 
+
+sub-level rootPath 1: ../../../ 
+sub-level rootPath 2: ../../../
+```
+
+首先最外圍的context是inital context，所以能直接讀取rootPath的變數值來印出，而下面則是由block helper所組成的child context，第一個block helper是迭代著 navigation物件下的all下屬性值對應的內容，目前是擁有屬性a的物件，而屬性a對應的值是擁有sublinks屬性的物件，在這裡的top-level rootPath 會透過root和../來分別讀取到最外圍context所能存取的變數以及上一層所能讀取的變數，並於最後印出，接下來的each helper讀取到{{#if sublinks}}時，會是以this.sublinks來解析，而this正是指著屬性a所對應的物件，最後的sub-level rootPath 1則是透過root和../..來分別讀取到最外圍的context所能存取的變數以及上一層的上一層所能夠讀取的，也就是兩層each以外的最外層變數
+```
+'a': { sublinks: [Object] }
+// 相等於 a: { sublinks: [Object] }
+```
+
+
+6. 細節：
+  - {{#if variable}} 和 {{#each variable}}的variable皆屬於同一層
+  ```
+  {{#if variable}}
+    {{#each variable}}
+        context
+    {{/each}}
+  {{/if}}
+  ```
+
+ - each helper內使用另一個each helper時，系統會預設使用this.property來判定另一個each helper所假定的variable以及each helper面對物件時會是以屬性來指派給this，示意如下
+
+ ```
+  // route
+  const array = {
+      subarray: {
+        testvariable: {
+          var1: 12
+        }
+      }
+    }
+
+  // inside template file
+
+  {{#each array}} // 讀取array內容
+  // 這裡的this會是以property來讀取，所以在這裡會是對應至array.subarray這物件
+  {{#each testvariable}} // 會以this.testvariable來讀取
+  {{this}}  // 這裡的this會是以property來讀取，所以會是對應至testvariable.var1的內容
+  {{/each}}
+  {{/each}}
+ ```
+
+
+- {{#each variable}} ：當variable是陣列時，就依照索引值順序來引入至this，當variable是物件時，就依照屬性值先後順序來引入至this。
+```
+// route
+  const array = [
+    1, 2, 3, 4, 5, 6
+  ]
+
+// inside template file
+{{#each array}}
+  start
+  {{this}}
+  end
+{{/each}}
+```
+
+結果為：
+```
+start 1 end start 2 end start 3 end start 4 end start 5 end start 6 end
+```
+
+
+
+```
+// route
+  const array = {
+    a: 1,
+    b: 2,
+    c: 3,
+    d: 4,
+    e: 5,
+    f: 6
+  }
+
+// inside template file
+{{#each array}}
+  start
+  {{this}}
+  end
+{{/each}}
+```
+
+結果為：
+```
+start 1 end start 2 end start d end start 4 end start 5 end start 6 end
+```
+
+
+### parent context and child context 參考資料
+1. [https://handlebarsjs.com/api-reference/data-variables.html#root](https://handlebarsjs.com/api-reference/data-variables.html#root)
+2. [Handlebars Scope Issue: Can't access template variable from embedded `each`](https://stackoverflow.com/questions/32796559/handlebars-scope-issue-cant-access-template-variable-from-embedded-each)
