@@ -264,3 +264,68 @@ start 1 end start 2 end start d end start 4 end start 5 end start 6 end
 
   ```
   [passport js missing credentials](https://stackoverflow.com/questions/34511021/passport-js-missing-credentials)
+
+## Mongoose Query 執行方式
+1. 靈感來源：透過mongoose官網對於Query執行過程的stack trace而發現幾件事情 
+ 
+ 
+2. Query本身：Query 雖然本身不是原生promise，只是單純如同字面上的意思儲存資料庫操作指定和資料庫設定的物件，本身被單獨解析執行並不會真的執行Query內容，在這裡，我設定一個一定會報錯的Query來給予系統執行，
+
+```
+db.on('open',  () => {
+ 
+// 什麼事情都不會發生，但理論上，這個Query一被執行起來就會報錯
+  UserModel.findOne({ _id: 'User1' })	
+ 
+})
+```
+若被執行的話，會報出以下的錯誤，但結果什麼事情都沒發生
+```
+UnhandledPromiseRejectionWarning: CastError: Cast to ObjectId failed for value "User1" (type string) at path "_id" for model "User”
+```
+3. 若添加await、then/catch/finally至Query時：可如果添加.then、.catch、await的話，mongoose就會偷偷在處理.then、.catch、await所要求的動作之前，系統會先透過Query.exec()來執行Query，而exec()本身會回傳著夾帶著Query執行結果的promise，好讓讓它應對後面的.then、catch、await。
+
+若繼續延伸上一個例子時，添加await、catch、then在Query身旁，
+```
+// await:
+db.on('open',  () => {
+ 
+// mongoose 會先以exec()來執行Query
+// 接著以exec()回傳後的promise來處理await
+await UserModel.findOne({ _id: 'User1' })	
+})
+
+
+// then:
+db.on('open',  () => {
+ 
+// mongoose 會先以exec()來執行Query
+// 接著以exec()回傳後的promise來處理then
+ UserModel.findOne({ _id: 'User1' })	
+    .then(....)
+})
+
+// catch:
+db.on('open',  () => {
+ 
+// mongoose 會先以exec()來執行Query
+// 接著以exec()回傳後的promise來處理then
+ UserModel.findOne({ _id: 'User1' })	
+    .catch(....)
+})
+```
+
+
+當系統解析Query時，mongoose會偷偷執行exec()產生而出現以下錯誤訊息
+```
+UnhandledPromiseRejectionWarning: CastError: Cast to ObjectId failed for value "User1" (type string) at path "_id" for model "User”
+```
+
+同時StackTrace也呈現著"系統會為了處理then、catch、await而先額外執行著exec()來執行Query"，此時的await、then、catch所出現的stacktrace，都有先經過exec()來執行Query
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1641919675/blog/promise/thenExample_o1cxlo.png)
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1641919675/blog/promise/catchExample_rv4k0d.png)
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1641919675/blog/promise/awaitExample_uldezm.png)
+
