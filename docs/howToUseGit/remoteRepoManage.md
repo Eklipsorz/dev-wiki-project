@@ -90,7 +90,7 @@ match the name of your current branch.
 ```
 
 ## git fetch
-主要會從遠端倉庫的分支下載最新內容(對於本地端而言所沒有的內容)至本地端形成另一個分支，而這個分支會是repository/branch，由於該分支會有新內容，所以repository/HEAD會移動至最新版本內容。
+主要會從遠端倉庫的分支下載最新內容(對於本地端而言所沒有的內容)至本地端形成另一個分支，而這個分支會是repository/branch，由於該分支會有新內容，所以repository/HEAD或者FETCH_HEAD會移動至最新版本內容。
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1632996015/blog/git/remote/gitFetchResult_nlv9wa.png)
 
 
