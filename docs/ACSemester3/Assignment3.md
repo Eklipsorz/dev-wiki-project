@@ -97,7 +97,7 @@ router.get(/^\/\?category\=.*$/, (req, res) => {
 [ObjectID()](http://mongodb.github.io/node-mongodb-native/api-bson-generated/objectid.html#equals)
 
 ## handlebars parent context
-1. handlebars 會依據block helper的切分而將渲染檔案切割成parent context和child context，其中child context會是每個block helper能夠處理的內容，當這些helper執行時，往往只能夠辨識它們能理解的關鍵字(如this、root、../等)，若遇到變數名稱，會直接視為空值或者不存在。
+1. handlebars 會依據block helper的切分而將渲染檔案切割成parent context和child context，其中child context會是每個block helper能夠處理的內容，當這些helper執行時，往往只能夠辨識它們能理解的關鍵字(如this、this相關的變數、root、../等)，若遇到變數名稱，會直接視為空值或者不存在。
 
 2. parent context則是這些child context的上一層內容或者說包含block helper 的內容，其結構可以如下，首先最外層的context由於沒被任何block helper包含著，所以可以直接存取response物件所賦予的locals變數，第一個被block helper包住context A則只能夠使用該helper能夠辨識或者存取的變數，不能夠存取locals變數，context A也有部分內容被block helper包含著，該context也同樣地被限制在helper 所能夠辨識的
 
