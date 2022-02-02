@@ -8,8 +8,8 @@ sidebar_position: 20
 ## Options.fn(this) 
 1. handlebars註冊helper所內建的callback會有的參數之一
 2. 回傳該helper所包含的內容
-3. 若添加{{else}}的話，只會回傳true的內容
-4. This 會是指 handlebars實體本身，該函式會直接調用包含的內容
+3. 不論是否添加{{else}}的話，只會回傳true或者對應block helper所包含的內容
+4. This 會是一個由當時被呼叫的helper和helper包含的內容所構成的物件
 5. 參考資料：
 [What is the options parameter in a Handlebars helper function?](https://stackoverflow.com/questions/8853396/logical-operator-in-a-handlebars-js-if-conditional)
 > The options object contains a fn method that works just like a compiled template... var html = options.fn(context); gives you the rendered template from inside the block
