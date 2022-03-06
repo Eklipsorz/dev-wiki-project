@@ -72,6 +72,38 @@ let say = test(name)
 ```
 > Naturally, this behavior only applies to Function Declarations, not Function Expressions where we assign a function to a variable, such as let say = function(name)..
 
+### Inner and outer Lexical Environment
+> 當執行某函式的呼叫時，並依據該函式所擁有的區域變數來建構該函式的lexical environment，隨後當函式開始執行時存取到特定的識別字時，會先從(函式)自己所擁有的lexical environment來找是否有對應的識別字，若沒有就往outer找，再沒有就往outer的outer找起，直到找到或者找不到報錯。
+
+1. 以下面為例，在say對應函式內部的lexical environment會是name，而name可以根據輸入進來的name區域變數而在這邊決定為John，若函式較為複雜的話，就無法輕易確定name為何
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1646574610/backend/lexical%20environment/Inner_and_outer_Lexical_Environment1_xcoty4.png)
+
+2. 在內部裡的console.log中會要求著name和phrash，在這裏會先從自己的environment來找，結果能找到name對應著John，而phrash則是處于找不到的狀態，這時系統會往outer指向的lexical environment來找，也就是函式外，最後從outer的environment找到phrash為"Hello"，並且搭配著Johen，印出Hello John結果。
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1646574610/backend/lexical%20environment/Inner_and_outer_Lexical_Environment2_sjxauw.png)
+
+
+## lexical environment 總結
+1. 每一個巢狀結構所構成的block都有各自的lexical environment，且不會先自動建立所有的lexical environment
+```
+{           // a
+  {         // b
+    {       // b
+
+    }
+  }
+}
+```
+2. 每一個lexical environment都擁有著record和outer reference，前者為目前block的識別字以及對應區域變數值，後者指向著包覆著block的block所擁有的environment。
+3. 當系統要執行每個block的第一行時，便會自動獲取當前block的所有區域變數來建立該block所擁有的lexical environment，格式會是如下，識別字會是指該block所能夠使用的識別字，並且對應著variable或者function本身帶有的值。
+```
+識別字(名字)：variable
+識別字(名字)：function
+```
+3. 識別字(名字)可以對應變數、函式：
+  - 若識別字(名字)對應變數，由於變數本身的內容會因為運算處理或者複雜的控制流程而無法確定整個block上的變數內容會是什麼樣的內容
+  - 若識別字(名字)對應函式，由於本身單純(頂多會是多個相同函式會在不同的block或者多個相同函式在同一個block，前者的話會因為block而區別開來，後者則是挑最後定義的函式宣告/定義為主)，所以可以在一開始定義一個block的函式內容會是如何。
+4. 當系統執行程式時找到識別字時，會先從當前block的environment找到對應的識別字，找不到再往outer來找，再找不到就往outer的outer來找，直到找不到或者找到為止。
+
 ### Lexical Environment 參考資料解析
 
 > A Lexical Environment is a specification type used to define the association of Identifiers to specific variables and functions based upon the lexical nesting structure of ECMAScript code. A Lexical Environment consists of an Environment Record and a possibly null reference to an outer Lexical Environment.
