@@ -27,7 +27,7 @@ sidebar_position: 1
   
 ###  Variables
 > 若名稱對應著變數(值)，會由於變數的內容會本身會因爲複雜的邏輯和控制流程而不能夠在一開始的pre-populated 流程確定好其內容是為何，所以會在執行過程中很有可能不斷變動其對應的內容為何，進而使名稱對應的變數值無法確定。
-1. 當一執行script時，會先將事先宣告好的識別字放入對應的Lexical environment再來做後續的直譯執行，在這裡假定只有variable這識別字或者變數
+1. 當一執行script時，會先將事先宣告好的識別字放入對應的Lexical environment再來做後續的直譯執行，在這裡假定只有variable1這識別字
 ```
 // start                  variable1: <Uninitialized>
 let variable1;
@@ -39,20 +39,38 @@ variable1 = value2;
 ```
 // start                  variable1: <Uninitialized>
 ```
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1646572672/backend/lexical%20environment/lexical2var1_nyf40x.png)
 3. 使用let來宣告variable1，但沒有指派任何值給它，所以目前它對應的內容會是undefined來表示還沒指派任何內容給它。
 ```
-let variable1;
+let variable1;            variable1: undefined
 ```
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1646572672/backend/lexical%20environment/lexical2var2_ve6hgl.png)
 4. 以value1內容來指派給variable1，接著再以value2內容指派給variable1
 ```
-variable1 = value1;
-variable1 = value2;
+variable1 = value1;       variable1: value1
+variable1 = value2;       variable1: value2
 ```
-
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1646572672/backend/lexical%20environment/lexical2var3_pevvl3.png)
 ### functions
 > 名稱對應著函式，由於函式本身不像變數那樣，會因為邏輯和控制流程而變動，只會在一開始的pre-populated 流程確定(無論是否有重複名稱的函式，都依照最後一個定義或者所在區域來定義)，所以名稱對應的函式會是確定的，換言之，通過這流程，可以馬上透過名稱來找到對應函式
 
+1. 當一執行script時，會先將事先宣告好的識別字放入對應的Lexical environment再來做後續的直譯執行，在這裡假定只有這variable1識別字和say，接著由於variable1在pre-populated流程中是確定為對應著變數，而say則是因為對應著函式而被確定是函式，當下可直接say這名稱來調用對應的函式功能
+```
+// start                      variable1: <uninitialized>, say: function
+let variable1 = "Hello"       
 
+function say(name) {          
+  ......
+}
+```
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1646572672/backend/lexical%20environment/lexical2fun1_gjfsz8.png)
+2. 正常來說，這項確定只適用函式的宣告/定義，並不會因為涉及到函式而使得名稱能夠對應確定的值，比如下列表達的賦予並不會使say這個名稱能夠確定對應值就是是函式物件本身或者該函式物件回傳內容，這是因為已經使用let來宣告say這個名稱對應到變數。
+```
+let say = function(name) 
+/* */
+let say = test(name)
+```
+> Naturally, this behavior only applies to Function Declarations, not Function Expressions where we assign a function to a variable, such as let say = function(name)..
 
 ### Lexical Environment 參考資料解析
 
