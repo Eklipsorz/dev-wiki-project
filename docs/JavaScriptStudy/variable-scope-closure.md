@@ -122,7 +122,47 @@ let counter = makeCounter();
 4. 隨後當呼叫完counter()時，makeCounter所擁有的environment之count從0轉變為1，若有後續的counter()呼叫，會使1轉變2、2轉變3、3轉變為4，後面以此類推。
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1646589776/backend/lexical%20environment/Returning_a_function4_cmkrmz.png)
 
+### Lexical Environment 的 Garbage collection
+1. 通常來說，一個函式呼叫結束執行時，該函式的Lexical Environment會因為無任何對象參照於它而被釋放
+2. nested function(如下所示的function2)所存在的Lexical Environment和對應的outer refernece要被釋放的話，必須要等所有使用、參照nested function的對象結束使用該function才能夠讓nested function正式被釋放
+```
+function functname1(...) {
+  return function2(...) {
 
+  }
+}
+
+let g = functname1();
+g()
+```
+3. 舉例來說： 若nested function為f內的function的話，那麼arr中所存放的f()都會是建立nested function，若有個f()停止執行，nestated function仍未完全被釋放，
+```
+function f() {
+  let value = Math.random();
+
+  return function() { alert(value); };
+}
+
+// 3 functions in array, every one of them links to Lexical Environment
+// from the corresponding f() run
+let arr = [f(), f(), f()];
+```
+
+直到無人使用/指向nested function，就能使該nested function自動被GC給自動釋放記憶體。
+
+```
+function f() {
+  let value = Math.random();
+
+  return function() {
+    alert(value);
+  }
+}
+
+let arr = [f(), f(), f()]; 
+
+arr = null; // ...and now the memory is cleaned up
+```
 ## Closure
 1. 從數學概念-Closure衍伸過來，在這裏會是如果對一個函式X中所擁有的函式進行呼叫，其回傳值仍會受限於函式X的lexical environment，故此稱之為Lexical Closure
 > 如果對一個集合的元素進行運算，回傳值仍會受限於這個集合
@@ -130,6 +170,7 @@ let counter = makeCounter();
 3. closure特性是藉由\[\[Environment\]\]或者\[\[Scope\]\]來實現
 4. 參考資料：
 [Closure 閉包](https://eyesofkids.gitbooks.io/javascript-start-from-es6/content/part4/closure.html)
+
 ## lexical environment 總結
 1. 每一個巢狀結構所構成的block都有各自的lexical environment，且不會先自動建立所有的lexical environment
 ```
