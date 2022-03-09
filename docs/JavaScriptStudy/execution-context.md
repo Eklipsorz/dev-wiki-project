@@ -266,8 +266,52 @@ FunctionExectionContext = {
   }
 }
 ```
-
-
+4. JS引擎開始執行函式程式碼，並執行到結束前，其FEC的狀態會是如下，更動var類型的c至10
+```
+FunctionExectionContext = {  
+  LexicalEnvironment: {
+    EnvironmentRecord: {
+      Type: "Declarative",
+      // Identifier bindings go here
+      Arguments: {0: 10, length: 1}
+    }
+    outer: <null>,
+    ThisBinding: <Global Object>
+  },  
+  VariableEnvironment: {
+    EnvironmentRecord: {
+      Type: "Declarative",
+      // Identifier bindings go here
+      c: 10
+    }
+    outer: <null>,
+    ThisBinding: <Global Object>
+  }
+}
+```
+5. 結束執行timesTen，並回到GEC將回傳結果-1000給c，最後執行到console.log(c)就結束:
+```
+GlobalExectionContext = {  
+  LexicalEnvironment: {
+    EnvironmentRecord: {
+      // Identifier bindings go here
+      x: 10,
+      y: 1000,
+      timesTen: <function>
+    }
+    outer: <null>,
+    ThisBinding: <Global Object>
+  },  
+  VariableEnvironment: {
+    EnvironmentRecord: {
+      // Identifier bindings go here
+      z: 100
+    }
+    outer: <null>,
+    ThisBinding: <Global Object>
+  }
+}
+```
 
 ### 補充知識： parameter vs. argument
 1. parameter: 函式輸入內容的規範
