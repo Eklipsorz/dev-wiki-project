@@ -354,5 +354,20 @@ GlobalExectionContext = {
     ```
     console.log(a)
     ```
+  6. 參考資料：
+  [快速理解JavaScript 中的 LHS 和 RHS 查询](https://segmentfault.com/a/1190000010645079)
 
-  ### 補充知識：JavaScript 編譯特性
+
+### 補充知識：JavaScript 編譯特性 以及 直譯語言
+1. JavaScript本身直譯語言，擁有邊解析邊執行的特性，但實際上仍有一些內容必須得在執行前就要執行一些特定處理，才能讓JS引擎更為方便的執行，比如每個變數/函式宣告的scope是為何。而這些特定處理在這裡統稱為編譯
+2. 編譯處理具體會經歷三個步驟：識別字上的分析、程式語法上的分析、根據前兩者的分析結果來生成更能讓JS引擎接受的語言形式。
+
+```
+JavaScript 程序中的一段源代码在执行之前会经历三个步骤，统称为 编译
+分词/词法分析
+解析/语法分析
+代码生成
+```
+3. 參考資料
+ - [JavaScript 语法解析、AST、V8、JIT](https://cheogo.github.io/learn-javascript/201709/runtime.html)
+ - [快速理解JavaScript 中的 LHS 和 RHS 查询](https://segmentfault.com/a/1190000010645079)
