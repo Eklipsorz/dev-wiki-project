@@ -432,6 +432,9 @@ with (obj) {
 
         funcWith();
   ```
+4. 參考文件：
+ - [你懂 JavaScript 嗎？#11 語彙範疇（Lexical Scope）](https://cythilya.github.io/2018/10/18/lexical-scope/) 
+ - [JavaScript中 with的用法](https://blog.csdn.net/zwkkkk1/article/details/79725934)
 
 ### 補充知識：JavaScript 編譯特性 以及 直譯語言
 1. JavaScript本身直譯語言，擁有邊解析邊執行的特性，但實際上會透過事先對靜態內容做些特定處理步驟來優化程式碼的執行效率，才能讓JS引擎更為方便更有效率的執行，比如每個變數/函式宣告的scope是為何。而這些特定處理步驟會是JS編譯的一部分。
