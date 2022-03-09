@@ -24,7 +24,7 @@ sidebar_position: 2
 
 ## GEC - creation phase
 0. 這裡的概念以ECMA2015-ECMA2019為主。
-1. 發生時間點：當引擎要執行某個檔案上的JS程式碼時
+1. 發生時間點：當引擎要開始執行某個檔案上的JS程式碼時，就會先建立GEC
 2. GEC範圍：以檔案內的全域區塊為一個區塊(block)，不包含函式內部的執行、區塊內的另一個區塊的(Block)的內部執行
 3. 製作流程：
   - 建立一個全域物件：在瀏覽器會是名為window的全域物件，在Node.js會是名為global的全域變數
@@ -48,57 +48,86 @@ GlobalExectionContext = {
   }
 }
 ```
-  
-  LexicalEnvironment會從EC收集函式宣告、let/const形式的變數宣告，同時由於函式可以在EC確定為何以及let/const宣告則因為const/let變數的內容本身受限於scope概念而不能夠馬上確定，因此對應let/const的變數值會是uninitialized
-```
-GlobalExectionContext = {  
-  LexicalEnvironment: {
-    EnvironmentRecord: {
-      Type: "Object",
-      // Identifier bindings go here
-      identifier1: <uninitialized>,
-      identifier2: <uninitialized>,
-      identifier3: <func>
-    }
-    outer: <null>,
-    ThisBinding: <Global Object>
-  },  
-  VariableEnvironment: {
-    EnvironmentRecord: {
-      Type: "Object",
-      // Identifier bindings go here
-      identifier1: undefined
-    }
-    outer: <null>,
-    ThisBinding: <Global Object>
-  }
-}
-```
-  
-  
-  
-  
-  
-  前者會從範圍內搜尋對應為函式宣告、或用let/const變數的識別名稱並以下面格式收集至其EnvironmentRecord屬性，同時設定 
+  - LexicalEnvironment 從GEC收集函式宣告、let/const形式的變數宣告並以下面形式來存放在EnvironmentRecord屬性中，
   ```
   identifier: <function>
   identifier: <const variable>
   identifier: <let variable>
   ```
-  
-  收集同一個區塊的識別名稱以及對應內容是為何，最後收集完並建立一個LexicalEnvironment；後者根據識別名稱是否為用var宣告的變數來收集同一個區塊的識別名稱以及對應內容是為何，最後收集完並建立一個VariablEenvironment
-  - 定義scope chain：目前所擁有的lexical environment會透過一個outer reference來指向至呼叫該區塊的區塊所擁有的lexical environment進行鏈結，以方便在找不到對應的識別字的時候，導向至鏈結的另一方來找到該字。
+  在這裡由於只有函式宣告不受scope的影響，所以函式宣告部分能夠確定其對應內容，而const/let的變數宣告會受限於scope而無法馬上確定，因此對應let/const的變數宣告會是uninitialized來表示該變數還未宣告，接著Outer reference和ThisBinding會因為目前EC為GEC而分別設定為null和Global Object。
+
+  ```
+  GlobalExectionContext = {  
+    LexicalEnvironment: {
+      EnvironmentRecord: {
+        Type: "Object",
+        // Identifier bindings go here
+        identifier1: <uninitialized>,
+        identifier2: <uninitialized>,
+        identifier3: <func>
+      }
+      outer: <null>,
+      ThisBinding: <Global Object>
+    }
+  }  
+  ```
+  - VariablEenvironment：從GEC收集函式宣告、var形式的變數宣告並以下面形式來存放在EnvironmentRecord屬性中，
+  ```
+  identifier: <function>
+  identifier: <const variable>
+  identifier: <let variable>
+  ```
+  在這裡由於只有var變數本身沒有scope的概念，所以不受到scope的影響，因此對應var的變數值會是undefined代表已經宣告但只是還未指派任何初始值給予，接著Outer reference和ThisBinding會因為目前EC為GEC而分別設定為null和Global Object。
+  ```
+  GlobalExectionContext = {  
+    VariableEnvironment: {
+      EnvironmentRecord: {
+        Type: "Object",
+        // Identifier bindings go here
+        identifier1: undefined
+      }
+      outer: <null>,
+      ThisBinding: <Global Object>
+    }
+  }
+  ```
+  - 補充資訊：Outer reference是用來實現scope chain，當目前EC找不到對應名稱時就會往outer所指向的EC來尋找，而ThisBinding則是指定This變數要指定哪個對象。
+
 4. 最終結果會是如下：
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1646750816/backend/lexical%20environment/GlobalExecContext_ylw8a9.png)
-5. 補充資訊：
-  - LexicalEnvironment、VariablEenvironment的程式碼表現會是如下所示：LexicalEnvironment的EnvironmentRecord屬性會是GEC上的識別字和函式宣告、let/const變數之間的對應關係，而其outer由於這層是Global，所以會指向null，而VariableEnvironment的EnvironmentRecord屬性會是GEC上的識別字和var變數之間的對應關係，最後的outer也由於Global而指向null。
-
 
 ## GEC - execution phase
 1. 建立完GEC後，JavaScript 引擎隨後就會在GEC的環境下一行又一行執行程式碼，並根據執行結果來更新Lexical Environment內某個特定名稱的對應值或者調用其他區塊或者其他函式，使其產生該區塊或者該函式的execution context
 > JavaScript Engine executes the code line by line
 2. 在這裏主要會做：
   - 更新Lexical Environment的對應值
+
+## FEC - creation phase
+0. 這裡的概念以ECMA2015-ECMA2019為主。
+1. 發生時間點：當從GEC的執行過程呼叫了某個區塊或者某個函式時，就會先建立該FEC
+2. FEC範圍：以區塊內或者函式內的所有區域變數、函式為主(不含該函式的內部執行)
+3. 製作流程：
+  - 建立this物件並決定this參照於誰：在這裡建立完會依據哪個物件呼叫該函式，而決定FEC的this為那個物件，否則就依照outer reference所指向的EC來決定this為誰
+  - 建立屬於FEC的Lexical Environment：主要分為LexicalEnvironment、VariablEenvironment，如同GEC那樣，唯一不同的事情就是outer會是指向呼叫該EC的EC，也就是GlobalExectionContext
+  ```
+  GlobalExectionContext = {  
+    LexicalEnvironment: {
+      EnvironmentRecord: {
+        // Identifier bindings go here
+      }
+      outer: <GlobalExectionContext>,
+      ThisBinding: <Global Object>
+    },  
+    VariableEnvironment: {
+      EnvironmentRecord: {
+        // Identifier bindings go here
+      }
+      outer: <GlobalExectionContext>,
+      ThisBinding: <Global Object>
+    }
+  }
+  ```
+
 
 ### example
 
