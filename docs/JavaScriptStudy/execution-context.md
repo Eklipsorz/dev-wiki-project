@@ -357,10 +357,88 @@ GlobalExectionContext = {
   6. 參考資料：
   [快速理解JavaScript 中的 LHS 和 RHS 查询](https://segmentfault.com/a/1190000010645079)
 
+### 補充知識：with 語法
+1. with 形式如下，以expression為目標物件來執行statement所指示的屬性存取或者處理，主要簡化對物件的屬性存取
+```
+with (expression) {
+  statement
+}
+statement
+```
+2. 舉例：以obj物件為目標物件，來將obj.a、obj.b、obj.c分別設定為3、4、5。
+```
+with (obj) {
+	a = 3;
+	b = 4;
+	c = 5;
+}
+```
+3. 本身的問題：
+  - 資料洩漏的問題：當statement所指示的屬性是該目標物件不存在時，系統很有可能會因為LHS查詢的關係會自動替不存在的屬性在scope chain的最頂端-全域執行環境建立該屬性，以下面程式碼為例，宣告擁有a屬性的o1物件，宣告擁有b屬性的o2，分別丟入foo來執行a = 2，剛開始o1物件擁有a屬性，所以a屬性可以很順利地被修改成2，輪到o2物件時，由於o2並不存在a屬性，所以系統就會因為LHS查詢而向outer reference(這時分別有foo函式EC和全域EC)查找，但都找不到，LHS這時就會自動在全域EC添加a並指派為2
+  ```
+  function foo(obj) {
+    with (obj) {
+      a = 2;
+    }
+  }
+
+  var o1 = {
+    a: 3
+  };
+
+  var o2 = {
+    b: 3
+  }
+
+  foo(o1);
+  console.log(o1.a);	//2
+
+  foo(o2);
+  console.log(o2.a);	//underfined
+  console.log(a);		//2
+  // 參考於https://blog.csdn.net/zwkkkk1/article/details/79725934
+  ```
+  - 效能下降：由於with本身是在執行過程來透過延伸scope chain來定義識別字所對應的實體，對於只能在編譯時期決定scope chain的JavaScript來說，實屬難以在執行期間調整識別字對應的實體以及範圍，只能預期下一次做分析的時候是能夠從靜態文字內容確定with所調整的識別字所對應以及範圍，且每個涉入with的實體都有可能變更scope，因此面對這項問題，JavaScript在做編譯的時候，會不對with所涉及的屬性做任何的static scope處理，這使得最佳化也跟著不弄，後續的執行必須由JS引擎在執行過程中定義with所涉及的屬性是對應何種實體以及範圍
+
+  ```
+  // 這裡有兩個函式，都對著物件obj中的陣列a中第0個位置做10萬次存取，前者是不採用with，後者是採用with，結果
+  // 兩者相差十倍的速度，前者大概5~6ms，後者要5x~6xms。
+        function func() {
+          console.time("func");
+          var obj = {
+            a: [1, 2, 3]
+          };
+          for (var i = 0; i < 100000; i++) {
+            var v = obj.a[0];
+          }
+          console.timeEnd("func");
+        }
+        func();
+        
+        function funcWith() {
+          console.time("funcWith");
+          var obj = {
+            a: [1, 2, 3]
+          };
+          // 由with涉及到obj物件的a屬性，所以編譯期間並不會特定讓其屬性對應特定實體
+          // 以及定義明確的範疇，一律以JavaScript在執行過程中來確定對應實體以及範疇。
+          with (obj) {
+            for (var i = 0; i < 100000; i++) {
+              var v = a[0];
+            }
+          }
+          console.timeEnd("funcWith");
+        }
+
+        funcWith();
+  ```
 
 ### 補充知識：JavaScript 編譯特性 以及 直譯語言
-1. JavaScript本身直譯語言，擁有邊解析邊執行的特性，但實際上仍有一些內容必須得在執行前就要執行一些特定處理，才能讓JS引擎更為方便的執行，比如每個變數/函式宣告的scope是為何。而這些特定處理在這裡統稱為編譯
-2. 編譯處理具體會經歷三個步驟：識別字上的分析、程式語法上的分析、根據前兩者的分析結果來生成更能讓JS引擎接受的語言形式。
+1. JavaScript本身直譯語言，擁有邊解析邊執行的特性，但實際上會透過事先對靜態內容做些特定處理步驟來優化程式碼的執行效率，才能讓JS引擎更為方便更有效率的執行，比如每個變數/函式宣告的scope是為何。而這些特定處理步驟會是JS編譯的一部分。
+2. 編譯處理具體會經歷三個步驟：
+  - 識別字上的分析(確定變數和函式的宣告、定義scope)
+  - 程式語法上的分析
+  - 根據前兩者的分析結果來生成更能讓JS引擎接受的語言形式：生成過程中會進一步優化成執行更有效率的程式碼
 
 ```
 JavaScript 程序中的一段源代码在执行之前会经历三个步骤，统称为 编译
@@ -368,6 +446,17 @@ JavaScript 程序中的一段源代码在执行之前会经历三个步骤，统
 解析/语法分析
 代码生成
 ```
-3. 參考資料
+3. JS即使不做編譯，還是能夠邊解析邊執行，只是效率沒比先編譯來得好。
+4. 參考資料
  - [JavaScript 语法解析、AST、V8、JIT](https://cheogo.github.io/learn-javascript/201709/runtime.html)
  - [快速理解JavaScript 中的 LHS 和 RHS 查询](https://segmentfault.com/a/1190000010645079)
+
+### 補充知識：Lexical Scope vs. Scope
+1. Scope指的是定義某識別字(identifier)對應特定實體的合法使用範圍，在JavaScript中，特定實體會是指變數、函式等，而實現Scope概念的方式具體有Static Scope和Dynamic Scope。
+2. 根據前面描述，Scope是一個概念，而Lexical Scope實現該概念的方法之一
+3. Static Scope/Lexical Scope 則是在執行之前，先行對原始碼進行文字上的解析，會依據原始碼中變數位置和函式位置來定義識別字對應的實體是為何以及合法使用的範圍是是什麼，在這Javascript 與大多數的語言多採用靜態範疇，而JavaScript本身也能採用動態範疇，只是通常場景上會採取靜態範疇
+4. Dynamic Scope，則是在執行過程來決定每個識別字對應的實體是什麼以及合法使用的範圍是什麼，
+
+
+### 補充知識：Lexical Environment vs. Lexical Scope
+1. Lexical Environment 和 Lexical Scope 之間最大的差異，就是 Lexical Environment 是在程式執行中存放環境資訊的地方，而 Lexical Scope 則為在程式編譯時就已經決定好的作用域-每個識別字對應特定實體的合法使用範圍
