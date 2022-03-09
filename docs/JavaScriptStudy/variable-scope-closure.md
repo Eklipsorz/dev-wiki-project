@@ -26,7 +26,7 @@ sidebar_position: 1
   - 一個參照於外層的Lexical Environment，而外層是相對於目前所在的Lexical Environment，拿上面的案例就是假使目前環境是以C為主，那麼外層的Lexical Environment就會是B或者A
   
 ###  Variables
-> 若名稱對應著變數(值)，會由於變數的內容會本身會因爲複雜的邏輯和控制流程而不能夠在一開始的pre-populated 流程確定好其內容是為何，所以會在執行過程中很有可能不斷變動其對應的內容為何，進而使名稱對應的變數值無法確定。
+> 若名稱對應著變數(值)，會由於const/let變數的內容本身受限於scope概念而不能夠在一開始的pre-populated 流程確定好其內容是為何，所以會在執行過程中很有可能不斷變動其對應的內容為何，進而使名稱對應的變數值無法確定。
 1. 當一執行script時，會先將事先宣告好的識別字放入對應的Lexical environment再來做後續的直譯執行，在這裡假定只有variable1這識別字
 ```
 // start                  variable1: <Uninitialized>
@@ -53,7 +53,7 @@ variable1 = value2;       variable1: value2
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1646572672/backend/lexical%20environment/lexical2var3_pevvl3.png)
 
 ### functions
-> 名稱對應著函式，由於函式本身不像變數那樣，會因為邏輯和控制流程而變動，只會在一開始的pre-populated 流程確定(無論是否有重複名稱的函式，都依照最後一個定義或者所在區域來定義)，所以名稱對應的函式會是確定的，換言之，通過這流程，可以馬上透過名稱來找到對應函式
+> 名稱對應著函式，由於函式本身不像變數那樣，會因為scope而受限，所以會在一開始的pre-populated 流程確定(無論是否有重複名稱的函式，都依照最後一個定義或者所在區域來定義)，所以名稱對應的函式會是確定的，換言之，通過這流程，可以馬上透過名稱來找到對應函式
 
 1. 當一執行script時，會先將事先宣告好的識別字放入對應的Lexical environment再來做後續的直譯執行，在這裡假定只有這variable1識別字和say，接著由於variable1在pre-populated流程中是確定為對應著變數，而say則是因為對應著函式而被確定是函式，當下可直接say這名稱來調用對應的函式功能
 
@@ -80,7 +80,7 @@ let say = test(name)
 ### Inner and outer Lexical Environment
 > 當執行某函式的呼叫時，並依據該函式所擁有的區域變數來建構該函式的lexical environment，隨後當函式開始執行時存取到特定的識別字時，會先從(函式)自己所擁有的lexical environment來找是否有對應的識別字，若沒有就往outer找，再沒有就往outer的outer找起，直到找到或者找不到報錯。
 
-1. 以下面為例，在say對應函式內部的lexical environment會是name，而name可以根據輸入進來的name區域變數而在這邊決定為John，若函式較為複雜的話，就無法輕易確定name為何
+1. 以下面為例，在say對應函式內部的lexical environment會是name，而name可以根據輸入進來的name區域變數而在這邊決定為Joh
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1646588860/backend/lexical%20environment/InnerAndOuterLexicalEnv1_y726m3.png)
 
 2. 在內部裡的console.log中會要求著name和phrash，在這裏會先從自己的environment來找，結果能找到name對應著John，而phrash則是處于找不到的狀態，這時系統會往outer指向的lexical environment來找，也就是函式外，最後從outer的environment找到phrash為"Hello"，並且搭配著Johen，印出Hello John結果。
@@ -191,7 +191,7 @@ arr = null; // ...and now the memory is cleaned up
 識別字(名字)：function
 ```
 3. 識別字(名字)可以對應變數、函式：
-  - 若識別字(名字)對應變數，由於變數本身的內容會因為運算處理或者複雜的控制流程而無法確定整個block上的變數內容會是什麼樣的內容
+  - 若識別字(名字)對應著const/let變數，由於變數本身的內容會受到scope的限制而無法確定整個block上的變數內容會是什麼樣的內容
   - 若識別字(名字)對應函式，由於本身單純(頂多會是多個相同函式會在不同的block或者多個相同函式在同一個block，前者的話會因為block而區別開來，後者則是挑最後定義的函式宣告/定義為主)，所以可以在一開始定義一個block的函式內容會是如何。
 4. 當系統執行程式時找到識別字時，會先從當前block的environment找到對應的識別字，找不到再往outer來找，再找不到就往outer的outer來找，直到找不到或者找到為止。
 
