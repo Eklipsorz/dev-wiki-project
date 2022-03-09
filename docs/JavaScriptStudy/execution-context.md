@@ -317,3 +317,17 @@ GlobalExectionContext = {
 1. parameter: 函式輸入內容的規範
 > a set of facts or a fixed limit that establishes
 2. argument：實際輸入至函式的內容
+
+
+### 補充知識：Environment Records的種類
+1. Environment Records主要目的為目前environment有哪些識別字，會去搜尋全域、區域、函式所擁有的識別字有哪些以及對應哪些內容(變數、函式)
+2. 至於紀錄方式，Environment Records的種類主要有兩種：
+  - Object Environment records：以類似於with的形式將identifier綁定在特定物件或者一些特定的物件來當屬性，以此來表示，亦即為用特定物件的屬性來紀錄
+  > same interface as a normal environment record, but keeps its bindings in a JavaScript Object. In this case, the object is the global object
+  ```
+  global.key1 = value1
+  global.key2 = value2
+  .
+  .
+  ```
+  - Declarative Environment records：以宣告變數、函式宣告的形式來紀錄
