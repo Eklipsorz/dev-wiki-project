@@ -92,7 +92,7 @@ alphaPhoneX.similarPhone.showPhoneInfo()
 2. call()為function原型提供的方法之一，設定要函式呼叫的this為指定物件
 > The call() method calls a function with a given this value and arguments provided individually.
 
-主要語法會是如下，其中function為要呼叫的函式名稱，該函式原型擁有call方法，方法內的thisArg參數為指定為哪個物件為該函式呼叫的this，而arg1至argN，則是原本function需要用到的參數，回傳值會是呼叫該function的回傳結果，其function的參數和this會藉由call所指定的thisArg和arg1~argN
+主要語法會是如下，其中function為要呼叫的函式名稱，該函式原型擁有call方法，方法內的thisArg參數為指定為哪個物件為該函式呼叫的this，而arg1至argN，則是原本function需要用到的參數：call內的arg1會對應函式的第一個參數，arg2會對應函式的第二個參數，arg3會對應函式的第三個參數，後面以此類推。回傳值會是呼叫該function的回傳結果，其function的參數和this會藉由call所指定的thisArg和arg1~argN
 ```
 function.prototype.call()
 function.prototype.call(thisArg)
@@ -100,7 +100,7 @@ function.prototype.call(thisArg, arg1)
 function.prototype.call(thisArg, arg1, arg2)
 function.prototype.call(thisArg, arg1, ... , argN)
 ```
-3. 舉例：以下面程式為例，在這會有showPhoneInfo函式來顯示該function的呼叫者是誰以及其資訊，此外還有alphaPhoneX和alphaPhoneY這兩個物件
+舉例：以下面程式為例，在這會有showPhoneInfo函式來顯示該function的呼叫者是誰以及其資訊，此外還有alphaPhoneX和alphaPhoneY這兩個物件
 
 ```
 const showPhoneInfo = function () {
@@ -120,7 +120,7 @@ let alphaPhoneY = {
   features: ['water proof', 'high screen resolution'],
 }
 ```
-在這裡會以showPhoneInfo這函式物件來呼叫call，並以三種形式來呼叫，第一種會是空參數，在這裡會是沒指定任何物件來呼叫showPhoneInfo，相等於showPhoneInfo()，在這裡的this會是由系統來指定global 物件來代表，第二種會是alphaPhoneX物件，在這裡會是指定alphaPhoneX物件來呼叫showPhoneInfo，相等於alphaPhoneX.showPhoneInfo()，第三種則會是alphaPhoneY物件，在這裡會是指定alphaPhoneY物件來呼叫showPhoneInfo，相等於alphaPhoneY.showPhoneInfo()。
+在這裡會以showPhoneInfo這函式物件來呼叫call，並以三種形式來呼叫，第一種會是空參數，在這裡會是沒指定任何物件來呼叫showPhoneInfo，相等於showPhoneInfo()，在這裡的this會是由系統來指定global 物件來代表，第二種會是alphaPhoneX物件，在這裡會是alphaPhoneX物件來呼叫showPhoneInfo，相等於alphaPhoneX.showPhoneInfo()，第三種則會是alphaPhoneY物件，在這裡會是alphaPhoneY物件來呼叫showPhoneInfo，相等於alphaPhoneY.showPhoneInfo()。
 
 ```
 showPhoneInfo.call()
@@ -143,17 +143,45 @@ showPhoneInfo.call('hiii')
 showPhoneInfo.call(alphaPhoneX)
 showPhoneInfo.call(alphaPhoneX, 'hiii')
 ```
-## binding - apply method
 
+3. apply method除了給定原本函式呼叫的參數是以陣列來給予以外，其餘(回傳值)則與call method相同
 > The apply() method calls a function with a given this value, and arguments provided as an array (or an array-like object).
 
+主要語法會是如下，其中function為要呼叫的函式名稱，該函式原型擁有apply方法，方法內的thisArg參數為指定為哪個物件為該函式呼叫的this，而argsArray，則是原本function需要用到的參數：陣列第0個元素對應第一個函式參數、第1個元素對應第二個參數、第2個元素則對應第三個參數，後面以次類推。回傳值會是呼叫該function的回傳結果，其function的參數和this會藉由call所指定的thisArg和arg1~argN
 ```
 function.prototype.apply(thisArg)
 function.prototype.apply(thisArg, argsArray)
 ```
-Return value
 
-The result of calling the function with the specified this value and arguments.
+舉例：以下面程式為例，在這會有showPhoneInfo函式來顯示該function的呼叫者是誰以及其資訊，該函式會以ram和storage變數來儲存參數，此外還有alphaPhoneX和alphaPhoneY這兩個物件
+```
+const showPhoneInfo = function (ram, storage) {
+  //   console.log("'this' now refers to", this)
+  console.log(`The price of ${this.name} with ${ram}GB and ${storage}GB is $${this.price}, which has the newest features such as ${this.features.join(', ')}.`)
+}
+
+let alphaPhoneX = {
+  name: 'AlphaPhoneX',
+  price: 14999,
+  features: ['long battery life', 'AI camera'],
+}
+
+let alphaPhoneY = {
+  name: 'AlphaPhoneY',
+  price: 18900,
+  features: ['water proof', 'high screen resolution'],
+}
+```
+
+在這裡會以showPhoneInfo這函式物件來呼叫apply，並以三種形式來呼叫，第一種會是空參數，在這裡會是沒指定任何物件來呼叫showPhoneInfo，相等於showPhoneInfo()，在這裡的this會是由系統來指定global 物件來代表，第二種會是alphaPhoneX物件以及指定\[3,64\]這陣列，在這裡會是alphaPhoneX物件來呼叫showPhoneInfo，相等於alphaPhoneX.showPhoneInfo(3, 64)，第三種則會是alphaPhoneY物件，在這裡會是alphaPhoneY物件來呼叫showPhoneInfo，相等於alphaPhoneY.showPhoneInfo(6, 128)。
+
+```
+showPhoneInfo.apply()
+showPhoneInfo.apply(alphaPhoneX, [3, 64])
+showPhoneInfo.apply(alphaPhoneY, [6, 128])
+```
+
+
 
 ## binding - bind method
 
