@@ -100,7 +100,7 @@ function.prototype.call(thisArg, arg1)
 function.prototype.call(thisArg, arg1, arg2)
 function.prototype.call(thisArg, arg1, ... , argN)
 ```
-3. 
+3. 舉例：以下面程式為例，在這會有showPhoneInfo函式來顯示該function的呼叫者是誰以及其資訊，此外還有alphaPhoneX和alphaPhoneY這兩個物件
 
 ```
 const showPhoneInfo = function () {
@@ -120,7 +120,7 @@ let alphaPhoneY = {
   features: ['water proof', 'high screen resolution'],
 }
 ```
-
+在這裡會以showPhoneInfo這函式物件來呼叫call，並以三種形式來呼叫，第一種會是空參數，在這裡會是沒指定任何物件來呼叫showPhoneInfo，相等於showPhoneInfo()，在這裡的this會是由系統來指定global 物件來代表，第二種會是alphaPhoneX物件，在這裡會是指定alphaPhoneX物件來呼叫showPhoneInfo，相等於alphaPhoneX.showPhoneInfo()，第三種則會是alphaPhoneY物件，在這裡會是指定alphaPhoneY物件來呼叫showPhoneInfo，相等於alphaPhoneY.showPhoneInfo()。
 
 ```
 showPhoneInfo.call()
@@ -128,6 +128,21 @@ showPhoneInfo.call(alphaPhoneX)
 showPhoneInfo.call(alphaPhoneY)
 ```
 
+若將showPhoneInfo修改成擁有參數的話，
+```
+const showPhoneInfo = function (name) {
+  console.log("'this' now refers to", this)
+  console.log('name is ', name)
+}
+```
+
+下方呼叫會分別轉換為showPhoneInfo()、showPhoneInfo('hiii')、alphaPhoneX.showPhoneInfo()、alphaPhoneX.showPhoneInfo('hiii')
+```
+showPhoneInfo.call()
+showPhoneInfo.call('hiii')
+showPhoneInfo.call(alphaPhoneX)
+showPhoneInfo.call(alphaPhoneX, 'hiii')
+```
 ## binding - apply method
 
 > The apply() method calls a function with a given this value, and arguments provided as an array (or an array-like object).
