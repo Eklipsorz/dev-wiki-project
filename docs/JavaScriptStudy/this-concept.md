@@ -15,14 +15,23 @@ this 變數表明function call 是由哪個物件產生的，並不是函式本�
 [Javascript ‘This’. Who Is This?](https://medium.com/swlh/javascript-this-ac28f8e0f65d)
 
 術語：綁定 (binding)
+bind原文是指用某些事物來讓某事物A和物件B捆綁在一塊，使它們融為一體，而binding則是描述著綑綁的行為、過程、結果，
+> to tie something tightly or to fasten something
 
-這裡講的綁定 (binding) 是 JavaScript 裡的常見術語，意思是「指向某個物件」，在操作 DOM 事件時，我們常常會用 console.log(this) 來印出 this 的內容，查看是哪個元件觸發了事件，當你這樣做的時候，你就是在檢查 this 的綁定對象。
+在JavaScript中，是將物件內容A指派給其他物件B的行為描述成Binding，形式會是如下：在這裡B所指向的內容會是記憶體內的某區塊，該區塊儲存了某個值，而A在這裡會與該區塊進行Binding或者說拿A來代表著區塊。
+```
+let A = B
+const A = B
+```
+
+[What does binding mean in Javascript?](https://stackoverflow.com/questions/49662203/what-does-binding-mean-in-javascript)
+[Program Structure](https://eloquentjavascript.net/02_program_structure.html)
 
 
-不同的 this 綁定方式
 
-this 綁定方式有以下四種：
-隱式綁定和顯式綁定皆為 "開發者主動設定每一個function call隸屬於哪個物件"，只是差別就在於隱式比起顯式沒那麼明顯，隱式只是透過A.B()來代表物件A呼叫了自己的方法-函式B，顯式就是明顯地指定function call是隸屬於哪個物件，除此之外，預設綁定則是由系統自己決定function call 隸屬於哪個物件，而new關鍵字綁定則是只要透過建立實例，來將相關的方法綁定在該實例上。
+## this 綁定方式
+1. 主要有以下四種：隱式綁定、顯式綁定、預設綁定、new關鍵字綁定
+2. 隱式綁定和顯式綁定皆為 "開發者主動設定每一個function call隸屬於哪個物件"，只是差別就在於隱式比起顯式沒那麼明顯，隱式只是透過A.B()來代表物件A呼叫了自己的方法-函式B，顯式就是明顯地指定function call是隸屬於哪個物件，除此之外，預設綁定則是由系統自己決定function call 隸屬於哪個物件，而new關鍵字綁定則是只要透過建立實例，來將相關的方法綁定在該實例上。
 
 ### 隱式綁定
 1. 隱式綁定 (implicit binding)：為開發者主動設定每一個function call隸屬於哪個物件，透過以下方式來設定函式B的function call是隸屬於物件A
@@ -78,12 +87,12 @@ alphaPhoneX.similarPhone.showPhoneInfo()
 ```
 
 ### 顯式綁定
-顯式綁定 (explicit binding)：與隱式綁定相比，顯示綁定是以較為明顯的方式來決定每一個function call是隸屬於哪個物件，具體有三種方法(call、apply、bind)
+1. 顯式綁定 (explicit binding)：與隱式綁定相比，顯示綁定是以較為明顯的方式來決定每一個function call是隸屬於哪個物件，具體有三種方法(call、apply、bind)
 
-## binding - call method
-1. 
+2. call()為function原型提供的方法之一，設定要函式呼叫的this為指定物件
 > The call() method calls a function with a given this value and arguments provided individually.
 
+主要語法會是如下，其中function為要呼叫的函式名稱，該函式原型擁有call方法，方法內的thisArg參數為指定為哪個物件為該函式呼叫的this，而arg1至argN，則是原本function需要用到的參數，回傳值會是呼叫該function的回傳結果，其function的參數和this會藉由call所指定的thisArg和arg1~argN
 ```
 function.prototype.call()
 function.prototype.call(thisArg)
@@ -91,10 +100,33 @@ function.prototype.call(thisArg, arg1)
 function.prototype.call(thisArg, arg1, arg2)
 function.prototype.call(thisArg, arg1, ... , argN)
 ```
+3. 
 
-Return value
+```
+const showPhoneInfo = function () {
+  console.log("'this' now refers to", this)
+  console.log(`The price of ${this.name} is $${this.price}, which has the newest features such as ${this.features.join(', ')}.`)
+}
 
-The result of calling the function with the specified this value and arguments.
+let alphaPhoneX = {
+  name: 'AlphaPhoneX',
+  price: 14999,
+  features: ['long battery life', 'AI camera'],
+}
+
+let alphaPhoneY = {
+  name: 'AlphaPhoneY',
+  price: 18900,
+  features: ['water proof', 'high screen resolution'],
+}
+```
+
+
+```
+showPhoneInfo.call()
+showPhoneInfo.call(alphaPhoneX)
+showPhoneInfo.call(alphaPhoneY)
+```
 
 ## binding - apply method
 
