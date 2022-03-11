@@ -14,19 +14,31 @@ this 變數表明function call 是由哪個物件產生的，並不是函式本�
 
 [Javascript ‘This’. Who Is This?](https://medium.com/swlh/javascript-this-ac28f8e0f65d)
 
-術語：綁定 (binding)
-bind原文是指用某些事物來讓某事物A和物件B捆綁在一塊，使它們融為一體，而binding則是描述著綑綁的行為、過程、結果，
+## 術語：綁定 (binding)
+bind原文是指某事物A和某事物B綑綁在一塊，使它們融為一體或者單方面使他們之間產生連結，比如事物A連結著事物B，來代表著事物B，而binding則是描述著綑綁、連結的行爲、過程、結果。
 > to tie something tightly or to fasten something
 
-在JavaScript中，是將物件內容A指派給其他物件B的行為描述成Binding，形式會是如下：在這裡B所指向的內容會是記憶體內的某區塊，該區塊儲存了某個值，而A在這裡會與該區塊進行Binding或者說拿A來代表著區塊。
+在JavaScript中，binding是描述著連結的結果，程式在執行過程中總是會有許多的變化或者代表狀態的數值，比如一個老舊的值因爲某些處理而由新的值去替代著，為了讓程式能夠儲存每一個執行時期的狀態(數值)，JavaScript提供一個名為binding的概念：會替每個執行時期的狀態(數值)綁定一個名稱，程式可以藉由該名稱來繼續延伸使用對應時期的狀態來處理，在這裡的名稱會是binding本身，而狀態和名稱之間的綁定則是bind，名稱則是binding所會有名稱。
+> How does a program keep an internal state? How does it remember things? We have seen how to produce new values from old values, but this does not change the old values, and the new value has to be immediately used or it will dissipate again. To catch and hold values, JavaScript provides a thing called a binding, or variable:
+
+
+> The concept of binding in computer science has many forms. For example, when you type foo in your code, binding is the act of working out which variable/function/type/... should be used. In JavaScript this is pretty straightforward, but in some languages it can get pretty hairy (due to things like overload resolution and so forth).
+
+### 如何實現綁定
+1. 程式語言中實現綁定(binding)可能會因特性而有所不同
+2. 在JavaScript中，實現方法較為直接，具體來說會使用內容指派操作來實現，來將代表不同執行時期的狀態(數值)指派給變數，而該變數可以使用不同的變數名稱來識別，藉此達到名稱與數值之間的綁定
 ```
+// 變數
 let A = B
 const A = B
+// 常數
+let A = constant
+const A = constant
 ```
-
-[What does binding mean in Javascript?](https://stackoverflow.com/questions/49662203/what-does-binding-mean-in-javascript)
-[Program Structure](https://eloquentjavascript.net/02_program_structure.html)
-
+3. 參考資料：
+ - [What does binding mean in Javascript?](https://stackoverflow.com/questions/49662203/what-does-binding-mean-in-javascript)
+ - [Program Structure](https://eloquentjavascript.net/02_program_structure.html)
+ - [Is a variable declaration the same as a variable's binding?](https://stackoverflow.com/questions/50898687/is-a-variable-declaration-the-same-as-a-variables-binding)
 
 
 ## this 綁定方式
