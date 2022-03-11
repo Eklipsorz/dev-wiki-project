@@ -227,7 +227,7 @@ let alphaPhoneY = {
   features: ['water proof', 'high screen resolution'],
 }
 ```
-在這裡會以showPhoneInfo這函式物件來呼叫bind，並以三種形式來呼叫，第一種會是以alphaPhoneX，相等於showPhoneInfo()，在這裡的this會是由系統來指定global 物件來代表，第二種會是alphaPhoneX物件以及指定\[3,64\]這陣列，在這裡會是alphaPhoneX物件來呼叫showPhoneInfo，相等於alphaPhoneX.showPhoneInfo(3, 64)，第三種則會是alphaPhoneY物件，在這裡會是alphaPhoneY物件來呼叫showPhoneInfo，相等於alphaPhoneY.showPhoneInfo(6, 128)。
+在這裡會先以showPhoneInfo這函式物件來呼叫bind來建立兩個新的函式來執行，產生出來的兩個函式會是以this分別為alphaPhoneX和alphaPhoneY的showPhoneInfo函式，在這裡總共執行三種形式來呼叫，第一種會是以alphaPhoneX物件去呼叫showPhoneInfo()，在這裡的this會因為bind關係而轉變為alphaPhoneX，第二種會是alphaPhoneX物件以及指定(3,64)這兩個參數，在這裡會是alphaPhoneX物件來呼叫showPhoneInfo，相等於alphaPhoneX.showPhoneInfo(3, 64)，第三種則會是alphaPhoneY物件，在這裡會是alphaPhoneY物件來呼叫showPhoneInfo，相等於alphaPhoneY.showPhoneInfo(6, 128)。
 
 
 ```
@@ -235,16 +235,44 @@ const showPhoneInfoOfAlphaPhoneX = showPhoneInfo.bind(alphaPhoneX)
 const showPhoneInfoOfAlphaPhoneY = showPhoneInfo.bind(alphaPhoneY)
 
 // invoke the function
-showPhoneInfoOfAlphaPhoneX()
-showPhoneInfoOfAlphaPhoneX(3, 64)
-showPhoneInfoOfAlphaPhoneY(6, 128)
+
+showPhoneInfoOfAlphaPhoneX()            // 第一種
+showPhoneInfoOfAlphaPhoneX(3, 64)       // 第二種
+showPhoneInfoOfAlphaPhoneY(6, 128)      // 第三種
 ```
 
+若在bind參數上添加原本要給showPhoneInfo處理的參數，則會使得產生出來函式會是以showPhoneInfo(3,64)為主，且this會由thisArg來決定，在這裡的呼叫會是alphaPhoneX.showPhoneInfo(3, 64)
 
 ```
 const showPhoneInfoOfAlphaPhoneX = showPhoneInfo.bind(alphaPhoneX, 3, 64)
 showPhoneInfoOfAlphaPhoneX()
 ```
 
-預設綁定 (default binding)
-new 關鍵字綁定 (new binding)
+5. new 關鍵字綁定 (new binding)：透過prototpye的實例來呼叫其擁有的方法，該方法會因為new關鍵字而將this指向為該實例。
+
+
+舉例來說：假設一個名為SmartPhone的建構式，且參數有name、price、features來代表名稱、價格、功能，該建構式還夾雜著名為showPhoneInfo函式來印出資訊
+```
+function SmartPhone(name, price, features){
+  this.name = name
+  this.price = price
+  this.features = features
+  this.showPhoneInfo = function() {
+    console.log(`The price of ${this.name} is $${this.price}, which has the newest features such as ${this.features.join(', ')}.`)
+  }
+}
+```
+
+當使用new以及SmartPhone這建構式時，會透過其參數來建立名為SmartPhone的實例或者物件，在這裡因為該建構式內容而定義該物件的名稱、價格、功能、showPhoneInfo 所代表著this是目前的實例
+```
+let alphaPhoneX = new SmartPhone('alphaPhoneX', 14999, ['long battery life', 'AI camera'])
+```
+所以當以該實例來呼叫內部的方法showPhoneInfo時，會依照this目前的對象是誰而印出資訊。
+
+```
+alphaPhoneX.showPhoneInfo()
+```
+
+
+
+6. 預設綁定 (default binding)：當開發者沒使用上述三者方式來指定function call是隸屬於哪個物件時，系統會自動指定目前的全域物件為function call的this。
