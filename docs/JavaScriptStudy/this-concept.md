@@ -18,14 +18,14 @@ this 變數表明function call 是由哪個物件產生的，並不是函式本�
 bind原文是指某事物A和某事物B綑綁在一塊，使它們融為一體或者單方面使他們之間產生連結，比如事物A連結著事物B，來代表著事物B，而binding則是描述著綑綁、連結的行爲、過程、結果。
 > to tie something tightly or to fasten something
 
-在JavaScript中，binding是描述著連結的結果，程式在執行過程中總是會有許多的變化或者代表狀態的數值，比如一個老舊的值因爲某些處理而由新的值去替代著，為了讓程式能夠儲存每一個執行時期的狀態(數值)，JavaScript提供一個名為binding的概念：會替每個執行時期的狀態(數值)綁定一個名稱，程式可以藉由該名稱來繼續延伸使用對應時期的狀態來處理，在這裡的名稱會是binding本身，而狀態和名稱之間的綁定則是bind，名稱則是binding所會有名稱。
+在JavaScript中，binding是描述著連結的結果，程式在執行過程中總是會有許多的變化或者代表狀態的數值、字串、特殊資料型態，比如一個老舊的值因爲某些處理而由新的值去替代著，而永遠取得不了老舊的值而做後續的處理，為了讓程式能夠儲存每一個執行時期的狀態(數值)，JavaScript提供一個名為binding的概念：會替每個執行時期的狀態(數值)綁定一個名稱，程式可以藉由該名稱來繼續延伸使用對應時期的狀態來處理，在這裡的名稱會是binding本身，而狀態和名稱之間的綁定則是bind，名稱則是binding所會有名稱。
 > How does a program keep an internal state? How does it remember things? We have seen how to produce new values from old values, but this does not change the old values, and the new value has to be immediately used or it will dissipate again. To catch and hold values, JavaScript provides a thing called a binding, or variable:
 
 
 > The concept of binding in computer science has many forms. For example, when you type foo in your code, binding is the act of working out which variable/function/type/... should be used. In JavaScript this is pretty straightforward, but in some languages it can get pretty hairy (due to things like overload resolution and so forth).
 
-### 如何實現綁定
-1. 程式語言中實現綁定(binding)可能會因特性而有所不同
+### 如何實現Binding
+1. 程式語言中實現綁定(binding)可能會因特性而有所不同，所以Binding本身不一定和變數宣告本身一樣。
 2. 在JavaScript中，實現方法較為直接，具體來說會使用內容指派操作來實現，來將代表不同執行時期的狀態(數值)指派給變數，而該變數可以使用不同的變數名稱來識別，藉此達到名稱與數值之間的綁定
 ```
 // 變數
@@ -195,9 +195,11 @@ showPhoneInfo.apply(alphaPhoneY, [6, 128])
 
 
 
-## binding - bind method
+4. bind method 是透過指定參數來重新建立新的相同函式物件並回傳，它並不像前面的call、apply那樣，直接呼叫call/apply就執行對應函式，而是會回傳擁有新參數值得相同函式，並且給予開發者自行呼叫的機會。
 
 > The bind() method creates a new function that, when called, has its this keyword set to the provided value, with a given sequence of arguments preceding any provided when the new function is called.
+
+主要語法會是如下，其中function為要呼叫的函式名稱，該函式原型擁有bind方法，方法內的thisArg參數為指定為哪個物件為該函式呼叫的this，而arg1-argN，則是原本function需要用到的參數：bind內的arg1會對應函式的第一個參數，arg2會對應函式的第二個參數，arg3會對應函式的第三個參數，後面以此類推。回傳值會是添加這些參數的相同函式。
 
 ```
 function.prototype.bind(thisArg)
@@ -205,11 +207,44 @@ function.prototype.bind(thisArg, arg1)
 function.prototype.bind(thisArg, arg1, arg2)
 function.prototype.bind(thisArg, arg1, ... , argN)
 ```
-Return value
+舉例：以下面程式為例，在這會有showPhoneInfo函式來顯示該function的呼叫者是誰以及其資訊，該函式會以ram和storage變數來儲存參數，此外還有alphaPhoneX和alphaPhoneY這兩個物件
 
-A copy of the given function with the specified this value, and initial arguments (if provided).
+```
+const showPhoneInfo = function (ram, storage) {
+  //   console.log("'this' now refers to", this)
+  console.log(`The price of ${this.name} with ${ram}GB and ${storage}GB is $${this.price}, which has the newest features such as ${this.features.join(', ')}.`)
+}
+
+let alphaPhoneX = {
+  name: 'AlphaPhoneX',
+  price: 14999,
+  features: ['long battery life', 'AI camera'],
+}
+
+let alphaPhoneY = {
+  name: 'AlphaPhoneY',
+  price: 18900,
+  features: ['water proof', 'high screen resolution'],
+}
+```
+在這裡會以showPhoneInfo這函式物件來呼叫bind，並以三種形式來呼叫，第一種會是以alphaPhoneX，相等於showPhoneInfo()，在這裡的this會是由系統來指定global 物件來代表，第二種會是alphaPhoneX物件以及指定\[3,64\]這陣列，在這裡會是alphaPhoneX物件來呼叫showPhoneInfo，相等於alphaPhoneX.showPhoneInfo(3, 64)，第三種則會是alphaPhoneY物件，在這裡會是alphaPhoneY物件來呼叫showPhoneInfo，相等於alphaPhoneY.showPhoneInfo(6, 128)。
 
 
+```
+const showPhoneInfoOfAlphaPhoneX = showPhoneInfo.bind(alphaPhoneX)
+const showPhoneInfoOfAlphaPhoneY = showPhoneInfo.bind(alphaPhoneY)
+
+// invoke the function
+showPhoneInfoOfAlphaPhoneX()
+showPhoneInfoOfAlphaPhoneX(3, 64)
+showPhoneInfoOfAlphaPhoneY(6, 128)
+```
+
+
+```
+const showPhoneInfoOfAlphaPhoneX = showPhoneInfo.bind(alphaPhoneX, 3, 64)
+showPhoneInfoOfAlphaPhoneX()
+```
 
 預設綁定 (default binding)
 new 關鍵字綁定 (new binding)
