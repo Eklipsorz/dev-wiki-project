@@ -116,7 +116,7 @@ let counter = makeCounter();
 2. 接著就是makeCounter處理回傳的部分，並自動替回傳的函式添加\[\[Environment\]\]或者\[\Scope\]\]隱藏屬性，好讓回傳函式能夠利用makeCounter所擁有的environment來找到對應的識別字，此時的lexical environment會跟前面第一步驟一樣。
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1646589776/backend/lexical%20environment/Returning_a_function2_cirp0o.png)
 
-3. 最後makeCounter回傳夾帶隱藏屬性的函式物件給counter，並藉由函式物件來呼叫，接著系統就會跳到函式物件所指定程式碼片段的第一行，在這裏系統會自動替該函式物件建立lexical environment，由於沒任何區域變數，所以為空，而當系統執行到count++時，會先從目前的lexical environment來找對應的count，若沒有就往outer reference對應的environment來找到對應的識別字，並對它做++的處理，處理完畢之後便回傳
+3. 最後makeCounter回傳夾帶隱藏屬性的函式物件給counter，並藉由函式物件來呼叫，接著系統就會跳到函式物件所指定程式碼片段的第一行，在這裏系統會自動替該函式物件本身建立lexical environment以及以\[\[Environment\]\]或者\[\Scope\]\]隱藏屬性來指向包含該函式的環境所擁有的lexical environment，由於最一開始，函式本身沒任何區域變數，所以為空，而當系統執行到count++時，會先從目前的lexical environment來找對應的count，若沒有就往outer reference對應的environment來找到對應的識別字，並對它做++的處理，處理完畢之後便回傳
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1646589776/backend/lexical%20environment/Returning_a_function3_cqau8e.png)
 
 4. 隨後當呼叫完counter()時，makeCounter所擁有的environment之count從0轉變為1，若有後續的counter()呼叫，會使1轉變2、2轉變3、3轉變為4，後面以此類推。
