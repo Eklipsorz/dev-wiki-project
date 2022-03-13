@@ -15,7 +15,18 @@ sidebar_position: 5
   - 每一個commit紀錄會搭配tag來標記所屬的版本號是為何
 4. 該分支會存於開發者本地端的分支和遠端倉庫那邊的分支
 ## hotfix 分支
-Hotfixes
+1. hotfix的hot指的是緊急的、重要的，而fix則是指修復，不會特定新增功能。在這裡組合起來的分支就是緊急修復用的分支。
+2. 主要用途為：當線上版本或者master分支上出現緊急問題時，就會從master目前紀錄上切分出hotfix分支來解決此問題，而當問題解決後，就從hotfix分支合併至master分支和develop分支，以確保兩者保持一致
+3. 版本紀錄的commit來源皆源自：
+  - 從master切分出來的hotfix分支並修復bug而從hotfix分支上提交的commit
+4. 主要流程為：
+  - 當master出現緊急問題時，就以master分支目前紀錄切分出hotfix分支
+  - 從hotfix分支修正問題並提交一份commit
+  - 將hotfix分支的修正commit合併至master分支和develop分支
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1647164444/backend/git-flow/hotfix-commit_kdthln.png)
+5. 其他細節：
+  - hotfix屬於臨時分支，確定修正緊急問題後就即可選擇刪除該分支
+  - 命名規則與feature一樣，建議為：hotfix/bug_hotfix，bug為緊急問題名稱，比如hotfix/user_createtime_hotfix就是專門修正使用者建立時間的hotfix分支
 
 
 ## release 分支
@@ -28,7 +39,7 @@ Hotfixes
  - 當develop分支下的目前完成下次release的目標時，就會合併至release分支並提交
  - 在release分支下進行第一輪的測試，若遇到測試問題，則從release分支進行修正並提交commit
  - 從release分支下的最新內容分別合併至develop分支和master分支，來保證兩者都不會遇到相同的測試問題
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1647163461/backend/git-flow/release-commit_ys2gor.png)
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1647164443/backend/git-flow/release-commit_ovpp5o.png)
 5. 其他細節：
   - 此分支為臨時分支，產品成功上線後可選擇刪去該臨時分支
   - 該分支主要用來測試以及根據測試結果來修正
