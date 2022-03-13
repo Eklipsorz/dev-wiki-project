@@ -3,7 +3,9 @@ sidebar_position: 5
 ---
 
 # git flow
-將版本紀錄分為五種分支，每個分支都負責不同的功能，其中main/master和develop因長期活在整個git flow裡頭而被稱作為長期分支，剩下大部分的分支都會因為任務結束而被刪除。
+提出git flow的原因為：
+  - git 提交混亂程度會隨著參與人數增多而增加，比如每個人對於commit的習慣皆為不同，很有可能會因此建立出不同卻不容易讓團隊理解的風格，且必須要花更多時間成本來理解
+基於原因而提出一套git commit的流程或者規則，來緩解問題，首先會將版本紀錄分為五種分支，每個分支都負責不同的功能，其中main/master和develop因長期活在整個git flow裡頭而被稱作為長期分支，剩下大部分的分支都會因為任務結束而被刪除。
 
 ## master (main)分支
 1. 主要存放穩定、隨時可上線的版本，並使用git tag功能來標記每一次commit的紀錄所屬的版本號為何
@@ -74,3 +76,9 @@ sidebar_position: 5
 5. 其他細節：
   - 該分支為暫時性分支，主要會存在開發者本地端的分支，不會存在於遠端分支
   - 建議命名方式為：feature/功能名(特性名稱)，比如開發使用者建立，就會是feature/user-create
+
+
+
+## 參考資料為
+[一文读懂Git工作流](https://www.gushiciku.cn/pl/puBl)
+[Git Flow 是什麼？為什麼需要這種東西？](https://gitbook.tw/chapters/gitflow/why-need-git-flow)
