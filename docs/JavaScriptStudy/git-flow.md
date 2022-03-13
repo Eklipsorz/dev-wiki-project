@@ -19,48 +19,47 @@ Hotfixes
 
 
 ## release 分支
-Release branches
-1. 用途：當develop分支已經達到下一次
-
-May branch off from:
-develop
-Must merge back into:
-develop and master
-
-The key moment to branch off a new release branch from develop is when develop (almost) reflects the desired state of the new release. At least all features that are targeted for the release-to-be-built must be merged in to develop at this point in time. All features targeted at future releases may not—they must wait until after the release branch is branched off.
-
-至少所有
-
-所有目標功能
-
+1. 用途：當develop分支內容已經足夠成熟或完成指定的release功能時，就會負責儲存從develop分支合併過來的紀錄並進行上線前的測試，根據測試結果來從release分支修正bug並於該分支提交
+2. 本紀錄的commit來源皆源自：
+  - 從develop分支合併過來的紀錄
+  - 從develop分支合併過來的紀錄並做上線前的測試，根據測試結果來修正測試問題，並以develop分支來提交commit
+3. 當完成release分支下的測試時，就會被合併至develop分支和master分支，來保持兩者都不會遇到相同的測試問題。
+4. 整體會有的流程如下：
+ - 當develop分支下的目前完成下次release的目標時，就會合併至release分支並提交
+ - 在release分支下進行第一輪的測試，若遇到測試問題，則從release分支進行修正並提交commit
+ - 從release分支下的最新內容分別合併至develop分支和master分支，來保證兩者都不會遇到相同的測試問題
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1647163461/backend/git-flow/release-commit_ys2gor.png)
+5. 其他細節：
+  - 此分支為臨時分支，產品成功上線後可選擇刪去該臨時分支
+  - 該分支主要用來測試以及根據測試結果來修正
+  - 分支命名方式為release/version_publishtime，其中version為版本數，而publishtime則是發布時間，比如說release/v2.1.1_20201018，意思為2020年10月18日發布的版本，版本數是2.1.1。
+  
 
 ## develop 分支
-1. 主要存放所有開發的基本分支，
+1. 主要存放所有開發的主分支，不會有第二個develop分支，並盡可能保持最新功能開發和bug修復後的版本
 2. 版本紀錄的commit來源皆源自：
-  - 從develop 本身上進行commit
   - 當要新增單一功能時，就會從develop分支切出feature分支，每一種功能都各一個feature分支，而當該feature分支的功能開發完成後便會合併至develop分支增加commit
 3. 當develop分支上完成下一次release所要求的功能或者進度時，便會將develop分支的目前內容合併至release分支，在那進行測試。
 
 4. 整體會有的流程如下：
   - 當develop分支要開發新功能時，就切分feature分支並在那進行開發，等到該分支的開發程度完成就將該分支的目前內容合併至develop分支
   - 當develop分支上已經完成下一次release分支所要求的功能或者目標時，就將develop分支合併至release分支上，在那進行相關測試
-  ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1647157363/backend/git-flow/develop-commit_im9xym.png)
+  ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1647162556/backend/git-flow/develop-commit_uyythk.png)
 
-5. 該分支會存於開發者本地端的分支和遠端倉庫那邊的分支
-Develop
+5. 其他細節：
+  - 該分支會存於開發者本地端的分支和遠端倉庫那邊的分支
+  - 該分支不能夠從Develop本身來提交。
 
-
-Feature branches
-1. 從Develop 分支分出來的額外分支，主要會以開發特定功能而建立的分支
-2. 等到該分支的特定功能已完成就會合併至Develop分支
-3. 該分支基本上會存在於開發者本地端的分支，不會是遠端倉庫那
-May branch off from:
-
-develop
-Must merge back into:
-develop
 
 ## feature 分支
-
-Feature branches (or sometimes called topic branches) are used to develop new features for the upcoming or a distant future release.
-Feature branches typically exist in developer repos only, not in origin.
+1. 主要會以另外以develop分支來切分出feature，其內容為存放以develop目前版本為主的單一功能開發，每一種單一功能的開發會有各自的feature分支，不會全由單一的feature分支來控管所有單一功能的開發
+2. 版本紀錄的commit來源皆源自：
+  - 從feature本身所提交的commit紀錄
+3. 當feature分支的目前內容已經完成功能開發就會將目前內容合併至develop分支
+4. 整體流程為在這為了要開發feature 1和feature 2這兩個功能
+  - 從develop目前分支分別切分出feature 1和feature 2 這兩個分支，接著分別進入這兩個進行開發
+  - 只要其中一個feature 分支完成功能開發就將feature分支的目前內容合併至develop分支
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1647162556/backend/git-flow/feature-commit_alosee.png)
+5. 其他細節：
+  - 該分支為暫時性分支，主要會存在開發者本地端的分支，不會存在於遠端分支
+  - 建議命名方式為：feature/功能名(特性名稱)，比如開發使用者建立，就會是feature/user-create
