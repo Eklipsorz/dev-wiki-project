@@ -42,10 +42,10 @@ sidebar_position: 1
 
 2. 在電腦科學裡，Session 本身是指兩個端點之間的暫時性資訊交換過程，換言之，會是指端點間傳輸過程下的狀態和內容
 > a session is a temporary and interactive information interchange between two or more communicating devices, or between a computer and user 
-3. 在這裏的話，Session 會是一種封裝底層(會話層以下的層級)的資料結構，存放至各個端點內並允許其內部的應用程式在只考慮高層級的情況下，只需要透過對該結構內的寫入和讀取就能與其他端點下的應用程式進行訊息交換
+3. 在這裏的話，Session 會是一種封裝底層(會話層以下的層級)的資料結構，目的在於盡可能讓應用程式的開發只需要顧慮到應用層或者會話層透過此API來快速與另一個端點下的應用程式建立連接，而不需要顧慮到底層(傳輸層、網路層、資料鏈結層、實體層)，只需要透過對該結構內的寫入和讀取就能與其他端點下的應用程式進行訊息交換
 > The name of this layer tells you much about what it is designed to do: to allow devices to establish and manage sessions. In general terms, a session is a persistent logical linking of two software application processes, to allow them to exchange data over a prolonged period of time. 
 4. 在這層級，主要負責：
-  - 定義Session的具體概念：Session 是什麼？ Session 種類？ Session如何幫助應用程式與其他端點下的應用程式進行交流？ 
+  - 定義Session的具體概念：Session 是什麼？ Session 種類？ Session如何幫助應用程式與其他端點下的應用程式進行交流？ 比如使用socket概念 或者 RPC概念
   - 定義如何讓應用程式使用這概念：具體會定義作業系統如何提供一種API來給予應用程式調用並從中建立Session
   - 管理/維護端點內的所有Session
 
@@ -55,7 +55,8 @@ sidebar_position: 1
   - 與其他端點下的Session進行連接：Host A的A1會想與Host B的B1進行訊息交換，所以這兩個應用程式對應的Session會相互連接，而Host A的A2會想與Host C的C1進行訊息交換，所以這兩個應用程式對應的Session會相互連接。
   ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1647823519/blog/network/OSI/session-example_oz9iev.png)
   - 當對Session進行寫入/寫入：當Host A的A1要傳遞訊息至Host B的B1時，就會在Host A內尋找對應的Session並從中進行內容上的寫入並通知作業系統傳遞訊息，隨後它收到就便把訊息傳遞至與該Session連接的Host B之B1對應的Session，Host B對應的Session收到對應內容時，作業系統就把內容轉換至對應的應用程式B1，來讓B1讀取其內容。
-  ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1647824291/blog/network/OSI/send-receive-data-inside-session-example_mptjex.png)
+  ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1647831617/blog/network/OSI/send-receive-data-inside-session-example_hjcwdz.png)
+
 
 6. 參考資料：
  - [What exactly is Socket](https://stackoverflow.com/questions/16233193/what-exactly-is-socket)
