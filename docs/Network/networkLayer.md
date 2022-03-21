@@ -5,10 +5,10 @@ sidebar_position: 1
 # 網路模型
 
 
-## OSI 模型
+## OSI (Open System Interconnection Model) 模型
 
 端點和端點之間的資料傳遞基本上會涉及到資料傳遞媒介、網卡、資料該如何發送、資料如何與應用程式有著緊密的關係等等複雜性的問題，而往往要實現資料傳遞都針對這些因素來開發，若某些因素的實際開發出了差錯，還有可能會讓代表其他因素的實際開發也跟著出現問題，因此為了讓一切的資料傳遞都能夠很好地維護以及管理，會將資料傳遞過程分割數個階層，每個階層都有各自獨立的功能且不會彼此干擾，因此可以開發者在不同階層進行開發，當某一層出現問題時，只要針對那一層來解決就行了，而這就是OSI 模型，而該模型下的七層階層分別為以下，並且雙方端點都擁有這七種階層：
-  - 應用層（Application Layer)
+  - 應用層 (Application Layer)
   - 呈現層 (Presentation Layer)
   - 會話層 (Session Layer)
   - 傳輸層 (Transport Layer)
@@ -26,22 +26,41 @@ sidebar_position: 1
 
 ### 應用層
 1. 是OSI 7層中的最後一層，英文是Application Layer
-2. 定義應用程式如何進入此層的溝通介面，以將資料收收或者傳送給應用程式，最終展示給使用者
+2. 該層級定義一個介面，允許應用程式能透過網路上的同一層與另一個應用程式溝通，以將資料收收或者傳送給應用程式，最終展示給使用者
+
 
 ### 呈現層
 1. 是OSI 7層中的第六層，英文是Presentation Layer
 2. 由於應用程式透過應用層傳遞的資料不一定是網路傳輸接收的標準編碼格式，所以這層會負責：
   - 網路服務(或程式)之間的資料格式轉換
-  - 傳送方必須要將要傳送的資料轉化成網路的標準格式
-  - 接收方必須要將接收到的資料轉化成應用程式能讀懂的格式
+  - 傳送方必須要將要傳送(從同機下應用層傳遞下來的)的資料轉化成網路的標準格式
+  - 接收方必須要將接收到的資料轉化成(同機下應用層)應用程式能讀懂的格式
 3. 可以透過這層進行資料的加解密
 
 ### 會話層
 1. 是OSI 7層中的第五層，英文是Session Layer
-2. 定義兩個位址(兩個端點位址)的連線通道(port)之連接管理(建立連線、中斷連線等)
-3. 用來確定網路服務(應用層所提供的服務)建立連線的確認
 
-https://stackoverflow.com/questions/52775730/tcp-port-and-osi-model
+2. 在電腦科學裡，Session 本身是指兩個端點之間的暫時性資訊交換過程，換言之，會是指端點間傳輸過程下的狀態和內容
+> a session is a temporary and interactive information interchange between two or more communicating devices, or between a computer and user 
+3. 在這裏的話，Session 會是一種封裝底層(會話層以下的層級)的資料結構，存放至各個端點內並允許其內部的應用程式在只考慮高層級的情況下，只需要透過對該結構內的寫入和讀取就能與其他端點下的應用程式進行訊息交換
+> The name of this layer tells you much about what it is designed to do: to allow devices to establish and manage sessions. In general terms, a session is a persistent logical linking of two software application processes, to allow them to exchange data over a prolonged period of time. 
+4. 在這層級，主要負責：
+  - 定義Session的具體概念：Session 是什麼？ Session 種類？ Session如何幫助應用程式與其他端點下的應用程式進行交流？ 
+  - 定義如何讓應用程式使用這概念：具體會定義作業系統如何提供一種API來給予應用程式調用並從中建立Session
+  - 管理/維護端點內的所有Session
+
+5. 例子：在這裡會有三個主機分別為Host A、Host B、Host C，每台主機的作業系統會提供session的API給應用程式，其中Host A有兩個應用程式分別為A1、A2會想需要和其他端點下的應用程式做訊息交換，而Host B有和Host C各分別有一個擁有相同需求的應用程式，分別名為B1、C1。
+  - 建立Session：Host A、Host B、Host C 透過作業系統的API來建立對應的Session，每一個Session都綁定特定訊息來方便識別，如IP、Port等資訊，且每個Session的形式上都有可能不同，如用檔案表示Session
+  ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1647823542/blog/network/OSI/build-session-example_pomq4u.png)
+  - 與其他端點下的Session進行連接：Host A的A1會想與Host B的B1進行訊息交換，所以這兩個應用程式對應的Session會相互連接，而Host A的A2會想與Host C的C1進行訊息交換，所以這兩個應用程式對應的Session會相互連接。
+  ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1647823519/blog/network/OSI/session-example_oz9iev.png)
+  - 當對Session進行寫入/寫入：當Host A的A1要傳遞訊息至Host B的B1時，就會在Host A內尋找對應的Session並從中進行內容上的寫入並通知作業系統傳遞訊息，隨後它收到就便把訊息傳遞至與該Session連接的Host B之B1對應的Session，Host B對應的Session收到對應內容時，作業系統就把內容轉換至對應的應用程式B1，來讓B1讀取其內容。
+  ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1647824291/blog/network/OSI/send-receive-data-inside-session-example_mptjex.png)
+
+6. 參考資料：
+ - [What exactly is Socket](https://stackoverflow.com/questions/16233193/what-exactly-is-socket)
+ - [A TCP/IP Refeerence You Can Understand](http://www.tcpipguide.com/free/t_SessionLayerLayer5.htm)
+ - [tcp-port-and-osi-model](https://stackoverflow.com/questions/52775730/tcp-port-and-osi-model)
 
 
 ### 傳輸層
@@ -76,7 +95,7 @@ https://stackoverflow.com/questions/52775730/tcp-port-and-osi-model
 ## TCP/IP Protocol
 1. 除了OSI模型以外，另一種描述資料傳遞的網路模型
 2. 由於OSI模型本身的部分網路階層在應用程式實作上沒完全使用或者發揮出來，但仍必須依層級來進行多餘的封裝和解封裝，因此有人提出將部分階層合併一個階層來使用，來解決這樣多餘的過程，而這個合併後的結果就是TCP/IP Protocol。
-3. TCP/IP Protocol因OSI的前面三層之間相關性而合併成應用層來處理，而實體層則是和資料鏈結層合併成鏈結層，整體來說TCP/IP只有四層，而封裝和解封裝的流程仍如同OSI 模型那樣處理。
+3. TCP/IP Protocol因OSI的前面三層之間相關性而合併成應用層來處理，而實體層則是和資料鏈結層合併成鏈結層，整體來說TCP/IP只有四層，而封裝和解封裝的流程仍如同OSI 模型那樣處理。
 4. 因為合併後的網路階層比較能夠滿足一般應用程式的開發需求以及能夠減少不必要的解封裝而受到歡迎，而OSI模型本身會被當作暸解網路架構的教材。
 
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1633511952/blog/network/networkModel/osi2tcp_jn4i6a.png)
