@@ -35,4 +35,13 @@ npx vue create <project-name>
 ```
 
 
+## 推薦套件
+1. vetur 針對 vue 框架提供 syntax highlighting、snippet、Emmet功能:
+  - syntax highlighting：以不同顏色和不同字體來凸顯vue框架語法
+  - snippet：在程式開發用語中，snippet是指原始碼中較為重複的部分程式碼，通常IDE會針對這些snippet進行儲存以做管理，等到下次使用特定關鍵字或者該程式碼的一部分時，系統會根據現有儲存的snippet來補全後續程式碼  
+  > Snippet is a programming term for a small region of re-usable source code
+  - Emmet：以較為簡短的指令來自動轉換成完整程式碼，通常適用於HTML、CSS
+
+
+
 
