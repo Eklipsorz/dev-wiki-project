@@ -12,6 +12,61 @@ sidebar_position: 7
   - Imperative rendering：告訴電腦程式要完成的指令步驟有哪些才能完成渲染畫面的任務
   - Declarative rendering：透過程式語法來定義所需要達成的渲染畫面是什麼，接著由電腦程式負責進行渲染，定義方式為用語法告知要渲染的資料是為何以及對應資料的部分要放在哪
 
-
-
 [声明式渲染与命令式渲染](https://zhuanlan.zhihu.com/p/342747079)
+
+## 資料流
+1. 英文為data flow，別名為data binding，是指**資料模組對於UI的變更方向**
+2. 在資料模組(Data Model)獨立於UI呈現的情況下，資料管理和UI呈現會是不同的程式碼模組，而原則上，
+UI呈現本身會依賴著資料管理模組的資料來做變動，而資料也有可能依賴UI本身變動而改變自己的資料，在這裏資料會有不同的變更/對應流向：
+  - 一種是資料模組一變動就跟著渲染跟資料相關的UI
+  - 另一種則是資料相關的UI只要變動而渲染就跟著變動資料模組的資料
+而資料在資料模組和UI呈現中以其中一個方向來做變更和對應的行為就叫做Data Flow/Data Flow
+
+3. 若 框架X 或 模組X 能輕易做出其中任一流向，代表該 框架X 或 模組X 是容易讓開發者做到one-way data flow / one-way data binding這件事情，而若框架X 或 模組X 能輕易做出兩種方向，代表該 框架X 或 模組X 是容易讓開發者做到two-way data flow / two-way data binding。
+
+### Data Model
+1. 提出背景為 **由於UI或元件上的資料很容易因為該UI或元件的變動而更動資料，如刪除元件X，那麼元件X上的資料將會遺失**
+2. 為了避免元件上的資料因元件本身的變動而遺失，所以會以獨立的程式模組來將元件上的資料儲存起來或者定義一個名為Data Model的程式模組來儲存所有資料，接著提供可以存取Data Model的API來給予其他想用的模組。
+
+3. 實現方式為：
+  - 定義MVC架構，其中Model會儲存所有專案下的資料以及提供資料上的業務邏輯、存取方式
+
+4. 案例：該程式碼出自於尤川豪大大的文章，在這裏是簡單定義了一個陣列來儲存所有todo事項的Data Model，並以陣列形式來存取/使用者每個事項的內容來進行相關渲染，如renderTodoList
+```
+<ul id='todo-list'></ul> 
+<script> 
+    var todos = [ 
+        {text: 'Exercise.'}, 
+        {text: 'Learn JavaScript.'}, 
+        {text: 'Write a blog.'}, 
+    ]; 
+
+    function renderTodoList() { 
+        $('#todo-list').empty(); 
+
+        todos.map(function(el){ 
+            $('#todo-list').append(new $('<li>' + el.text + '</li>')) 
+        }) 
+    } 
+
+    function clearAllTodo() { 
+        todos = []; 
+
+        renderTodoList(); 
+    } 
+</script>
+```
+
+### 資料流的用詞澄清
+1. Data Flow 和 Data Binding 是一樣的：
+  - Data Flow 是指著資料本身對於UI的變更方向，如資料一變動就更改UI畫面、UI畫面一變動就更改資料
+  - Data Binding 是指資料與什麼元件/內容進行綁定來進行變更，如綁定於某元件Y的資料X只要一變動就會變動某元件Y，而元件Y本身一變動就更改綁定於Y的資料X
+  - 由於Data Flow 本身是個概念，而概念上會以 Data Binding 來實現。
+2. Data Flow/Data Binding本質上是一種變動內容的行為，而不是來描述某東西是具有Data Flow/Data Binding功能或者性質：
+  - (錯誤說法)：某某框架或某某程式是one-way data binding 性質的程式/框架
+  - (正確說法)：某某框架或某某程式很容易做到one-way data binding
+
+
+### 參考資料
+1. [簡單聊一下 one-way data flow、two-way data binding 與前端框架](https://devs.tw/post/40)
+2. [one way data flow vs. one way data binding](https://reactjs.org/docs/thinking-in-react.html)
