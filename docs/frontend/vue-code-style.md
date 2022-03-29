@@ -9,7 +9,7 @@ sidebar_position: 4
   [初探 Vue 3.0 Function-based API](https://kuro.tw/posts/2019/08/06/初探-Vue-3-0-Function-based-API/)
   - Options-base API: 每一個application 或者component 一旦需要建立成實例就會以一個option object所指示的設定來建立
 
-Composition API Style
+2. Composition API Style vs. Options-base
 
 ```
 // Composition API
@@ -28,7 +28,7 @@ export default {
 };
 ```
 
-Options-base
+
 
 ```
 // Options API

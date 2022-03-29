@@ -34,7 +34,7 @@ export default {
 }
 ```
 
-3. 原因在於每一次application (prototype)和 component (prototype)一旦建立出實例時，會執行於下面的程式碼來達成，過程中會檢查事先定義好建構式下的options參數之data是否為函式，若不是函式，則會參照於同一份data，若是函式就會執行該函式並獲取獨立的data，在這是**為了讓每一個實例都有不同的data而採取data()的做法**
+3. 原因在於每一次application (prototype)和 component (prototype)一旦建立出實例時，會執行於下面的程式碼來達成，過程中會檢查事先定義好建構式下的options參數之data是否為函式，若不是函式，則會參照於同一份data，若是函式就會執行該函式並從中以函式回傳結果來當作實例所擁有的data屬性，在這會因為回傳的內容會是一份新的物件，所以每個實例會是獲取獨立的data，在這是**為了讓每一個實例都有不同的data而採取data()的做法**
 
 ```
 function initData (vm: Component) {
