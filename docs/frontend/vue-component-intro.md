@@ -17,3 +17,4 @@ component 是Vue 構成網頁畫面的基本元件(component)，這些元件會�
 
 > An application instance won't render anything until its .mount() method is called. It expects a "container" argument, which can either be an actual DOM element or a selector string:
 
+2. [Components Basics](https://vuejs.org/guide/essentials/component-basics.html)
