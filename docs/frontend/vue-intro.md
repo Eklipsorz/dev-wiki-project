@@ -5,7 +5,7 @@ sidebar_position: 7
 # vue basic intro
 
 
-## 從vue2.x至vue3.x
+## 比較：從vue2.x至vue3.x
 主要更新有：
 1. 新增composition API: 每個元件和應用程式皆用著setup function來建立對應實例
 ```
