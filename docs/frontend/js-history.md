@@ -71,7 +71,8 @@ sidebar_position: 1
   - 將伺服器所提供的網站視為應用程式(Application)
   - 該應用程式是將功能和畫面集中在單一頁面，換言之，每一個功能或者畫面皆會在同一個頁面下來呈現給客戶端。
 3. 實作方法為：
-  - 通常會是以Client Side Rendering(CSR)技術 或者 以SSR先產生對應請求的View，然後之後的畫面和功能皆用CSR來取得
+  - 方法1：獲取空白網頁 + Client Side Rendering(CSR)技術 
+  - 方法2：SSR(獲取完整網頁) + Client Side Rendering(CSR)技術 
   - 在一個單一頁面上綁定對應特定功能或者畫面的JavaScript，由執行該JavaScript來在該頁面上呈現對應結果，其頁面通常不會事先定義好，必須經由使用者的互動來產生對應畫面或者功能
   - 在SPA中，原本對應功能或者畫面的頁面會是該架構的狀態(state)
 4. 優點：
