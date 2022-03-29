@@ -5,6 +5,47 @@ sidebar_position: 7
 # vue basic intro
 
 
+## 從vue2.x至vue3.x
+主要更新有：
+1. 新增composition API: 每個元件和應用程式皆用著setup function來建立對應實例
+```
+// Composition API
+export default {
+  setup() {
+    const name = ref('John');
+    
+    const doIt = () => console.log(`Hello ${name.value}`);
+    
+    onMounted(() => {
+      doIt();
+    });
+    
+    return { name };
+  },
+};
+```
+2. Fragments 功能：vue3.x 正式支援template元素內存在多個root元素，如下所示，2.x版本只支援一個root元素，這使得得額外建立一個元素X來包含其他原本可以當root元素(如header、main、footer元素)，3.x版本則直接支援。
+```
+<!-- vue2.x -->
+<template>
+  <div>
+    <header>...</header>
+    <main>...</main>
+    <footer>...</footer>
+  </div>
+</template>
+
+<!-- vue3.x -->
+<template>
+  <header>...</header>
+  <main v-bind="$attrs">...</main>
+  <footer>...</footer>
+</template>
+```
+
+3. Teleport component： 允許開發者渲染原本不在DOM 結構的元件內容，應用於modal
+> <Teleport> is a built-in component that allows us to "teleport" a part of a component's template into a DOM node that exists outside the DOM hierarchy of that component.
+
 ## Imperative programming vs. Declarative programming
 1. Imperative programming：告訴電腦程式要完成的指令步驟有哪些才能達成現開發者所要達到的目標
 2. Declarative programming：告訴電腦程式所需要達成的目標是什麼，接著由電腦程式負責進行實現，而定義所需要達成的目標會是以語法來告知，如用SQL語法來告知系統開發者所想要找的資料是什麼、透過Vue語法來告知系統所要渲染畫面是什麼
