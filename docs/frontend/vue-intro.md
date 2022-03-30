@@ -111,3 +111,18 @@ UI呈現本身會依賴著資料管理模組的資料來做變動，而資料也
 ### 參考資料
 1. [簡單聊一下 one-way data flow、two-way data binding 與前端框架](https://devs.tw/post/40)
 2. [one way data flow vs. one way data binding](https://reactjs.org/docs/thinking-in-react.html)
+
+
+## Vue 和 MVVM 模式
+1. MVVM 為 Model-View-ViewModel的縮寫，是一種前端網頁開發方法或者App圖形介面開發方法之一，其中Model模組是定義App會有的狀態/資料，View模組是定義App會有的畫面/介面，而ViewModel則是負責定義Model和View這兩者之間如何彼此同步：
+  - 狀態/資料一變動就跟著改動對應的畫面上元件
+  - 畫面上元件一變動就跟著改動對應狀態/資料
+
+2. ViewModel實現概念為 **單方面將特定元件與特定資料進行綁定** 或者 **單方面將特定資料與特定元件進行綁定**，更或者是兩者兼具：
+  - 單方面將特定元件與特定資料進行綁定：當使用者與特定元件X發生互動或者事件時，會透過DOM Listeners來根據情況來同步與特定元件X綁定的資料
+  - 單方面將特定資料與特定元件進行綁定：當資料一發生變動時，會透過綁定(Data Bindings)來找到對應的元件並隨之根據資料內容來更動元件
+  ![該圖源自於 Kuro Hsu大大，之後會內化成自己的圖](https://book.vue.tw/assets/img/1-1-mvvm.22bc0dc7.png)
+
+
+
+##  Vue.js 與元件系統
