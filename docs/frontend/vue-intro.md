@@ -1,5 +1,5 @@
 ---
-sidebar_position: 7
+sidebar_position: 4
 ---
 
 # vue basic intro
@@ -49,6 +49,18 @@ Vue 框架主張最小權責(Small-Scope)，將框架會有的功能主要切割
   - 元件之間的狀態傳遞與管理
   - 單頁式的路由
   - 如何與其他前端建構工具的結合
+
+
+### 參考資料：元件系統
+
+1. [Differences between vue instance and vue component?](https://stackoverflow.com/questions/38318536/differences-between-vue-instance-and-vue-component)
+
+> A root Vue instance is a Vue application launcher, Vue component is an extension of the Vue instance
+
+> An application instance won't render anything until its .mount() method is called. It expects a "container" argument, which can either be an actual DOM element or a selector string:
+
+2. [Components Basics](https://vuejs.org/guide/essentials/component-basics.html)
+
 
 
 ## 額外知識
@@ -149,8 +161,76 @@ UI呈現本身會依賴著資料管理模組的資料來做變動，而資料也
   - (正確說法)：某某框架或某某程式很容易做到one-way data binding
 
 
-### 參考資料
+### 參考資料：資料流
 1. [簡單聊一下 one-way data flow、two-way data binding 與前端框架](https://devs.tw/post/40)
 2. [one way data flow vs. one way data binding](https://reactjs.org/docs/thinking-in-react.html)
 
+### Vue API Style
+1. vue 主要有兩個API 風格：
+  - Composition API: 又名為Function-based API，每一個application 或者component 一旦需要建立成實例就會以setup函式來建立它所擁有的屬性、方法
+  
+  [初探 Vue 3.0 Function-based API](https://kuro.tw/posts/2019/08/06/初探-Vue-3-0-Function-based-API/)
 
+  ```
+  Vue.createApp({
+    setup() {
+      //....
+      return data
+    }
+  })
+  ```
+  - Options-base API: 每一個application 或者component 一旦需要建立成實例就會以一個option object所指示的設定來建立
+  ```
+  // 方法1:
+  const option = {...}
+  Vue.createApp(option)
+
+  // 方法2:
+  Vue.createApp({
+    ...
+  })
+  ```
+
+2. Composition API Style vs. Options-base
+
+```
+// Composition API
+export default {
+  setup() {
+    const name = ref('John');
+    
+    const doIt = () => console.log(`Hello ${name.value}`);
+    
+    onMounted(() => {
+      doIt();
+    });
+    
+    return { name };
+  },
+};
+```
+
+```
+// Options API
+export default {
+  data() {
+    return {
+      name: 'John',
+    };
+  },
+  methods: {
+    doIt() {
+      console.log(`Hello ${this.name}`);
+    },
+  },
+  mounted() {
+    this.doIt();
+  },
+};
+```
+
+
+
+參考資料：
+[What is the Vue Options API?](https://stackoverflow.com/questions/68986744/what-is-the-vue-options-api)
+[Vue 3 Composition API vs. Options API](https://markus.oberlehner.net/blog/vue-3-composition-api-vs-options-api/)

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 9
+sidebar_position: 5
 ---
 
 # 建立application 實例 - 新知和技術
@@ -32,7 +32,10 @@ Vue.createApp({
 
 > Vue uses an HTML-based template syntax that allows you to declaratively bind the rendered DOM to the underlying component instance's data.  All Vue templates are syntactically valid HTML that can be parsed by spec-compliant browsers and HTML parsers.
 
-## 補充知識：CDN所回傳的vue函式庫
+
+
+## 補充知識
+### CDN所回傳的vue函式庫
 1. 語法為如下
 
 ```
@@ -43,10 +46,10 @@ Vue.createApp({
 4. 該物件主要會控制View (full website or part of a webpage)
 
 
-## 補充知識：Vue vs. Vue.createApp()
+### Vue vs. Vue.createApp()
 1. 前者為用來調用Vue框架方法和屬性的物件，後者為實際透過前者方法而建立的root component或者application instance
 
-## 補充知識：建立完Application實例會有的問題
+### 建立完Application實例會有的問題
 1. createApp本身只是建立instance，所以存在一個問題：
  - Instance 是綁定於哪個網站或者網頁來當作該網頁或者網站的畫面渲染
 > But how do we tell this up right here that we want it to control a certain part of the Web page?
@@ -64,3 +67,68 @@ app.mount(argu1)
 
 
 
+
+
+
+### 為啥component 和 application 的實例要用data()
+1. application 使用data()
+```
+new Vue({
+  ...,
+  data() {
+    return {
+      key1: value1,
+      key2: value2,
+      .
+      .
+    }
+  }
+})
+```
+
+2. component 使用data()
+```
+export default {
+  data() {
+    return {
+      count: 0
+    }
+  }
+}
+```
+
+3. 原因在於每一次application (prototype)和 component (prototype)一旦建立出實例時，會執行於下面的程式碼來達成，過程中會檢查事先定義好建構式下的options參數之data是否為函式，若不是函式，則會參照於同一份data，若是函式就會執行該函式並從中以函式回傳結果來當作實例所擁有的data屬性，在這會因為回傳的內容會是一份新的物件，所以每個實例會是獲取獨立的data，在這是**為了讓每一個實例都有不同的data而採取data()的做法**
+
+```
+function initData (vm: Component) {
+  let data = vm.$options.data
+  data = vm._data = typeof data === 'function'
+    ? getData(data, vm)
+    : data || {}
+  if (!isPlainObject(data)) {
+    data = {}
+    process.env.NODE_ENV !== 'production' && warn(
+      'data functions should return an object:\n' +
+      'https://vuejs.org/v2/guide/components.html#data-Must-Be-a-Function',
+      vm
+    )
+  }
+```
+
+4. 參考文獻：
+- [Vue 组件 data 为什么必须是个函数，而 Vue 的根实例却没有此限制？](https://www.zhihu.com/question/384454093)
+- [Why must vue component data be a function?](https://stackoverflow.com/questions/46826709/why-must-vue-component-data-be-a-function)
+
+
+### 建構vue專案(環境)
+0. vue create 為建構指令，會建立一個事先設定好的開發環境讓開發者進行開發，裡頭會自動安裝以下程式模組：
+  - vue
+  - vue-service
+1. 若為vue-cli是全域安裝的話，其建構專案指令為如下，執行後便建構名為project-name的vue專案名稱
+```
+vue create <project-name>
+```
+2. 若為vue-cli是區域安裝的話，其建構專案指令為如下，當中npx會從node_modules尋找對應的執行檔來執行
+```
+npx vue create <project-name>
+```
