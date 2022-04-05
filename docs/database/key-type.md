@@ -53,3 +53,32 @@ https://stackoverflow.com/questions/22064977/what-is-the-difference-between-prim
 https://www.mysql.tw/2015/04/super-keycandidate-keyprimary.html
 
 https://www.itread01.com/content/1545892442.html
+
+
+## key && superkey
+
+若一個表格或者relation上的欄位組合\{A1, A2,..., An\}能構成該表格的key，得滿足以下條件
+1. 這些欄位/屬性必須能夠功能上確定剩下欄位/屬性，也就是說同樣的欄位組合\{A1, A2,..., An\}只會對應同個紀錄，不會對應到兩個不同的紀錄。
+> Those attributes functionally determine all other attributes of the relation. That is, it is impossible for two distinct tuples of R to agree on all of A1, A2,..., An
+
+2. \{A1, A2,..., An\}中的所有真子集合中的組合(如只有A1和A2、或者是只有A1、A2、A3)不能夠功能上確定剩下屬性，換言之，只有完整的 \{A1, A2,..., An\}才能確定且在決定紀錄的key中是擁有最小欄位量的key
+> No proper subet of {A1, A2,...., An} functionally determines all other attributes of R; i.e., a key must be minimal
+
+若一組欄位集合能夠包含key的話，該欄位集合會稱作為superkey，或者稱key的超集，該集合中的鑰匙都會滿足於key的第一條件，不一定能夠滿足第二個條件，比如說一個表格擁有以下這幾個欄位，其中A1和A2是key，
+
+```
+A1, A2, A3, A4,..., An
+```
+
+那麼superkey就會是
+
+```
+{A1, A2}
+{A1, A2, A3}
+{A1, A2, A3, A4}
+{A1, A2, A3, A4, A5}
+{A1, A2, A3, A4, A5, A6}
+.
+.
+{A1, A2, A3, A4, A5, A6,..., An}
+```
