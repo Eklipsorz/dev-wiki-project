@@ -20,9 +20,29 @@ A1, A2,..., An functionally determine B1, B2,..., Bm
 A -> B
 A functionally determine B
 ```
-
+參考資料：
+1. A first course in database systems (3rd)
 ## Full functional dependency
+在同個表格中，若欄位集合X -> 欄位集合Y 且 對於 X 的任意一個真子集 X'而言， X' -> Y 是不能夠成立，那麼就表示只有
+完整的欄位集合X能夠對應另一個欄位集合Y，不能夠將欄位集合X切割成各個子集合，然後也無法讓每個子集合去對應欄位集合Y，因此稱欄位集合Y函式依賴於完整的的欄位集合X。
+
+> An attribute is full functional dependent on another attribute, if it is Functionally Dependent on that attribute and not on any of its proper subset.
+
+舉例來說：
+假設有一個表格上具有學號、班級、姓名這三個欄位，其中不同班級下是存在學號相同，而班級內是不存在學號相同的，那麼在這裡學號和班級會函式決定姓名，也就是上述提到的欄位集合X會是(學號, 班級)，而欄位集合Y會是姓名，其中學號由於不同班級下的學號相同而不能夠單獨函式決定姓名，班級也是無法單獨函式決定，因此姓名和(學號, 班級)間得函式依賴會是完全函式依賴
+
+參考資料：
+- [Full-functional-dependency-in-DBMS](https://www.tutorialspoint.com/Fully-functional-dependency-in-DBMS)
 
 ## Partial functional dependency
+在同個表格中，若欄位集合X -> 欄位集合Y 且 對於 X 的任意一個真子集 X'而言， X' -> Y 是可以成立，那麼就表示欄位集合X中的一部分是可確定欄位集合Y 或者說 欄位集合Y函式依賴於欄位集合X的一部分子集合
 
+舉例來說：
+假設有一個表格上具有學號、身份證、姓名這三個欄位，那麼在這裡的函式依賴會是(學號, 身分證)決定姓名，換言之，這裡欄位集合X會是(學號, 身份證)以及欄位集合Y會是姓名，若對欄位集合X進行進一步的切割，如學號 或者 身分證，那麼這兩個任一個都能因為獨特性來確定姓名，因此姓名和(學號, 身分證)之間的函式依賴是部分函式依賴。
+
+也就是上述提到的欄位集合X會是(學號, 班級)，而欄位集合Y會是姓名，其中學號由於不同班級下的學號相同而不能夠單獨函式決定姓名，班級也是無法單獨函式決定，因此姓名和(學號, 班級)間得函式依賴會是完全函式依賴
+
+
+參考資料：
+- [Differentiate between Partial Dependency and Fully Functional Dependency](https://www.geeksforgeeks.org/differentiate-between-partial-dependency-and-fully-functional-dependency/)
 ## Transitive functional dependency
