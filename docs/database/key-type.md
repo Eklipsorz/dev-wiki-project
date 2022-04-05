@@ -48,16 +48,16 @@ If two or more statements, ideas, sets of numbers, etc. agree, they are the same
 We have five accounts of what happened and none of them agree.
 對於所發生的事情我們手頭有五種各不相同的說法。
 
-
 https://stackoverflow.com/questions/22064977/what-is-the-difference-between-primary-key-and-prime-attribute
+
 https://www.mysql.tw/2015/04/super-keycandidate-keyprimary.html
+
 
 https://www.itread01.com/content/1545892442.html
 
 
 ## key && superkey
-
-若一個表格或者relation上的欄位組合\{A1, A2,..., An\}能構成該表格的key，得滿足以下條件
+key 主要是用來識別每一個紀錄的獨特性，如同身分證可以識別每一個人的身份那樣，通常會是由表格或者relation上的欄位組合\{A1, A2,..., An\}所構成，而要成為key的條件為：
 1. 這些欄位/屬性必須能夠功能上確定剩下欄位/屬性，也就是說同樣的欄位組合\{A1, A2,..., An\}只會對應同個紀錄，不會對應到兩個不同的紀錄。
 > Those attributes functionally determine all other attributes of the relation. That is, it is impossible for two distinct tuples of R to agree on all of A1, A2,..., An
 
@@ -82,3 +82,28 @@ A1, A2, A3, A4,..., An
 .
 {A1, A2, A3, A4, A5, A6,..., An}
 ```
+
+超鍵本身包含著候選鍵(candidate key)、替代鍵(alternate key)、主鍵(primary key)、外鍵(foreign key)
+
+## primary key && candidate key && alternate key 
+主鍵(primary key)是由開發者或者資料庫管理系統從由key所構成的集合X中選定出來的key，是主要實際用來識別每一個紀錄的獨特性，同時間也必須要滿足以下限制：
+  - 主鍵值必須能夠識別紀錄
+  > Must uniquely identify the row;
+  - 主鍵值不能夠NULL
+  > cannot have NULL values;
+  - 主鍵值不能一直被改變
+  > Should not change over the time;
+  - 主鍵值必須盡可能越短越好：通常會以主鍵當作資料的索引，主鍵越短，越能節省空間和查詢時間
+  > Should be as short as possible.
+集合X中的每一個key都會是候選鍵(candidate key)，會具有以下特色：
+  - 滿足key的所有條件(識別和最小化)
+  - 能夠被採納為主鍵的key，因爲這點而稱之為候選
+另外當主鍵從集合X選出時，剩下未被選到的候選鍵就即為次要鍵(Secondary Key)或者替換鍵(Alternate key)
+
+- [關聯資料表正規化(NORMALIZATION)--鍵,KEY](https://blog.kkbruce.net/2010/10/normalization-key.html)
+- [What is the difference between Primary key and prime attribute?](https://stackoverflow.com/questions/22064977/what-is-the-difference-between-primary-key-and-prime-attribute)
+- [Alternate Key in RDBMS](https://www.tutorialspoint.com/Alternate-Key-in-RDBMS)
+
+
+## foreign key
+在一個表格X或者relation X中的欄位組合X是指向或者是其他表格Y或者其他relation Y的主鍵，那麼其欄位組合X對於表格X來說，是個外部來的主鍵，簡稱為外鍵(foreign key)，用途是將表格X和表格Y以外來鍵的形式來構成某種關係的一致性，以做後續的JOIN操作。
