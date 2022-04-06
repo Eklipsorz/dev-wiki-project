@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# Functional dependency type
+# Functional Dependency type
 
 
 ## Functional dependency
@@ -47,7 +47,7 @@ A functionally determine B
 - [Differentiate between Partial Dependency and Fully Functional Dependency](https://www.geeksforgeeks.org/differentiate-between-partial-dependency-and-fully-functional-dependency/)
 
 ## Transitive functional dependency
-在同一個表格中，若有欄位集合A能函式決定函式集合B，且函式集合B也能函式決定欄位集合C，在這樣的結果下，欄位集合A可透過函式集合B而間接函式決定欄位集合C的形式，但為了嚴格定義A、B、C 皆為不同的欄位集合：A和B實際上是源自同一個欄位集合、B和C實際上源自於同一個欄位集合的問題，為了避免這件事而特別設定以下嚴格條件
+在同一個表格中，若有欄位集合A能函式決定函式集合B，且函式集合B也能函式決定欄位集合C，在這樣的結果下，欄位集合A可透過函式集合B而間接函式決定欄位集合C的形式，但為了嚴格定義A、B、C 皆為不同的欄位集合且彼此間無任何延伸關係(e.g., 比如不能透過A來延伸成B)：A和B實際上是源自同一個欄位集合、B和C實際上源自於同一個欄位集合的問題，為了避免這件事而特別設定以下嚴格條件
 
 ```
 // 避免(x1, x2) -> x3, x4, x5 且 (x1, x2, x3) -> x4, x5

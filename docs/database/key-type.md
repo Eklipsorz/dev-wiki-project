@@ -6,7 +6,7 @@ sidebar_position: 1
 
 
 
-## 子集
+## 前置知識：子集
 
 ### subset & superset
 假設有兩個集合(A、B)，若集合A的任一元素都是集合B的元素，那麼就集合A為集合B的子集(subset)，而B就是A的超集(superkey)，記為A⊆B，讀作A包含於B。舉例來說集合B為\{B1, B2, B3, B4\}，那麼若集合A為集合B的子集，那麼集合A可以是
@@ -41,19 +41,6 @@ Note：
 參考資料：
 - [集合基礎知識](https://www.itread01.com/content/1547202186.html)
 
-
-
-If two or more statements, ideas, sets of numbers, etc. agree, they are the same or very similar.
-一致，相符，相同；極相似
-We have five accounts of what happened and none of them agree.
-對於所發生的事情我們手頭有五種各不相同的說法。
-
-https://stackoverflow.com/questions/22064977/what-is-the-difference-between-primary-key-and-prime-attribute
-
-https://www.mysql.tw/2015/04/super-keycandidate-keyprimary.html
-
-
-https://www.itread01.com/content/1545892442.html
 
 ## key type
 
@@ -101,10 +88,14 @@ A1, A2, A3, A4,..., An
   - 能夠被採納為主鍵的key，因爲這點而稱之為候選
 另外當主鍵從集合X選出時，剩下未被選到的候選鍵就即為次要鍵(Secondary Key)或者替換鍵(Alternate key)
 
+參考資料：
 - [關聯資料表正規化(NORMALIZATION)--鍵,KEY](https://blog.kkbruce.net/2010/10/normalization-key.html)
 - [What is the difference between Primary key and prime attribute?](https://stackoverflow.com/questions/22064977/what-is-the-difference-between-primary-key-and-prime-attribute)
 - [Alternate Key in RDBMS](https://www.tutorialspoint.com/Alternate-Key-in-RDBMS)
 
 
 ### foreign key
-在一個表格X或者relation X中的欄位組合X是指向或者是其他表格Y或者其他relation Y的主鍵，那麼其欄位組合X對於表格X來說，是個外部來的主鍵，簡稱為外鍵(foreign key)，用途是將表格X和表格Y以外來鍵的形式來構成某種關係的一致性，以做後續的JOIN操作。
+在一個表格X或者relation X中的欄位組合X是指向或者是其他表格Y或者其他relation Y的主鍵，那麼其欄位組合X對於表格X來說，是個外部來的主鍵，簡稱為外鍵(foreign key)，用途是來讓表格X透過外鍵來找到對應表格Y的對應主鍵，並用連接(如JOIN)來延伸其他資訊從而構成兩個表格之間的一致性。
+
+比如說：假設有兩個表格分別為住戶資料、預約疫苗，住戶資料的主鍵為身份證，預約疫苗的主鍵為序號，其中預約疫苗表格的身分證欄位是指向住戶資料的主鍵，因此會是預約表格的外主鍵或者外鍵，透過這個外鍵和Inner Join可以延伸對應的住戶資料，而結果會是最下面的合併結果
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1649260773/blog/database/key/foreign-key-example_ourovc.png)
