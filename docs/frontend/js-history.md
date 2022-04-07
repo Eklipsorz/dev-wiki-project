@@ -100,7 +100,7 @@ sidebar_position: 1
 1. Page是由伺服器所提供的獨立Web Page，每一個Web Page都是一份hypertext document來表示，而document會有不同的程式碼來進行畫面渲染和功能。
 
 ## 補充知識：State 是什麼
-1. 狀態是指某物件在特定時間所會有的情況、資訊。
+1. 狀態是指某物件在特定時間所會有的情況、資訊，或者指在特定時間上的物件本身內容
 > The particular condition that something is in at a specific time
 2. 在網頁開發裡，主要會用狀態來描述三種物件所會有的狀態，分別為:
   - Application State(Program State): 描述著能維持應用程式執行所需的狀態，主要存放在記憶體中

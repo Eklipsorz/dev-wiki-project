@@ -5,12 +5,31 @@ sidebar_position: 10
 # REST 風格
 
 ## REST
-1. 全名為REpresentational State Transfer，實際上可以用Resource Representation State Transfer，它是一種以資源以及如何對資源進行切換為中心的網路軟體開發風格，並非標準。
-2. 名詞解釋：
-  - Resource 是指概念，概念又是指一堆對於某件人事物的描述，這些描述會有其特徵、功能、形狀、顏色等等
-  - Representation 是指以某種形式來呈現某人事物，在這裏會以某種形式來呈現Resource這概念，換言之就是以某種形式來具體化資源。
-  - State 是指狀態，在這裏會被前兩個字給形容來表示狀態是由具體化的資源所構成，換言之，每個狀態都會指著不同的具體化資源，只是用狀態來形容這件事，而用State來描述是為了充分描述這些具體化資源之間的切換、從哪獲取具體化資源
-  - Transfer 是指某事物在某方面從A轉移至B，而經由前面三個字的形容會是指這些具體化資源之間的切換(將A、B想成具體化資源)、從哪裡獲取具體化資源(將A想成外部，而B就是具體化資源)
+1. 全名為REpresentational State Transfer，較完整的說法是Resource Representation State Transfer，
+是一種以資源為中心，用HTTP方法操作，並且符合HATEOAS(Hypermedia as the engine of application state)的軟體開發架構風格之ㄧ
+  - 當時背景下的軟體開發和網路發展皆分別以單機環境下進行以及制定/實現某些系統之間的通信協定，兩者很少有交集
+  - 目的在於如何讓不同軟體方便在網路互相傳遞資訊來達到其功能性
+  - 當存取到特定資源時，就會動態產生一組能夠特定資源進行操作的API連結，而非以寫死的方式來表達能對特定資源做哪些進一步的操作
+  > 超媒體(Hypermedia)是一非連續性的電腦化檢索系統，使用電腦將大量的媒體予以連接，經過特定的路徑，做自動的聯繫，直到使用者滿意為止。
+  [架构之:REST和HATEOAS](https://zhuanlan.zhihu.com/p/393221998)
+資源為主以及如何對資源進行切換為中心的網路軟體開發風格，並非標準。
+2. 在這裡選擇完整說法來解釋名詞：
+  - Resource：會是指網路上的實體、資源，實體/資源可以是指某組資料、服務、圖片、歌曲，但實際上該字本質上仍停留在用文字概念去描述該實體、資源的存在，在網路上難以用具體的形式去呈現資源(如看、摸、聽)，在這裡會是以 **以URI** 這文字概念來 **描述其實體資源**。
+  - Representation：是指以某種形式來呈現某人事物，**在這裏會以某種形式來呈現Resource這概念**，換言之就是以某種形式來具體化資源，比如用HTML格式、JSON格式等等
+
+  - State 由於客戶端和伺服器之間的互動勢必會涉及到不同時間點的資源內容，或許是在某段時間的同份資源A內容會變更，或許是某段時間點的同份資源A內容會移除，這些將會是資源A在不同時間點的內容或者說狀態，最後在這裡會以狀態來描述同份資源在不同時間點下的資源內容。
+  > 狀態是指某物件在特定時間所會有的情況、資訊。 The particular condition that something is in at a specific time
+  且由於**該概念是建立在無狀態的HTTP協議上，所以所有的資源都會永久性保留在伺服器，客戶端只會拿到某一個時間點的資源然後就被移除。**
+  
+  - Transfer 是指某事物在某方面從A轉移至B，而經由前面三個字的形容會是指這些具體化資源之間的狀態切換，
+
+  當客戶端想要
+  
+  
+  因此當伺服器端接收到客戶端發出的請求時，勢必會對某個具體化資源X從當前的狀態A轉換成另一個時間點的狀態B，如對資源X內容進行修改，而這樣子的轉換就會是狀態轉換(切換)，而這種轉換會是在Resource Representation的基礎上進行轉換。在這裡客戶端能對資源進行轉換的手段有GET、POST、PUT、DELETE等HTTP動詞
+
+
+
   - 簡化後的REpresentational State Transfer 的 REpresentational 是指著Resource Representation 這件事
 
 3. 整體概念是描述著如何對在網路上的任意具體化資源進行轉移或者獲取，在這裡會有兩大課題：
@@ -32,6 +51,7 @@ sidebar_position: 10
 2. [怎样用通俗的语言解释REST，以及RESTful？](https://www.zhihu.com/question/28557115)
 3. [什麼是REST跟RESTful?](https://ihower.tw/blog/archives/1542)
 4. [Representational State Transfer (REST)](https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm)
+5. [理解RESTful架构(原作者阮一峰）](https://www.ruanyifeng.com/blog/2011/09/restful.html)
 
 
 
