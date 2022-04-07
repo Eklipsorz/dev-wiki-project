@@ -29,7 +29,7 @@ A functionally determine B
 > An attribute is full functional dependent on another attribute, if it is Functionally Dependent on that attribute and not on any of its proper subset.
 
 舉例來說：
-假設有一個表格上具有學號、班級、姓名這三個欄位，其中不同班級下是存在學號相同，而班級內是不存在學號相同的，那麼在這裡學號和班級會函式決定姓名，也就是上述提到的欄位集合X會是(學號, 班級)，而欄位集合Y會是姓名，其中學號由於不同班級下的學號相同而不能夠單獨函式決定姓名，班級也是無法單獨函式決定，因此姓名和(學號, 班級)間得函式依賴會是完全函式依賴
+假設有一個表格上具有學號、班級、姓名這三個欄位，其中不同班級下是存在學號相同，而班級內是不存在學號相同的，那麼在這裡學號和班級會函式決定姓名，也就是上述提到的欄位集合X會是(學號, 班級)，而欄位集合Y會是姓名，其中學號由於不同班級下的學號相同而不能夠單獨函式決定姓名，班級也是無法單獨函式決定，因此姓名和(學號, 班級)間的函式依賴會是完全函式依賴
 
 參考資料：
 - [Full-functional-dependency-in-DBMS](https://www.tutorialspoint.com/Fully-functional-dependency-in-DBMS)
