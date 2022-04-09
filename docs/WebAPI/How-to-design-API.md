@@ -19,6 +19,94 @@ Note:
 參考資料：
 [UNDERSTANDING SSL/TLS: PART 1 - WHAT IS IT?](https://blog.eleven-labs.com/en/amp/understanding-ssltls-part-1/)
 
+## 域名
+1. 盡量將提供API服務的伺服器域名定義為專用域名下
+```
+https://api.example.com
+```
+2. 如果確定API服務本身不會出現版本或者重大變化的話，可考慮以主域名為主
+```
+https://example.org/api/
+```
+
+## 版本命名方式
+1. 利用域名來區分
+```
+https://api.example.com/<version>
+
+e.g., 
+
+https://api.example.com/v1
+https://api.example.com/v2
+```
+
+2. 使用HTTP請求封包-header來標記客戶端想要的版本是什麼
+
+
+## 端點
+1. 端點原本是指某個人事物的最後部分或者想試著抵達的終點，在API設計中會是指URI的最後部分(包含URL本身)，而那部分剛好會是定義資源的部分，因此會將端點與資源劃上等號
+> the end of something or something that you are trying to achieve
+> a point at which a line segment ends
+![](https://oscimg.oschina.net/oscnet/up-92a47264770be1741992adc4e1cddfd71b7.png)
+## 端點設計要點
+### 短小便於輸入的URI
+### 人類可以馬上讀懂的URI
+### 沒有大小寫混用的URI
+### 修改方便的URI
+### 不會暴露伺服器架構的URI
+### 規則統一的URI：
+規則會是指URI所用的詞彙和URI的結構這兩者的命名規則，若不一致容易造成開發者或者客戶端在使用上的混亂，比如獲取特定朋友資訊的API是設計成如下：
+```
+GET /friends?id=100
+```
+而對特定好友發送訊息的API是設計成如下：
+```
+POST /friend/100/message
+```
+
+從這兩個例子中發生兩個不一致的問題：
+  - 指定特定對象的命名方式：獲取朋友資訊是使用Query string來指定，發送訊息則是用/friend/100來指定
+  - 兩者對應的對象本該是一致的，但擁有單複數的形式：獲取是使用friends，發送則是用friend
+
+解法為：
+  - 統一成用/xxxx/id的形式來指定特定對象
+  - 將指定對象的命名方式統一成複數
+  ```
+  // 獲取特定朋友資訊
+  GET /friends/100
+
+  // 對特定好友發送訊息
+  POST /friends/100/message
+  ```
+
+### 需要連接的單字細節：域名和端點
+
+當端點或者域名裡需要連接兩個以上的單字時，會有以下選擇：
+  - 脊柱命名(Spinal Case)：以單字為單位，並使用連字號來連接單字們，如下
+  ```
+  profile-image
+  ```
+  - 蛇形命名(Snake Case)：以單字為單位，並使用下底線來連接單字們，如下
+  ```
+  profile_image
+  ```
+  - 駝峰命名(Camel Case)：以單字為單位，並使用大小寫來區分單字們，如下
+  ```
+  // 小駝峰
+  profileImage
+  // 大駝峰
+  ProfileImage
+  ```
+但考慮實際上URI的域名限制：
+  - 不允許使用下底線
+  - 使用點字號.會被以DNS尋找域名的方式去處理
+  - 不區分域名的大小寫，一律全都以小寫或者大寫來看待
+
+所以變得只剩脊柱命名能夠成為唯一選擇，蛇形會因為下底線而無法正常被解析，駝峰則是因為不區分大小寫而失去單字分隔的作用，當然也可以試著將兩個以上的單字拆分成用/來連接，比如
+```
+profile_image => profile/image
+```
+
 ## REST 網頁開發風格
 0. 由REST所定義出的風格
 1. 若使用REST風格來開發API給予客戶端使用，其API的root位址可以是兩種中的其中之一，第一種的hostname是提供API的主機域名或者IP，api只是單純指這URL是指向API資源的關鍵字，version則是指API的版本，可以是v1、v2等等來代表版本一、版本二之類的，而\*代表著後續任意字元，通常會是對應某個API服務，第二種root位址中的hostname跟第一種的hostname一樣，只是差別就在於在原hostname前面添加api.來代替後續的api/，而version和\*則是和第一種的version和\*一樣。
