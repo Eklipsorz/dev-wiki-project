@@ -20,6 +20,25 @@ sidebar_position: 1
 
 定義一個名為eslint的scope，並存放著名為eslintrc的package，同時在實體儲存空間會是以eslint目錄來存放eslintrc目錄，該eslintrc目錄存放eslintrc程式碼相關模組
 
+## npm init
+1. 主要用來為新的npm模組或者已存在的npm模組設定(執行前所需的設定和內容)初始化，若沒添加任何參數，就是以目前目錄來初始化，其中initializer為初始化用的執行檔案，主要會是由npm-exec所建立，檔案名稱格式為create-initializer，其中initializer會是變數，當執行initializer時，就便會更新或者建立package.json和執行相關初始化內容的操作。
+> npm init <initializer> can be used to set up a new or existing npm package. initializer in this case is an npm package named create-<initializer>, which will be installed by npm-exec, and then have its main bin executed -- presumably creating or updating package.json and running any other initialization-related operations.
+```
+npm init [--force|-f|--yes|-y|--scope]
+npm init <@scope> (same as `npx <@scope>/create`)
+npm init [<@scope>/]<name> (same as `npx [<@scope>/]create-<name>`)
+```
+
+e.g., 
+
+```
+npm init foo -> npm exec create-foo
+npm init @usr/foo -> npm exec @usr/create-foo
+npm init @usr -> npm exec @usr/create
+```
+
+
+
 ### scope 用途
 1. 進一步對package分類，同一個package名稱可以因為scope名稱不同，而被npm辨別為不同的模組
 2. 一個scope可以存放多個package
