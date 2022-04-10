@@ -104,7 +104,7 @@ export default {
 ```
 
 3. Teleport component： 允許開發者渲染原本不在DOM 結構的元件內容，應用於modal
-> <Teleport> is a built-in component that allows us to "teleport" a part of a component's template into a DOM node that exists outside the DOM hierarchy of that component.
+> Teleport is a built-in component that allows us to "teleport" a part of a component's template into a DOM node that exists outside the DOM hierarchy of that component.
 
 
 
