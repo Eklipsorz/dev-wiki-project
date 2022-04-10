@@ -14,10 +14,42 @@ sidebar_position: 2
 ## Express.js 安裝方式
 
 
-安裝express.js
+1. 安裝express.js
 ```
 npm install express
 ```
 
+
 ## Express.js 使用方式
 
+1. 調用express模組下所匯出的express函式回傳物件，該物件主要是用來在本地端安裝/設定express 伺服器
+```
+const express = require('express')
+const app = express()
+```
+
+
+## 快速架設一個express server
+
+
+1. 安裝express
+2. 安裝eslint，設定lint初始判別設定
+npm install eslint
+npm init @eslint/config //設定lint初始判別設定
+
+3. 安裝dotenv
+npm install dotenv
+
+ 4. 新增app.js來設定主要的express功能
+ 5. 設定一些輔助用的指令至package.json 
+
+    "start": "NODE_ENV=development node app.js",
+    "dev": "NODE_ENV=development nodemon app.js",
+
+
+疑問：
+1. NODE_ENV => 環境變數如何定義？
+2. 為什麼有些app.js需要匯出app物件
+```
+module.exports = app
+```
