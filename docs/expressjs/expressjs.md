@@ -31,21 +31,30 @@ const app = express()
 
 ## 快速架設一個express server
 
-
 1. 安裝express
+```
+npm install express
+```
 2. 安裝eslint，設定lint初始判別設定
+```
 npm install eslint
 npm init @eslint/config //設定lint初始判別設定
+```
 
 3. 安裝dotenv
+```
 npm install dotenv
+```
+4. 新增app.js來設定主要的express功能
 
- 4. 新增app.js來設定主要的express功能
- 5. 設定一些輔助用的指令至package.json 
+5. 設定一些輔助用的指令至package.json 
 
+```
+ "scripts": {
     "start": "NODE_ENV=development node app.js",
     "dev": "NODE_ENV=development nodemon app.js",
-
+ }
+```
 
 疑問：
 1. NODE_ENV => 環境變數如何定義？
