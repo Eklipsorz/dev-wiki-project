@@ -54,11 +54,37 @@ npm install dotenv
     "start": "NODE_ENV=development node app.js",
     "dev": "NODE_ENV=development nodemon app.js",
  }
+ 
 ```
-
 疑問：
-1. NODE_ENV => 環境變數如何定義？
 2. 為什麼有些app.js需要匯出app物件
 ```
 module.exports = app
 ```
+供其他程式模組使用該模組app.js，或者說app.js本身就只是被呼叫的一方，所以得被匯出才能調用express
+
+3.  process.env 和 app.set 有什麼差別
+
+```
+app.set('port', process.env.PORT || 3000);
+
+var server = app.listen(app.get('port'), function() {
+  debug('Express server listening on port ' + server.address().port);
+});
+
+```
+
+
+## morgan 日誌系統
+1. 一個紀錄系統運行狀態的系統
+
+## lowdb
+1. 以一份JSON文件來當作資料庫來紀錄 
+> Tiny local JSON db
+2. 適用於規模較小的專案
+3. 屬於NoSQL
+
+## nanoid
+1. 一款專門產生獨特ID的程式模組
+>  tiny, secure, URL-friendly, unique string ID
+2. 與uuid相比，較為安全、且不易於人類閱讀。
