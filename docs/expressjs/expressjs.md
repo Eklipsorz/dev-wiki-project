@@ -76,8 +76,33 @@ var server = app.listen(app.get('port'), function() {
 
 
 ## morgan 日誌系統
-1. 一個紀錄系統運行狀態的系統
+1. 一個紀錄客戶端和伺服器(我方)之間互動過程之系統
+2. 運行在Node.js上，會是以一個logger middleware而存在，使用方式如下：其中該morgan middleware決定
+紀錄互動的時機點
+```
+// import morgan module as middleware function object
+const mogran = require('morgan')
 
+app.use(morgan(format, option))
+```
+  - 若能在互動之前設定morgan這middleware function，就能讓系統紀錄那互動紀錄
+  ```
+  app.use(morgan(format, option))
+  // 設定使用者與伺服器之間的互動入口
+  app.use(routes)
+  ```
+  - 若能在互動之後設定morgan這middleware function，不能讓系統紀錄那互動紀錄
+  ```
+  // 設定使用者與伺服器之間的互動入口
+  app.use(routes)
+  // mogran middleware
+  app.use(morgan(format, option))
+  ```
+3. 
+
+```
+mogran(format, option)
+```
 ## lowdb
 1. 以一份JSON文件來當作資料庫來紀錄 
 > Tiny local JSON db
