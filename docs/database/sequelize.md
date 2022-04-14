@@ -11,7 +11,41 @@ npm install sequelize sqlite3 sequelize-cli
 ```
 
 
-## npx sequelize init  
+## sequelize-cli 指令集合
+該套件所提供的指令集合是輔助開發者/使用者能透過CLI方式以及.sequelizerc設定檔內容來設定/控制sequelize的執行狀態。若目前執行指令的所在有出現名為.sequezlizerc的檔案，那麼每當執行sequelize的指令集合時就會先讀取其檔案的內容來執行。
+### .sequelizerc
+.sequelizerc 是一份sequelize-cli用來參考使用的參數清單，清單下可以設定以下內容：
+```
+* env: The environment to run the command in
+* config: The path to the config file
+* options-path: The path to a JSON file with additional options
+* migrations-path: The path to the migrations folder
+* seeders-path: The path to the seeders folder
+* models-path: The path to the models folder
+* url: The database connection string to use. Alternative to using --config files
+* debug: When available show various debug information
+This is a special configuration file. It lets you specify the following options that you would usually pass as arguments to CLI:
+```
+
+通常若不存在.sequelizerc檔案的話，會按照sequelize預設設定來執行，所以若預設設定並不符合自己對於sequelize的執行方式需求時，使用時機點會是如下:
+    - 你想要更改預設的migration路徑、model路徑、seeder路徑或者conifg路徑位置
+    - 你想要將config.json更改成更名或者以js形式來進行，如config.js
+```
+Some scenarios where you can use it:
+* You want to override default path to migrations, models, seeders or config folder.
+* You want to rename config.json to something else like database.json
+```
+
+### sequelize-cli: init 指令
+init 指令是主要會按照sequelize預設設定或者.sequelizerc設定來建立sequelize所需要的初始設定檔案和目錄，主要會有以下設定檔和目錄：
+    - 連線設定檔，如conifg/config.json
+    - 定義資料庫對應在ORM上的物件和設定資料庫在ORM對應物件上所會有的設定，如models/index.js
+    - 定義資料
+    - migrations目錄：資料庫遷徙設定檔的位置，預設會是空目錄
+    - seeders目錄：資料庫的種子資料設定檔位置，預設會是空目錄
+```
+sequelize init
+``` 
 1. 對應sequelize的指令，而init則是指定的參數
 2. sequelize init 主要會自動建立sequelize所需要的設定檔和目錄
 3. 主要會建立的設定檔和目錄為：
