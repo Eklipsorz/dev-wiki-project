@@ -175,3 +175,83 @@ module.exports = {
 };
 
 ```
+
+
+## 補充：model.init 設定
+1. model.init 是sequelize 是透過初始化設定來產生特定model類別，而特定model類別會繼承於通用model類別，而在這裡的設定會是以通用model類別會有的屬性來初始化，具體會定義：
+  - 定義特定model類別下對應的資料表格會有哪些欄位或者屬性
+  - 定義特定model類別下的建構式所擁有的屬性和設定
+  - 建構式則是用來構成對應資料表格的實例
+2. model.init形式會是：
+  - attributes是定義對應的資料表格會有哪些欄位或者屬性
+  - options是定義對應的建構式所擁有的屬性和設定
+```
+ init(attributes: object, options: object): Model
+```
+
+3. 常見的options值如下：
+  - options.modelName: 為字串，定義model的名稱，**用途為：用model類別和model類別實例來操作資料時所要用識別資料**
+  > Set name of the model. By default its same as Class name.
+  - options.tableNmae： 為字串，定義model所對應的資料表格名稱是為何，預設下若沒設定，會將options.modelName當作options.tableName，**用途為：用model類別和model類別實例來操作資料時所要用識別資料**
+  - options.underscored: 為布林值，true代表啟用某功能；false代表不啟用某功能，啟用是指**啟用自動將該model下的屬性名轉換換成snake case命名法的形式**，但除了queryInterface是sequelize直接用SQL與資料庫連接以外，該介面會提供一系列的API，但這些API主要是直接對應著SQL，不像一般model使用方法那樣，還要經由sequelize本身的model來處理，才能轉換成對應SQL與資料庫處理。
+  > Add underscored field to all attributes, this covers user defined attributes, timestamps and foreign keys. Will not affect attributes with explicitly set field option
+  - options.freezeTableName：為布林值，true代表啟用某功能；false代表不啟用某功能，啟用是指**強制將取得的model name轉換成複數形式來表示，若不啟用就不轉換**
+  > If freezeTableName is true, sequelize will not try to alter the model name to get the table name. Otherwise, the model name will be pluralized
+4. 參考資料
+[model.init](https://sequelize.org/master/class/lib/model.js~Model.html#static-method-init)
+
+
+
+## Sequelize: 設定欄位的型別：
+
+
+### Sequelize.DataTypes 和 Sequelize 在指定型別上？
+Sequelize.DataTypes 和 Sequelize 這兩者本身可以設定欄位本身特定型別，且都皆為一樣
+```
+Sequelize.DataTypes.STRING
+Sequelize.STRING
+```
+
+實驗：若載入sequelize並儲存至Sequelize物件，並比對Sequelize.DataTypes上的STRING 和 Sequelize.STRING是否一樣以及印出兩者內，結果都是一樣
+```
+const Sequelize = require('sequelize')
+console.log(
+  'test result:',
+  Sequelize.DataTypes.STRING === Sequelize.STRING,
+  Sequelize.DataTypes.STRING,
+  Sequelize.STRING
+)
+```
+
+結果為如下：
+```
+test result: true [class STRING extends ABSTRACT] {
+  types: {
+    postgres: [ 'varchar' ],
+    mysql: [ 'VAR_STRING' ],
+    mariadb: [ 'VAR_STRING' ],
+    sqlite: [ 'VARCHAR', 'VARCHAR BINARY' ],
+    mssql: [ 231, 173 ],
+    db2: [ 'VARCHAR' ],
+    snowflake: [ 'VAR_STRING' ]
+  },
+  key: 'STRING'
+} [class STRING extends ABSTRACT] {
+  types: {
+    postgres: [ 'varchar' ],
+    mysql: [ 'VAR_STRING' ],
+    mariadb: [ 'VAR_STRING' ],
+    sqlite: [ 'VARCHAR', 'VARCHAR BINARY' ],
+    mssql: [ 231, 173 ],
+    db2: [ 'VARCHAR' ],
+    snowflake: [ 'VAR_STRING' ]
+  },
+  key: 'STRING'
+}
+```
+
+另外DataTypes的新增原因是為了在使用習慣上能夠很好地使用才添加的。
+
+> DataTypes is: A convenience class holding commonly used data types.
+
+[Sequelize: difference of DataTypes and Sequelize](https://stackoverflow.com/questions/47563038/sequelize-difference-of-datatypes-and-sequelize)

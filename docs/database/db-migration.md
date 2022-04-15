@@ -63,8 +63,8 @@ migration 檔案3：
 
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1650021326/blog/database/migration/db-migration-update-table1_puwlsx.png)
 
-## Database migration 的版本控管功能
-基本概念會是以時間戳來紀錄每一個時間點下的表格架構，同時會區分成三種開發情景來設定不同情景下的連線設定，分別為：
+## Database migration 的開發環境切換
+基本概念會是以時間戳來紀錄每一個時間點下的表格架構，ORM/ODM通常會區分成三種開發情景來設定不同情景下的連線設定，分別為：
   - 開發環境(development environment)：通常會以本地端的資料庫作為連線設定的基礎
   - 測試環境(test environment)：通常會以遠端的測試用資料庫作為連線設定的基礎
   - 線上環境(production environment)：通常會以正式上線用的資料庫作為連線設定的基礎
