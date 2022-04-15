@@ -9,6 +9,143 @@ sidebar_position: 7
 這些指令做什麼功用？如何使用
 
 
+## 補充：model.init 設定
+1. model.init 是sequelize 是透過初始化設定來產生特定model類別，而特定model類別會繼承於通用model類別，而在這裡的設定會是以通用model類別會有的屬性來初始化，具體會定義：
+  - 定義特定model類別下對應的資料表格會有哪些欄位或者屬性
+  - 定義特定model類別下的建構式所擁有的屬性和設定
+  - 建構式則是用來構成對應資料表格的實例
+2. model.init形式會是：
+  - attributes是定義對應的資料表格會有哪些欄位或者屬性
+  - options是定義對應的建構式所擁有的屬性和設定
+```
+ init(attributes: object, options: object): Model
+```
+
+3. 常見的options值如下：
+  - options.modelName: 為字串，定義model的名稱，**用途為：用model類別和model類別實例來操作資料時所要用識別資料**
+  > Set name of the model. By default its same as Class name.
+  - options.tableNmae： 為字串，定義model所對應的資料表格名稱是為何，預設下若沒設定，會將options.modelName當作options.tableName，**用途為：用model類別和model類別實例來操作資料時所要用識別資料**
+  - options.underscored: 為布林值，true代表啟用某功能；false代表不啟用某功能，啟用是指**啟用自動將該model下的屬性名轉換換成snake case命名法的形式**，但除了queryInterface是sequelize直接用SQL與資料庫連接以外，該介面會提供一系列的API，但這些API主要是直接對應著SQL，不像一般model使用方法那樣，還要經由sequelize本身的model來處理，才能轉換成對應SQL與資料庫處理。
+  > Add underscored field to all attributes, this covers user defined attributes, timestamps and foreign keys. Will not affect attributes with explicitly set field option
+  - options.freezeTableName：為布林值，true代表啟用某功能；false代表不啟用某功能，啟用是指**強制將取得的model name轉換成複數形式來表示，若不啟用就不轉換**
+  > If freezeTableName is true, sequelize will not try to alter the model name to get the table name. Otherwise, the model name will be pluralized
+4. 參考資料
+[model.init](https://sequelize.org/master/class/lib/model.js~Model.html#static-method-init)
+
+
+
+## Sequelize: 設定欄位的型別：
+
+
+### Sequelize.DataTypes 和 Sequelize 在指定型別上？
+Sequelize.DataTypes 和 Sequelize 這兩者本身可以設定欄位本身特定型別，且都皆為一樣
+```
+Sequelize.DataTypes.STRING
+Sequelize.STRING
+```
+
+實驗：若載入sequelize並儲存至Sequelize物件，並比對Sequelize.DataTypes上的STRING 和 Sequelize.STRING是否一樣以及印出兩者內，結果都是一樣
+```
+const Sequelize = require('sequelize')
+console.log(
+  'test result:',
+  Sequelize.DataTypes.STRING === Sequelize.STRING,
+  Sequelize.DataTypes.STRING,
+  Sequelize.STRING
+)
+```
+
+結果為如下：
+```
+test result: true [class STRING extends ABSTRACT] {
+  types: {
+    postgres: [ 'varchar' ],
+    mysql: [ 'VAR_STRING' ],
+    mariadb: [ 'VAR_STRING' ],
+    sqlite: [ 'VARCHAR', 'VARCHAR BINARY' ],
+    mssql: [ 231, 173 ],
+    db2: [ 'VARCHAR' ],
+    snowflake: [ 'VAR_STRING' ]
+  },
+  key: 'STRING'
+} [class STRING extends ABSTRACT] {
+  types: {
+    postgres: [ 'varchar' ],
+    mysql: [ 'VAR_STRING' ],
+    mariadb: [ 'VAR_STRING' ],
+    sqlite: [ 'VARCHAR', 'VARCHAR BINARY' ],
+    mssql: [ 231, 173 ],
+    db2: [ 'VARCHAR' ],
+    snowflake: [ 'VAR_STRING' ]
+  },
+  key: 'STRING'
+}
+```
+
+另外DataTypes的新增原因是為了在使用習慣上能夠很好地使用才添加的，因為Sequelize本質上不止包含指定型別，還包含其他有關sequelize的設定內容
+
+> DataTypes is: A convenience class holding commonly used data types.
+
+[Sequelize: difference of DataTypes and Sequelize](https://stackoverflow.com/questions/47563038/sequelize-difference-of-datatypes-and-sequelize)
+
+
+
+## Sequelize
+1. 類似於mongoose ，但操作上不一樣
+2. Sequelize 提供了一系列事先設定好的任務腳本，包括自動產生設定檔、載入種子資料、資料庫設定等等。這堆腳本的集合稱為 Sequelize CLI。
+
+
+## Sequelize CLI 指令集：
+1. model:generate: 於ORM上建立Model以及對應的遷徙設定檔
+2. db: migrate: 確定遷徙設定檔並根據其檔案內容來實際建立資料表格
+
+
+## MySQL DESCRIBE
+1. DESCRIBE: 描述資料表格所具有的結構，指定觀看名為table_name的表格為什麼樣的結構
+```
+DESCRIBE table_name
+```
+
+## mysql2
+1. 第三方套件，主要提供NODE.js一個介面能在其環境下直接使用SQL指令以及操作對應SQL資料庫
+> MySQL2 project is a continuation of MySQL-Native.
+
+## npx
+1. 全名為npm package executor，本身是第三方套件，方便使用node.js模組所提供的指令集和儘可能減少全域安裝模組的機會
+2. 預設上，它會自動在目前專案下的node_modules/.bin或者其他負責存放node.js模組下的指令集所在地點(比如系統環境變數，Linux/Unix的$PATH)尋找是否有使用者想要的指令，若有的話，該套件會去指令的實際所在來執行使用者所想要執行的指令
+3. npm 會附帶npx這套件，若沒安裝的話
+```
+npm install -g npx
+```
+4. 在未使用npx之前，要使用node.js模組所提供的指令集，必須先知道node.js模組的指令集所在才能夠執行，而為了方便執行指令集，部分開發者會想要將這些模組安裝整個系統上(全域)，而非整個專案，但這樣對於專案的共享來說，必須要求其他執行環境必須在整個系統上安裝這模組，才能享有與原本的好處-不預先知道所在就能按照指令名稱來執行，同時全域安裝並不會寫入至package.json或者package-lock.json，所以全域安裝反而帶來 要求整個開發團隊必須安裝在整個系統安裝模組的限制
+5. 承上，所以為了盡可能將模組安裝至整個專案以及紀錄在package.json、package-lock.json上，所以npx的出現，會直接幫開發者找到對應的模組，而且npx本身是與npm一起存在，所以不會有要求整個開發團隊必須安裝在整個系統安裝模組的限制
+
+
+
+
+
+
+
+## Data Model vs. Model vs. Schema
+1. Data Model：
+  - 定義資料是什麼樣結構？如何儲存？
+  - 定義資料會對應的運算操作
+  - 定義資料本身的限制
+  - 出現場景：資料庫系統場景
+2. Model：
+  - 為MVC中的Model，主要定義業務邏輯上的實體單元為何
+  - 在使用ORM/ODM的應用程式下，Model本身會是以建構式(會用class名稱當語法糖)來代表著對應的資料庫表格，可以藉由建構式來操控著對應表格，也可直接將建構式建構出實例來操控對應表格，此時的實例會是該表格下的紀錄，只是差別在於建構式和透過建構式建構出來的實例所能操控的範圍是不同的，前者是整個表格，後者是侷限於實例所指定的紀錄。
+  
+  Model 主要是定義著ORM/ODM和程式語言X之間的對應關係，而Migration則是實質上由ORM/ODM層級去操作其對應的實體資料庫管理系統。
+
+
+  會是代表著對應  
+  其應用程式透過ORM/ODM來定義實體單元為何，而實體單元在ORM/ODM的轉換，會形成資料庫語法來定義資料表格的Schema，但除了Schemaless Database本身沒Schema概念以外。
+  - 出現場景：應用程式場景
+3. Schema：
+  - 定義每一組資料會有屬性、屬性對應的資料型別、與其他資料之間的關聯性
+
+
 
 
 
@@ -175,143 +312,6 @@ module.exports = {
 };
 
 ```
-
-
-## 補充：model.init 設定
-1. model.init 是sequelize 是透過初始化設定來產生特定model類別，而特定model類別會繼承於通用model類別，而在這裡的設定會是以通用model類別會有的屬性來初始化，具體會定義：
-  - 定義特定model類別下對應的資料表格會有哪些欄位或者屬性
-  - 定義特定model類別下的建構式所擁有的屬性和設定
-  - 建構式則是用來構成對應資料表格的實例
-2. model.init形式會是：
-  - attributes是定義對應的資料表格會有哪些欄位或者屬性
-  - options是定義對應的建構式所擁有的屬性和設定
-```
- init(attributes: object, options: object): Model
-```
-
-3. 常見的options值如下：
-  - options.modelName: 為字串，定義model的名稱，**用途為：用model類別和model類別實例來操作資料時所要用識別資料**
-  > Set name of the model. By default its same as Class name.
-  - options.tableNmae： 為字串，定義model所對應的資料表格名稱是為何，預設下若沒設定，會將options.modelName當作options.tableName，**用途為：用model類別和model類別實例來操作資料時所要用識別資料**
-  - options.underscored: 為布林值，true代表啟用某功能；false代表不啟用某功能，啟用是指**啟用自動將該model下的屬性名轉換換成snake case命名法的形式**，但除了queryInterface是sequelize直接用SQL與資料庫連接以外，該介面會提供一系列的API，但這些API主要是直接對應著SQL，不像一般model使用方法那樣，還要經由sequelize本身的model來處理，才能轉換成對應SQL與資料庫處理。
-  > Add underscored field to all attributes, this covers user defined attributes, timestamps and foreign keys. Will not affect attributes with explicitly set field option
-  - options.freezeTableName：為布林值，true代表啟用某功能；false代表不啟用某功能，啟用是指**強制將取得的model name轉換成複數形式來表示，若不啟用就不轉換**
-  > If freezeTableName is true, sequelize will not try to alter the model name to get the table name. Otherwise, the model name will be pluralized
-4. 參考資料
-[model.init](https://sequelize.org/master/class/lib/model.js~Model.html#static-method-init)
-
-
-
-## Sequelize: 設定欄位的型別：
-
-
-### Sequelize.DataTypes 和 Sequelize 在指定型別上？
-Sequelize.DataTypes 和 Sequelize 這兩者本身可以設定欄位本身特定型別，且都皆為一樣
-```
-Sequelize.DataTypes.STRING
-Sequelize.STRING
-```
-
-實驗：若載入sequelize並儲存至Sequelize物件，並比對Sequelize.DataTypes上的STRING 和 Sequelize.STRING是否一樣以及印出兩者內，結果都是一樣
-```
-const Sequelize = require('sequelize')
-console.log(
-  'test result:',
-  Sequelize.DataTypes.STRING === Sequelize.STRING,
-  Sequelize.DataTypes.STRING,
-  Sequelize.STRING
-)
-```
-
-結果為如下：
-```
-test result: true [class STRING extends ABSTRACT] {
-  types: {
-    postgres: [ 'varchar' ],
-    mysql: [ 'VAR_STRING' ],
-    mariadb: [ 'VAR_STRING' ],
-    sqlite: [ 'VARCHAR', 'VARCHAR BINARY' ],
-    mssql: [ 231, 173 ],
-    db2: [ 'VARCHAR' ],
-    snowflake: [ 'VAR_STRING' ]
-  },
-  key: 'STRING'
-} [class STRING extends ABSTRACT] {
-  types: {
-    postgres: [ 'varchar' ],
-    mysql: [ 'VAR_STRING' ],
-    mariadb: [ 'VAR_STRING' ],
-    sqlite: [ 'VARCHAR', 'VARCHAR BINARY' ],
-    mssql: [ 231, 173 ],
-    db2: [ 'VARCHAR' ],
-    snowflake: [ 'VAR_STRING' ]
-  },
-  key: 'STRING'
-}
-```
-
-另外DataTypes的新增原因是為了在使用習慣上能夠很好地使用才添加的，因為Sequelize本質上不止包含指定型別，還包含其他有關sequelize的設定內容
-
-> DataTypes is: A convenience class holding commonly used data types.
-
-[Sequelize: difference of DataTypes and Sequelize](https://stackoverflow.com/questions/47563038/sequelize-difference-of-datatypes-and-sequelize)
-
-
-
-## Sequelize
-1. 類似於mongoose ，但操作上不一樣
-2. Sequelize 提供了一系列事先設定好的任務腳本，包括自動產生設定檔、載入種子資料、資料庫設定等等。這堆腳本的集合稱為 Sequelize CLI。
-
-
-## Sequelize CLI 指令集：
-1. model:generate: 於ORM上建立Model以及對應的遷徙設定檔
-2. db: migrate: 確定遷徙設定檔並根據其檔案內容來實際建立資料表格
-
-
-## MySQL DESCRIBE
-1. DESCRIBE: 描述資料表格所具有的結構，指定觀看名為table_name的表格為什麼樣的結構
-```
-DESCRIBE table_name
-```
-
-## mysql2
-1. 第三方套件，主要提供NODE.js一個介面能在其環境下直接使用SQL指令以及操作對應SQL資料庫
-> MySQL2 project is a continuation of MySQL-Native.
-
-## npx
-1. 全名為npm package executor，本身是第三方套件，方便使用node.js模組所提供的指令集和儘可能減少全域安裝模組的機會
-2. 預設上，它會自動在目前專案下的node_modules/.bin或者其他負責存放node.js模組下的指令集所在地點(比如系統環境變數，Linux/Unix的$PATH)尋找是否有使用者想要的指令，若有的話，該套件會去指令的實際所在來執行使用者所想要執行的指令
-3. npm 會附帶npx這套件，若沒安裝的話
-```
-npm install -g npx
-```
-4. 在未使用npx之前，要使用node.js模組所提供的指令集，必須先知道node.js模組的指令集所在才能夠執行，而為了方便執行指令集，部分開發者會想要將這些模組安裝整個系統上(全域)，而非整個專案，但這樣對於專案的共享來說，必須要求其他執行環境必須在整個系統上安裝這模組，才能享有與原本的好處-不預先知道所在就能按照指令名稱來執行，同時全域安裝並不會寫入至package.json或者package-lock.json，所以全域安裝反而帶來 要求整個開發團隊必須安裝在整個系統安裝模組的限制
-5. 承上，所以為了盡可能將模組安裝至整個專案以及紀錄在package.json、package-lock.json上，所以npx的出現，會直接幫開發者找到對應的模組，而且npx本身是與npm一起存在，所以不會有要求整個開發團隊必須安裝在整個系統安裝模組的限制
-
-
-
-
-
-
-
-## Data Model vs. Model vs. Schema
-1. Data Model：
-  - 定義資料是什麼樣結構？如何儲存？
-  - 定義資料會對應的運算操作
-  - 定義資料本身的限制
-  - 出現場景：資料庫系統場景
-2. Model：
-  - 為MVC中的Model，主要定義業務邏輯上的實體單元為何
-  - 在使用ORM/ODM的應用程式下，Model本身會是以建構式(會用class名稱當語法糖)來代表著對應的資料庫表格，可以藉由建構式來操控著對應表格，也可直接將建構式建構出實例來操控對應表格，此時的實例會是該表格下的紀錄，只是差別在於建構式和透過建構式建構出來的實例所能操控的範圍是不同的，前者是整個表格，後者是侷限於實例所指定的紀錄。
-  
-  Model 主要是定義著ORM/ODM和程式語言X之間的對應關係，而Migration則是實質上由ORM/ODM層級去操作其對應的實體資料庫管理系統。
-
-
-  會是代表著對應  
-  其應用程式透過ORM/ODM來定義實體單元為何，而實體單元在ORM/ODM的轉換，會形成資料庫語法來定義資料表格的Schema，但除了Schemaless Database本身沒Schema概念以外。
-  - 出現場景：應用程式場景
-3. Schema：
-  - 定義每一組資料會有屬性、屬性對應的資料型別、與其他資料之間的關聯性
 
 
 
