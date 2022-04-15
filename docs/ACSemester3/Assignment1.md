@@ -1,5 +1,5 @@
 ---
-sidebar_position: 20
+sidebar_position: 1
 ---
 
 # 作業1獲得的新知和技術

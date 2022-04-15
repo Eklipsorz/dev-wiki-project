@@ -1,5 +1,5 @@
 ---
-sidebar_position: 75
+sidebar_position: 3
 ---
 
 # 作業18獲得的新知和技術

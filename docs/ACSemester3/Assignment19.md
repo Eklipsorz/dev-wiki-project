@@ -1,5 +1,5 @@
 ---
-sidebar_position: 83
+sidebar_position: 4
 ---
 
 # 作業19獲得的新知和技術
