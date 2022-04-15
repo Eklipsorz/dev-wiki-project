@@ -250,8 +250,146 @@ test result: true [class STRING extends ABSTRACT] {
 }
 ```
 
-另外DataTypes的新增原因是為了在使用習慣上能夠很好地使用才添加的。
+另外DataTypes的新增原因是為了在使用習慣上能夠很好地使用才添加的，因為Sequelize本質上不止包含指定型別，還包含其他有關sequelize的設定內容
 
 > DataTypes is: A convenience class holding commonly used data types.
 
 [Sequelize: difference of DataTypes and Sequelize](https://stackoverflow.com/questions/47563038/sequelize-difference-of-datatypes-and-sequelize)
+
+
+
+## Sequelize
+1. 類似於mongoose ，但操作上不一樣
+2. Sequelize 提供了一系列事先設定好的任務腳本，包括自動產生設定檔、載入種子資料、資料庫設定等等。這堆腳本的集合稱為 Sequelize CLI。
+
+
+## Sequelize CLI 指令集：
+1. model:generate: 於ORM上建立Model以及對應的遷徙設定檔
+2. db: migrate: 確定遷徙設定檔並根據其檔案內容來實際建立資料表格
+
+
+## MySQL DESCRIBE
+1. DESCRIBE: 描述資料表格所具有的結構，指定觀看名為table_name的表格為什麼樣的結構
+```
+DESCRIBE table_name
+```
+
+## mysql2
+1. 第三方套件，主要提供NODE.js一個介面能在其環境下直接使用SQL指令以及操作對應SQL資料庫
+> MySQL2 project is a continuation of MySQL-Native.
+
+## npx
+1. 全名為npm package executor，本身是第三方套件，方便使用node.js模組所提供的指令集和儘可能減少全域安裝模組的機會
+2. 預設上，它會自動在目前專案下的node_modules/.bin或者其他負責存放node.js模組下的指令集所在地點(比如系統環境變數，Linux/Unix的$PATH)尋找是否有使用者想要的指令，若有的話，該套件會去指令的實際所在來執行使用者所想要執行的指令
+3. npm 會附帶npx這套件，若沒安裝的話
+```
+npm install -g npx
+```
+4. 在未使用npx之前，要使用node.js模組所提供的指令集，必須先知道node.js模組的指令集所在才能夠執行，而為了方便執行指令集，部分開發者會想要將這些模組安裝整個系統上(全域)，而非整個專案，但這樣對於專案的共享來說，必須要求其他執行環境必須在整個系統上安裝這模組，才能享有與原本的好處-不預先知道所在就能按照指令名稱來執行，同時全域安裝並不會寫入至package.json或者package-lock.json，所以全域安裝反而帶來 要求整個開發團隊必須安裝在整個系統安裝模組的限制
+5. 承上，所以為了盡可能將模組安裝至整個專案以及紀錄在package.json、package-lock.json上，所以npx的出現，會直接幫開發者找到對應的模組，而且npx本身是與npm一起存在，所以不會有要求整個開發團隊必須安裝在整個系統安裝模組的限制
+
+
+
+
+
+
+
+## Data Model vs. Model vs. Schema
+1. Data Model：
+  - 定義資料是什麼樣結構？如何儲存？
+  - 定義資料會對應的運算操作
+  - 定義資料本身的限制
+  - 出現場景：資料庫系統場景
+2. Model：
+  - 為MVC中的Model，主要定義業務邏輯上的實體單元為何
+  - 在使用ORM/ODM的應用程式下，Model本身會是以建構式(會用class名稱當語法糖)來代表著對應的資料庫表格，可以藉由建構式來操控著對應表格，也可直接將建構式建構出實例來操控對應表格，此時的實例會是該表格下的紀錄，只是差別在於建構式和透過建構式建構出來的實例所能操控的範圍是不同的，前者是整個表格，後者是侷限於實例所指定的紀錄。
+  
+  Model 主要是定義著ORM/ODM和程式語言X之間的對應關係，而Migration則是實質上由ORM/ODM層級去操作其對應的實體資料庫管理系統。
+
+
+  會是代表著對應  
+  其應用程式透過ORM/ODM來定義實體單元為何，而實體單元在ORM/ODM的轉換，會形成資料庫語法來定義資料表格的Schema，但除了Schemaless Database本身沒Schema概念以外。
+  - 出現場景：應用程式場景
+3. Schema：
+  - 定義每一組資料會有屬性、屬性對應的資料型別、與其他資料之間的關聯性
+
+
+
+
+## model:generate command
+1. 主要負責在ORM上的應用程式上建立特定資料的Model，詳細的負責事項為
+  - 製作對應的model 檔案至models目錄
+  - 建立對應model的遷徙設定檔案至migrations目錄：資料庫遷徙紀錄，檔名前綴為時間戳記
+
+2. 主要有兩個參數：
+  - --name： 定義model名稱
+  - --attributes： 定義model的實體單元會有哪些屬性、型別(如string、boolean)
+  - 語法格式為：
+  ```
+  npx sequelize model:generate --name name --attributes attribute1:type1, attribute2: type2...
+  ```
+
+3. 範例：透過npx來呼叫sequelize模組下的sequelize指令集，並給予model:generate來要求建立特定資料的Model，而Model名為Todo，所擁有的屬性會有名字、勾選項目，名字會是字串，勾選項目為布林值。
+```
+npx sequelize model:generate --name Todo --attributes name:string,isDone:boolean
+```
+4. 細節：
+  - model:generate 指令主要負責建立Model，沒實際建立資料庫下的資料表格
+  - 注意屬性之間不能有空白，空白在 command line 裡會被視為新的指令。
+  - Sequelize 會自動帶入 id、createdAt 和 updatedAt，id為識別碼、createAt為紀錄建立時間、updateAt為紀錄更新時間。
+
+## migration file的 model 欄位設定
+實際上會以下面方式來定義model下的每一個欄位
+```
+field: {
+  // 設定該欄位是否為必填，若false就必填，若true就可選擇不填
+  allowNull: true | false,
+  // 設定該欄位的預設值是否依照資料數來累加，若true就累加，若false就不累加
+  autoIncrement: true | false,
+  // 設定該欄位是否為主鍵，若true就設定為主鍵，若false或者沒添加就不為主鍵
+  primaryKey: true | false,
+  // 設定該欄位的型別，在這裏是設定整數
+  type: Sequelize.INTEGER
+  // 設定該資料一被建立後，該欄位的預設值是為何，在這裡會是false
+  defaultValue: false
+}
+```
+
+
+
+
+
+
+## 連線資料庫並設定 Model 
+1. MySQL 建立專案資料庫:
+```
+DROP DATABASE IF EXISTS `todo_sequelize`;
+CREATE DATABASE `todo_sequelize`;
+USE `todo_sequelize`;
+```
+2. Express 設定資料庫連線:
+  - 安裝 mysql2、sequelize 與 sequelize-cli：
+  ```
+  npm install mysql2 sequelize sequelize-cli
+  ```
+  - 初始化 Sequelize 並設定資料庫的名字與密碼
+  ```
+  npx sequelize init
+  ```
+5. 設定 model並透過它建立表格
+ - Todo model
+ ```
+ // 建立Model：生成model檔案和migration檔案
+ npx sequelize model:generate --name Todo --attributes name:string,isDone:boolean
+
+ // 透過對應的migration檔案來建立表格 
+ npx sequelize db:migrate 
+ ```
+ - User model
+```
+// 建立Model：生成model檔案和migration檔案
+npx sequelize model:generate --name User --attributes name:string,email:string,password:string
+
+// 透過對應的migration檔案來建立表格
+npx sequelist db:migrate
+```
