@@ -41,6 +41,23 @@ Set-Cookie: <cookie-name>=<cookie-value>; <option>
   - Secure: 要求客戶端只能在https加密協議下才能附加對應cookie給伺服器端，若是沒有就不附加，若有就附加cookie內容
   - HttpOnly: 要求只能透過解析http封包本身的標頭才能讀取到cookie內容，除此之外的方法皆無法被存取，也不能透過JavaScript讀取，如透過Document.cookie來讀取和變更
   > Forbids JavaScript from accessing the cookie, for example, through the Document.cookie property
+  SameSite cookies Experimental
+
+SameSite 讓伺服器要求 cookie 不應以跨站請求的方式寄送，某種程度上避免了跨站請求偽造的攻擊（CSRF）。SameSite cookies 目前仍在實驗階段，尚未被所有的瀏覽器支援。
+
+功能：可以限制 cookie 的跨域发送，此属性可有效防止大部分 CSRF 攻击，有三个值可以设置：
+
+    None ：同站、跨站请求都发送 cookie，但需要 Secure 属性配合一起使用。
+
+    Set-Cookie: flavor=choco; SameSite=None; Secure
+
+    Strict ：当前页面与跳转页面是相同站点时，发送 cookie；
+
+    Set-Cookie: key=value; SameSite=Strict
+
+    Lax ：与 Strict 类似，但用户从外部站点导航至URL时（例如通过链接）除外。 在新版本浏览器中，为默认选项，Same-site cookies 将会为一些跨站子请求保留，如图片加载或者 frames 的调用，但只有当用户从外部站点导航到URL时才会发送。如 link 链接
+
+
 ### cookie內容隸屬於哪個伺服器下的哪個位置
 具體會是以Domain來指定隸屬於哪個伺服器，而Path則是指定Domain下的哪個路徑。
 
@@ -71,6 +88,21 @@ Set-Cookie
 
 
 
+
+    Cookie 中的域名 与 当前站点域名相同，称为 第一方cookie（ first-party cookie）；
+
+    Cookie 中的域名 与 当前站点域名不同，称为 第三方cookie（ third-party cookie）；
+
+当前站点会使用一些其他站点资源（譬如图片、广告等），在请求第三方服务器获取这些资源时，也会返回 Set-Cookie 属性，让浏览器保留第三方的 cookie，这些cookie 主要用于用户跟踪，流量分析等。
+
+
+Cookies 會帶有他們所屬的網域名。若此網域和你所在的頁面網域相同，cookies 即為第一方（first-party）cookie，不同則為第三方（third-party）cookie。第一方 cookies 只被送到設定他們的伺服器，但一個網頁可能含有存在其他網域伺服器的圖片或組件（像橫幅廣告）。透過這些第三方組件傳送的 cookies 便是第三方 cookies，經常被用於廣告和網頁上的追蹤。參見 Google 常用的 cookies 種類。大部分的瀏覽器預設允許第三方 cookies，但也有些可以阻擋他們的 add-on（例如 EFF 的 Privacy Badger）。
+
+第一方：
+若cookie的隸屬網域是與使用者目前所在的網域相同，即cookie的隸屬網域就對於目前網域而言，且由於在這裡是以伺服器為第一方且會隸屬網域又是以伺服器為主，所以故此稱為第一方 cookie，若cookie的隸屬網域是與使用者目前所在的網域不同，即為cookie的隸屬網域就對於目前網域而言，就只是外來網域的cookie內容，是第三方cookie，另外沒有第二方cookie是因為第二方本身是指client
+
+
+若沒有事先告訴消費者第三方 cookies 的存在，當消費者發現你使用 cookie 時，對你的信任將會受損。因此，公開表明 cookie 的使用（像在隱私權條款中）將減低發現 cookie 時的負面影響。有些國家有關於 cookies 的法律條文。範例可以參見維基百科的 cookie statement。
 
 參考資料
 [一篇解释清楚Cookie是什么？](https://learn-anything.cn/http-cookie)
