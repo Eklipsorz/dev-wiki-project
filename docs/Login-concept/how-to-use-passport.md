@@ -1,19 +1,108 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
 ---
-
 
 # passport.js
 1. 一個提供各種登入策略(Strategies)來進行使用者驗證的第三方套件
 2. 主要功用為：
   - 提供各種登入策略來進行使用者驗證
-  - 將使用者資訊存放在server的session中
-
+  - 將使用者資訊存放在server的session，並設定對應session位置至client的cookie
 3. 驗證策略為如下：
   - 本地驗證：以伺服器所提供的帳號密碼來驗證使用者是否輸入正確
-  - FB驗證
+  - FB 驗證
   - Google 驗證
+  - JWT 驗證
   - 諸如此類
+
+
+
+## 補充知識：credentials
+1. 英文如下，中文是指能夠證明某些事物擁有某種特性或者能力的物件，意指為身份驗證資訊
+> the abilities and experience that make someone suitable for a particular job or activity, or proof of someone's abilities and experience
+
+2. 在passport.js中，credential則是強調一位想要驗證身份的使用者所攜帶的身分驗證文件，在這裡的想要驗證身份的使用者即為客戶端，而身份驗證文件則是指客戶端的帳號密碼資訊或者其他證明它身份的資訊，如OAuth。
+> Authentication mechanisms define how to encode a credential, such as a password or an assertion from an identity provider (IdP), in a request. They also specify the procedure necessary to verify that credential. If the credential is successfully verified, the request is authenticated.
+[what is credential in passport.js](https://www.passportjs.org/concepts/authentication/strategies/)
+
+3. 使用者若透過身份驗證文件X通過passport.js的第一次身份驗證，通常passport.js會於server 建立一份session來儲存對應文件X在server對應的身分證資訊，並給予session id至client 的cookie中，客戶端會根據server域名來將 對應session id 儲存在server域名相關的cookie中，使用者在隨後第二次身份驗證時會**根據域名找尋對應的cookie，給予對應的session id來給passport.js做驗證**，若passport
+在電腦科學中，而在passport.js中，指的是第一次使用者用來登入的帳密資訊，該資訊只需要第一次登入時才需要請求附帶，隨後等成功登入後，伺服器會賦予session id給客戶端並請求它存在cookie，讓伺服器只需要驗證cookie內容是否為伺服器中的session id就能讓它通行
+
+
+
+## 登入功能的認證實作
+1. 登入功能在實作上會分成兩段：
+ - 認證使用者：根據 session 資訊，判斷 request 是哪一個使用者，如passport.js
+ - 儲存認證結果：生成session來儲存認證結果，並要求客戶端儲存對應的session-id至cookie，如express-session
+
+## Express-Session
+1. 一種第三方套件，非官方套件。
+2. 可以幫開發者從伺服器中擷取cookie資訊、並從中替客戶端建立儲存對應id的cookie和對應的session在伺服器內部的套件。
+3. 具體來說，當載入該模組時，客戶端和伺服器端只要處於request/response cycle的話，就會建立session來紀錄兩者的連線過程，同時間會賦予session id 給該session並讓客戶端建立cookie去儲存session id，而到時cookie只要拿著這session id發送請求至伺服器，伺服器收到便拿該id獲取對應先前的連線過程是什麼。 
+4. 安裝方式：
+```
+npm install express-session
+```
+5. 載入以及設定方式：其套件的回傳內容是本身是一個middleware function，所以若要讓其他的middleware能夠使用其功能，必須先將套件以app.use來使用其midddleware function並放置在其他middleware之前，如下例子：首先先載入express-session回傳的middleware function至session變數，然後用options物件去設定該middleware function，然後後面的app.method或者其他middleware function就能因為use的特性而使用express-session功能。
+```
+// load express-session
+const session = require('express-session')
+app.use('/', seession( options ))
+
+// other routes (other middleware functions)
+app.method(path, callback)
+app.method(path, callback)
+.
+.
+```
+
+5. 延續上個例子，當某個請求是可以對應某一個route時，在伺服器以那個route之前來處理請求，會先經過app.use所載入的session middleware來對req生成對應的屬性來代表著session和cookie的內容
+
+```
+app.use('/', seession( options ))
+
+// other routes (other middleware functions)
+app.method(path, callback)
+app.method(path, callback)
+.
+.
+```
+
+
+
+## Express-Session Options
+1. Options 是藉由物件來設定Express-Session所提供的middleware
+2. 該物件常用的屬性為：
+  - secret：一組字串，用來簽署每個儲存session id的cookie以及用該字串來解開每個被簽署過後的cookie是否由該伺服器所建立的cookie，比如說一個儲存session id的cookie會是如下，中間"."前面為session id，而後者則是伺服器用secret套入至加密演算法來生成的字串內容或者稱呼為簽章(signature)，換言之，cookie內容會夾雜session id和前面提到的字串內容，以簽章來辨明該session id是特定伺服器的。
+  ```
+  s%3ATR0HRHZCS4JQadtvhIJMrQ0lPwKPggXm.Ec668MuqLt%2Fz2FXI7EJqxq85VVXrSPljKa%2Bj7tmaxcU
+  ```
+  - name：字串，設定由模組建立的cookie 所擁有的名字。
+  - saveUninitialized：布林值，原本當客戶端與伺服器開始進行連線時，就會開始建立session物件來紀錄兩者在連線時的狀態，且剛建立的session物件的屬性未在伺服器中被任意值來寫入，此session就會被當作未初始化的session，而若saveUninitialized被設定為true時，就便會將未初始化的session儲存在伺服器的session store，而saveUninitialized被設定為false時，就便不會將未初始化的session儲存在伺服器session store。 true是會強制儲存未初始化的session至伺服器中的session store以及替客戶端建立儲存對應session id的cookie，false是不會強制儲存。
+  > When an empty session object is created and no properties are set, it is the uninitialized state. So, setting saveUninitialized to false will not save the session if it is not modified.
+  
+  - resave：布林值，若設為true，每一次客戶端和伺服器之間只要出現連線互動，所對應的session都會強制繼續存在session store，在請求過程中，無論對應session內容是否有被伺服器修改，也都會繼續存至session store，若為false，則不會只因為出現連線互動而強制保留對應的session至session store
+
+3. 需要注意的點：
+  - 伺服器要求客戶端儲存session id至cookie時，此cookie會被稱之為session id cookie
+  
+
+## express-session的安全解法
+1. 由於客戶端的cookie很容易被篡改或者惡意修改成其他資料，讓伺服器對應不合法的資源，為了避免這樣，伺服器當發憑證給客戶端時，也就是下圖中的Step2，伺服器會用一個私鑰(private key)和session id產生一組亂碼，而這樣過程被稱之為簽名(sign)，而亂碼本身就是signature，最後會將session id和亂碼合併成一個字串給客戶端讓它做認證，另外其亂碼會存在伺服器中。
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1639932196/blog/loginSystem/implementationOfCertificating_gvmhfx.png)
+
+合併成的字串格式會是如下，以.為區隔，前半段是session id，後半段為簽名後的亂碼
+```
+s%3Ax6O_y8GbzQZ83IhRCNiX9Qt-VeeHAlwl.EC9XKGB72koXfNeergC8uPKSO9L19Te%2FN1yrgjYiwJE
+```
+
+2. 當客戶端從cookie中拿著session id和亂碼組成的合併字串來向同一個伺服器發出請求時，伺服器會做一系列檢查，比如：
+  - 檢查亂碼是否存在session store中，若有的話，就繼續做下一步，沒有就要求對方輸入帳密
+  - 其session id和伺服器的私鑰(private key)用同個方法來產生亂數，並且比對該亂數是否和cookie內的亂數一致，若一致就允許使用服務，若不一致就要求對輸入帳密
+  - 正常使用服務
+
+
+
+
 
 ## passport.js 設定方式
 1. 首先，passport會使用express-session所建立的session來進行使用者驗證，本身並不負責建立/管理session和定義cookie內容，所以會先載入express-session，接著設定其套件，設定完之後，再來設定passport本身套件的載入，會從middleware來著手，主要會是passport.initialize和passport.session，接著再來定義passport在這能夠使用的驗證策略(如本地驗證、FB驗證等)，然後定義著passport在express-session所建立的session上進行存放/存取，最後就是在路由器或者應用程式層級來調用passport的驗證功能，大致上分為幾個步驟：
@@ -141,8 +230,3 @@ new LocalStrategy({
 
 2. Deserialize則是相反於Serialize，主要是將序列後的產物轉換為原本序列化前的型態，在passport.js中會是將數字轉換為完整使用者實體。
 
-## credentials
-1. 英文如下，中文是指能夠證明某些事物擁有某種特性或者能力的物件
-> the abilities and experience that make someone suitable for a particular job or activity, or proof of someone's abilities and experience
-
-2. 在電腦科學中，credentials指的是身份驗證資訊，主要是一份驗證身份的資訊，而在passport.js中，指的是第一次使用者用來登入的帳密資訊，該資訊只需要第一次登入時才需要請求附帶，隨後等成功登入後，伺服器會賦予session id給客戶端並請求它存在cookie，讓伺服器只需要驗證cookie內容是否為伺服器中的session id就能讓它通行
