@@ -37,33 +37,10 @@ Cookie: food=icecream; flavor=cheese;
 [HTTP cookies](https://developer.mozilla.org/zh-TW/docs/Web/HTTP/Cookies)
 ## 客戶端的cookie本身設定
 
-另外由於考量到cookie本身的安全問題、cookie內容隸屬於哪個伺服器下的哪個位置、存留客戶端多久的問題，會允許伺服器端藉由Set-Cookie標頭來設置其Cookie本身的設定，在這伺服器會以option來設定
+另外由於考量到cookie內容隸屬於哪個伺服器下的哪個位置、cookie本身的安全問題、存留客戶端多久的問題，會允許伺服器端藉由Set-Cookie標頭來設置其Cookie本身的設定，在這伺服器會以option來設定
 ```
 Set-Cookie: <cookie-name>=<cookie-value>; <option>
 ```
-
-主要option會有
-1. 
-
-### 安全設定
-  - Secure: 要求客戶端只能在https加密協議下才能附加對應cookie給伺服器端，若是沒有就不附加，若有就附加cookie內容
-  - HttpOnly: 要求只能透過解析http封包本身的標頭才能讀取到cookie內容，除此之外的方法皆無法被存取，也不能透過JavaScript讀取，如透過Document.cookie來讀取和變更
-  > Forbids JavaScript from accessing the cookie, for example, through the Document.cookie property
-  SameSite cookies Experimental
-
-SameSite 讓伺服器要求 cookie 不應以跨站請求的方式寄送，某種程度上避免了跨站請求偽造的攻擊（CSRF）。SameSite cookies 目前仍在實驗階段，尚未被所有的瀏覽器支援。
-
-功能：可以限制 cookie 的跨域发送，此属性可有效防止大部分 CSRF 攻击，有三个值可以设置：
-
-    None ：同站、跨站请求都发送 cookie，但需要 Secure 属性配合一起使用。
-
-    Set-Cookie: flavor=choco; SameSite=None; Secure
-
-    Strict ：当前页面与跳转页面是相同站点时，发送 cookie；
-
-    Set-Cookie: key=value; SameSite=Strict
-
-    Lax ：与 Strict 类似，但用户从外部站点导航至URL时（例如通过链接）除外。 在新版本浏览器中，为默认选项，Same-site cookies 将会为一些跨站子请求保留，如图片加载或者 frames 的调用，但只有当用户从外部站点导航到URL时才会发送。如 link 链接
 
 
 ### cookie內容隸屬於哪個伺服器下的哪個位置
@@ -139,7 +116,76 @@ Set-Cookie
 Note:
 1. first-party vs. second-party vs. third-party： party是指參與者、參與方，源自於合約關係中的甲乙兩個參與方(party)，在這裡將甲方(提供服務的人)視為第一方(first-party)，而乙方(接受服務或者索求的人)視為第二方(second-party)，而排除在合約以外的一方就稱之為第三方(third-party)，然而除了第三方以外，實際上並沒有硬性規定哪一方為第一方和第二方，只是慣例上和傳統上的決定。
 
+參考資料
 [Exactly what is a "third party"? (And who are the first and second party?)](https://stackoverflow.com/questions/2895753/exactly-what-is-a-third-party-and-who-are-the-first-and-second-party)
+
+
+
+#### 客戶端預設可以跨網域發送請求
+由於 **客戶端每當發送請求時，會根據請求的Domain會是什麼而根據Domain來提供對應的cookie至請求封包**，然而這允許位於外來網域的伺服器可以藉由這點來藉由目標伺服器的Domain來偽造對於該伺服器的請求來讓客戶端附加自己對於該Domain的cookie內容，
+
+舉例來說，假設有兩個伺服器分別為Server 1、Server 2，網域皆為不同，一開始客戶端向伺服器1索要網頁並於回應中渲染其網頁，
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1650290114/blog/network/csrf/csrf-flow-website1-rendering_civqv4.png)
+
+將著當客戶端對著從伺服器1拿到網頁做了一些互動(登入)而對伺服器1發送請求，伺服器1接收到就處理，處理完之後，就會隨之建立session，並通知客戶端建立cookie來紀錄session id，客戶端收到後就便建立專屬於伺服器1所在網域(Domain1)的cookie來儲存，也就是cookie 1
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1650285736/blog/network/csrf/csrf-flow-obtain-cookie_jdm1nz.png)
+
+緊接著，客戶端在cookie 1還留存在瀏覽器情況下去向伺服器2索要網頁來渲染，
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1650285736/blog/network/csrf/csrf-flow-website2-rendering_ucbzsn.png)
+
+接著伺服器2給定的網頁中藏有一個程式模組來讓客戶端在Domain 2的環境下去向伺服器1所在的Domain1發送特定請求，而這請求是由伺服器2利用Domain1這域名來偽造出來的，而當瀏覽器讀取到請求上是包含著Domain 1，就會從cookies中找尋隸屬於Domain 1的cookie並附加至這偽造請求，那麼此時當伺服器讀取到這請求時，會讀取其cookie內容，會以爲是客戶端真的是確實要發送這請求就執行，但實際上是執行伺服器2所偽造的請求，而這也是所謂CSRF(Cross-Site Request Forgery)問題，跨網域請求偽造，若這個請求是涉及金錢、帳號、個人隱私等敏感問題的話，勢必會是很嚴重的問題。
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1650285736/blog/network/csrf/csrf-flow-request-forgery_my7ghb.png)
+
+
+
+
+
+
+### 安全設定
+主要option會有：
+1. Secure: 要求客戶端只能在https加密協議下才能附加對應cookie給伺服器端，若是沒有就不附加，若有就附加cookie內容
+2. HttpOnly: 要求只能透過解析http封包本身的標頭才能讀取到cookie內容，除此之外的方法皆無法被存取，也不能透過JavaScript讀取，如透過Document.cookie來讀取和變更
+> Forbids JavaScript from accessing the cookie, for example, through the Document.cookie property
+3. SameSite：
+
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1650285736/blog/network/csrf/csrf-flow-website1-rendering_sxr0ga.png)
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1650285736/blog/network/csrf/csrf-flow-obtain-cookie_jdm1nz.png)
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1650285736/blog/network/csrf/csrf-flow-website2-rendering_ucbzsn.png)
+
+
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1650285736/blog/network/csrf/csrf-flow-request-forgery_my7ghb.png)
+
+
+
+
+
+為了 要求客戶端不能跨網域(Domain)來向指定網域發送請求之相關設定，也就是客戶端不能夠在非指定網域下發送請求，主要的選項有None、Strict、Lax，
+  None: 允許客戶端可以跨網域來向指定網域發送請求，
+  Strict: 不允許客戶端可以跨網域來向指定網域發送請求，
+  Lax: 如同字面上的意思，不會全然禁止客戶端跨網域向指定網域發送，而是只限定部分操作。
+
+
+  SameSite cookies Experimental
+
+SameSite 讓伺服器要求 cookie 不應以跨站請求的方式寄送，某種程度上避免了跨站請求偽造的攻擊（CSRF）。SameSite cookies 目前仍在實驗階段，尚未被所有的瀏覽器支援。
+
+功能：可以限制 cookie 的跨域发送，此属性可有效防止大部分 CSRF 攻击，有三个值可以设置：
+
+    None ：同站、跨站请求都发送 cookie，但需要 Secure 属性配合一起使用。
+
+    Set-Cookie: flavor=choco; SameSite=None; Secure
+
+    Strict ：当前页面与跳转页面是相同站点时，发送 cookie；
+
+    Set-Cookie: key=value; SameSite=Strict
+
+    Lax ：与 Strict 类似，但用户从外部站点导航至URL时（例如通过链接）除外。 在新版本浏览器中，为默认选项，Same-site cookies 将会为一些跨站子请求保留，如图片加载或者 frames 的调用，但只有当用户从外部站点导航到URL时才会发送。如 link 链接
+
+
 
 參考資料
 [一篇解释清楚Cookie是什么？](https://learn-anything.cn/http-cookie)
