@@ -3,13 +3,13 @@ sidebar_position: 1
 ---
 
 # cookie vs. session
-由於http/https協議本身為了簡化客戶端和伺服器之間的連線結構，而定義客戶端和伺服器之間在連線時互動情況並不會紀錄下來-無狀態(stateless)，但隨著越來越多服務需要客戶端和伺服器之間的過去互動情況，就有人提出讓客戶端、伺服器根據情況來從自己的系統索要空間來**分別讓客戶端單方面紀錄與伺服器之間的互動情形、讓伺服器單方面紀錄與客戶端之間的互動情形、更或者讓兩者紀錄雙方的互動情形**。
+由於http/https協議本身為了簡化客戶端和伺服器之間的連線結構，而定義客戶端和伺服器之間在連線時互動情況並不會紀錄下來-無狀態(stateless)，但隨著越來越多服務需要客戶端和伺服器之間的過去互動情況，比如首次登入後就直接透過互動情況而跳過、使用者可以透過過去的購物車內容來直接購買，就有人提出讓客戶端、伺服器根據情況來從自己的系統索要空間(記憶體或者硬碟)來**分別讓客戶端單方面紀錄與伺服器之間的互動情形、讓伺服器單方面紀錄與客戶端之間的互動情形、更或者讓兩者紀錄雙方的互動情形**。
 
-在這裡客戶端負責單方面儲存與伺服器互動情形的空間是cookie，而伺服器負責單方面儲存與客戶端互動情況的空間是session
+在這裡客戶端單方面與伺服器之間的互動情形紀錄會是稱作為cookie，而伺服器負責單方面與客戶端互動情況紀錄會是session，
 
 ## cookie
 
-當伺服器想要客戶端儲存目前互動狀態時，伺服器會發送一個擁有Set-Cookie標頭(header)的封包給客戶端，其標頭內容會是以能夠代替這次的互動狀態，其內容形式會是如下，客戶端一收到就會根據標頭內容來設置自己的cookie內容為cookie-name:cookie-value，
+客戶端的 cookie 是一塊用來記錄與伺服器的過去互動狀態的資料，會根據伺服器的回應是否帶有Set-Cookie才決定是否於客戶端建立cookie，若有的話，就建立；若沒有，就不建立。通常當伺服器想要客戶端儲存目前互動狀態時，伺服器會發送一個擁有Set-Cookie標頭(header)的封包給客戶端，其標頭內容會是以能夠代替這次的互動狀態，其內容形式會是如下(cookie-name和cookie-value即為這次的互動狀態)，客戶端一收到就會根據標頭內容來設置自己的cookie內容為cookie-name:cookie-value，
 ```
 Set-Cookie: <cookie-name>=<cookie-value>; 
 ```
@@ -27,6 +27,14 @@ Set-Cookie: food=icecream; flavor=cheese;
 Cookie: food=icecream; flavor=cheese;
 ```
 
+## cookie存放在哪？
+會存放在記憶體或硬碟這兩個空間的其中之一，能夠決定cookie存放在至哪還是得依據每一種瀏覽器所做的實現，不過具體來說，主要會看伺服器對於cookie內容的有效期限是如何:
+  - 時限若太短的話，會決定放在記憶體，並直到時間一到或者使用者關閉瀏覽器就即刻從記憶體刪除對應的cookie內容。
+  - 時限若太長的話，會決定放在記憶體，直到使用者關閉瀏覽器就會將cookie內容以檔案形式轉存至硬碟，等到瀏覽器再一次向同一個伺服器發送請求時(或者每一次瀏覽器在一次被打開時)，就會先從硬碟中的cookie內容載入至記憶體，並利用其內容來與伺服器交流
+
+參考資料：
+[Cookies vs. LocalStorage: What’s the difference?](https://medium.com/swlh/cookies-vs-localstorage-whats-the-difference-d99f0eb09b44)
+[HTTP cookies](https://developer.mozilla.org/zh-TW/docs/Web/HTTP/Cookies)
 ## 客戶端的cookie本身設定
 
 另外由於考量到cookie本身的安全問題、cookie內容隸屬於哪個伺服器下的哪個位置、存留客戶端多久的問題，會允許伺服器端藉由Set-Cookie標頭來設置其Cookie本身的設定，在這伺服器會以option來設定
@@ -59,8 +67,18 @@ SameSite 讓伺服器要求 cookie 不應以跨站請求的方式寄送，某種
 
 
 ### cookie內容隸屬於哪個伺服器下的哪個位置
-具體會是以Domain來指定隸屬於哪個伺服器，而Path則是指定Domain下的哪個路徑。
+每一次客戶端與伺服器的互動狀態若要紀錄的話，勢必得標記互動狀態是哪個客戶端與哪個伺服器進行互動，在這裡是選擇曾互動的客戶端負責紀錄互動狀態，那麼唯一就差在於**這筆狀態是與哪個伺服器進行互動**，為了方便紀錄，會於Cookie內容以Domain來標記這筆狀態是**與哪個伺服器進行互動**，或者準確地來說，伺服器會設定Domain來**告知客戶端目前Cookie內容是隸屬於哪個伺服器**。
 
+```
+Set-Cookie: food=icecream; flavor=cheese; Domain=xxxxx
+```
+
+當然同一個伺服器也擁有著不同的路徑，若要更仔細紀錄客戶端到底與哪個路徑進行互動，會使用Path來紀錄。
+```
+Set-Cookie: food=icecream; flavor=cheese; Domain=xxxxx; Path=xxx
+```
+
+總結，具體會是以Domain來指定隸屬於哪個伺服器，而Path則是指定Domain下的哪個路徑：
 1. Domain：實際標記cookie內容是隸屬於與哪個伺服器下進行互動交流，並且嚴格規範每一次客戶端要附加cookie內容會根據Domain所指定來附加。
 
 比如說伺服器設定cookie內容是與mozilla.org進行交流，那麼每一次客戶端向mozilla.org就會附加起士冰淇淋，若不是mozilla.org就不會附加
@@ -86,8 +104,25 @@ Set-Cookie: food=icecream; flavor=cheese; Domain=mozilla.org Path=/docs
 Set-Cookie
 ```
 
+#### first-party cookie
+
+若cookie的隸屬網域是與使用者目前所在的網域相同，即為**對於目前所在網域X而言，cookie的隸屬網域就是網域X或者說同樣是伺服器所在的網域，且由於在這裡是以伺服器為提供服務協議上的第一方(詳見註解)，所以故此稱為first-part cookie**
+
+這項定義也**適用於使用者所在網域為cookie的隸屬網域下的子網域**，但僅限於伺服器是主動設定Domain，而不是採用預設值。
+
+舉例來說：首次伺服器同樣發送Set-Cookie標頭設定，那麼其cookie會隸屬於mozilla.org和其子網域developer.mozilla.org，當使用者去瀏覽著developer.mozilla.org或者mozilla.org，不論哪一個，只要伺服器有主動明確規定Domain是mozilla.org，那麼對於mozilla.org和其子網域而言，隸屬於mozilla.org的cookie內容就是first-party cookie
+
+```
+ Set-Cookie: food=icecream; flavor=cheese; Domain=mozilla.org
+```
 
 
+#### third-party cookie
+若cookie的隸屬網域是與使用者目前所在的網域不同，即為**對於目前所在網域X而言，cookie的隸屬網域就只是外來網域的cookie內容，是第三方來的cookie**，另外沒有第二方cookie是因為第二方本身是指client。
+
+比如說：你
+
+原本理論上是不允許瀏覽器將隸屬於網域X的cookie傳送至網域X以外的網域，但大部分瀏覽器的實作上卻允許瀏覽器
 
     Cookie 中的域名 与 当前站点域名相同，称为 第一方cookie（ first-party cookie）；
 
@@ -99,10 +134,15 @@ Set-Cookie
 Cookies 會帶有他們所屬的網域名。若此網域和你所在的頁面網域相同，cookies 即為第一方（first-party）cookie，不同則為第三方（third-party）cookie。第一方 cookies 只被送到設定他們的伺服器，但一個網頁可能含有存在其他網域伺服器的圖片或組件（像橫幅廣告）。透過這些第三方組件傳送的 cookies 便是第三方 cookies，經常被用於廣告和網頁上的追蹤。參見 Google 常用的 cookies 種類。大部分的瀏覽器預設允許第三方 cookies，但也有些可以阻擋他們的 add-on（例如 EFF 的 Privacy Badger）。
 
 第一方：
-若cookie的隸屬網域是與使用者目前所在的網域相同，即cookie的隸屬網域就對於目前網域而言，且由於在這裡是以伺服器為第一方且會隸屬網域又是以伺服器為主，所以故此稱為第一方 cookie，若cookie的隸屬網域是與使用者目前所在的網域不同，即為cookie的隸屬網域就對於目前網域而言，就只是外來網域的cookie內容，是第三方cookie，另外沒有第二方cookie是因為第二方本身是指client
+
 
 
 若沒有事先告訴消費者第三方 cookies 的存在，當消費者發現你使用 cookie 時，對你的信任將會受損。因此，公開表明 cookie 的使用（像在隱私權條款中）將減低發現 cookie 時的負面影響。有些國家有關於 cookies 的法律條文。範例可以參見維基百科的 cookie statement。
+
+Note:
+1. first-party vs. second-party vs. third-party： party是指參與者、參與方，源自於合約關係中的甲乙兩個參與方(party)，在這裡將甲方(提供服務的人)視為第一方(first-party)，而乙方(接受服務或者索求的人)視為第二方(second-party)，而排除在合約以外的一方就稱之為第三方(third-party)，然而除了第三方以外，實際上並沒有硬性規定哪一方為第一方和第二方，只是慣例上和傳統上的決定。
+
+[Exactly what is a "third party"? (And who are the first and second party?)](https://stackoverflow.com/questions/2895753/exactly-what-is-a-third-party-and-who-are-the-first-and-second-party)
 
 參考資料
 [一篇解释清楚Cookie是什么？](https://learn-anything.cn/http-cookie)
