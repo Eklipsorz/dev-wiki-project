@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# cookie vs. session
+#  探討：Cookie 本身設定
 由於http/https協議本身為了簡化客戶端和伺服器之間的連線結構，而定義客戶端和伺服器之間在連線時互動情況並不會紀錄下來-無狀態(stateless)，但隨著越來越多服務需要客戶端和伺服器之間的過去互動情況，比如首次登入後就直接透過互動情況而跳過、使用者可以透過過去的購物車內容來直接購買，就有人提出讓客戶端、伺服器根據情況來從自己的系統索要空間(記憶體或者硬碟)來**分別讓客戶端單方面紀錄與伺服器之間的互動情形、讓伺服器單方面紀錄與客戶端之間的互動情形、更或者讓兩者紀錄雙方的互動情形**。
 
 在這裡客戶端單方面與伺服器之間的互動情形紀錄會是稱作為cookie，而伺服器負責單方面與客戶端互動情況紀錄會是session，
@@ -138,55 +138,19 @@ Note:
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1650285736/blog/network/csrf/csrf-flow-request-forgery_my7ghb.png)
 
 
-
-
-
-
 ### 安全設定
 主要option會有：
 1. Secure: 要求客戶端只能在https加密協議下才能附加對應cookie給伺服器端，若是沒有就不附加，若有就附加cookie內容
 2. HttpOnly: 要求只能透過解析http封包本身的標頭才能讀取到cookie內容，除此之外的方法皆無法被存取，也不能透過JavaScript讀取，如透過Document.cookie來讀取和變更
 > Forbids JavaScript from accessing the cookie, for example, through the Document.cookie property
-3. SameSite：
-
-
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1650285736/blog/network/csrf/csrf-flow-website1-rendering_sxr0ga.png)
-
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1650285736/blog/network/csrf/csrf-flow-obtain-cookie_jdm1nz.png)
-
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1650285736/blog/network/csrf/csrf-flow-website2-rendering_ucbzsn.png)
-
-
-![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1650285736/blog/network/csrf/csrf-flow-request-forgery_my7ghb.png)
-
-
-
-
-
-為了 要求客戶端不能跨網域(Domain)來向指定網域發送請求之相關設定，也就是客戶端不能夠在非指定網域下發送請求，主要的選項有None、Strict、Lax，
+3. SameSite：為了要求客戶端不能跨網域(Domain)來向指定網域發送請求之相關設定，也就是客戶端不能夠在非指定網域下發送請求，主要的選項有None、Strict、Lax，
   None: 允許客戶端可以跨網域來向指定網域發送請求，
   Strict: 不允許客戶端可以跨網域來向指定網域發送請求，
-  Lax: 如同字面上的意思，不會全然禁止客戶端跨網域向指定網域發送，而是只限定部分操作。
-
-
-  SameSite cookies Experimental
-
-SameSite 讓伺服器要求 cookie 不應以跨站請求的方式寄送，某種程度上避免了跨站請求偽造的攻擊（CSRF）。SameSite cookies 目前仍在實驗階段，尚未被所有的瀏覽器支援。
-
-功能：可以限制 cookie 的跨域发送，此属性可有效防止大部分 CSRF 攻击，有三个值可以设置：
-
-    None ：同站、跨站请求都发送 cookie，但需要 Secure 属性配合一起使用。
-
-    Set-Cookie: flavor=choco; SameSite=None; Secure
-
-    Strict ：当前页面与跳转页面是相同站点时，发送 cookie；
-
-    Set-Cookie: key=value; SameSite=Strict
-
-    Lax ：与 Strict 类似，但用户从外部站点导航至URL时（例如通过链接）除外。 在新版本浏览器中，为默认选项，Same-site cookies 将会为一些跨站子请求保留，如图片加载或者 frames 的调用，但只有当用户从外部站点导航到URL时才会发送。如 link 链接
+  Lax: 如同字面上的意思，不會全然禁止客戶端跨網域向指定網域發送，而是只限定部分請求和元件，比如a元素的連接功能、get方法的表單。
 
 
 
 參考資料
 [一篇解释清楚Cookie是什么？](https://learn-anything.cn/http-cookie)
-[]()
+[網站安全🔒 再探同源政策，談 SameSite 設定對 Cookie 的影響與注意事項](https://medium.com/程式猿吃香蕉/再探同源政策-談-samesite-設定對-cookie-的影響與注意事項-6195d10d4441)
+[广告是如何跟踪我们的？所有关于 cookie](https://juejin.cn/post/7052507369690890270)
