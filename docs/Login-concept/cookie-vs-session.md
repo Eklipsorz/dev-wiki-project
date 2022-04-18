@@ -120,24 +120,21 @@ Set-Cookie
 #### third-party cookie
 若cookie的隸屬網域是與使用者目前所在的網域不同，即為**對於目前所在網域X而言，cookie的隸屬網域就只是外來網域的cookie內容，是第三方來的cookie**，另外沒有第二方cookie是因為第二方本身是指client。
 
-比如說：你
+原本理論上是不允許瀏覽器將隸屬於網域X的cookie傳送至網域X以外的網域，但卻允許同個網域X下會有其他網域的服務向客戶端。
 
-原本理論上是不允許瀏覽器將隸屬於網域X的cookie傳送至網域X以外的網域，但大部分瀏覽器的實作上卻允許瀏覽器
+舉例來說：假設有兩個伺服器分別為Server1和Server2，而他們的Domain皆為不一樣，也不是parent-child的關係，一開始客戶端Client會向Server1索要網頁，
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1650275946/blog/network/ClientAndServer/cookie-require_a_website_pscr94.png)
 
-    Cookie 中的域名 与 当前站点域名相同，称为 第一方cookie（ first-party cookie）；
+接著客戶端對網頁上進行某種互動(比如登入)，使得客戶端向伺服器發送請求，接著伺服器收到就做完一定的操作，並回應一個封包要求客戶端紀錄cookie內容，並將這次cookie內容設定隸屬在Domain 1，也就是客戶端下的Cookie 1，這時的Cookie 1隸屬域名會因為與客戶端目前所瀏覽的網頁網域是相同的，而Cookie 1會是first-party cookie
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1650275945/blog/network/ClientAndServer/cookie-require_a_cookie_q9lbnf.png)
 
-    Cookie 中的域名 与 当前站点域名不同，称为 第三方cookie（ third-party cookie）；
-
-当前站点会使用一些其他站点资源（譬如图片、广告等），在请求第三方服务器获取这些资源时，也会返回 Set-Cookie 属性，让浏览器保留第三方的 cookie，这些cookie 主要用于用户跟踪，流量分析等。
-
-
-Cookies 會帶有他們所屬的網域名。若此網域和你所在的頁面網域相同，cookies 即為第一方（first-party）cookie，不同則為第三方（third-party）cookie。第一方 cookies 只被送到設定他們的伺服器，但一個網頁可能含有存在其他網域伺服器的圖片或組件（像橫幅廣告）。透過這些第三方組件傳送的 cookies 便是第三方 cookies，經常被用於廣告和網頁上的追蹤。參見 Google 常用的 cookies 種類。大部分的瀏覽器預設允許第三方 cookies，但也有些可以阻擋他們的 add-on（例如 EFF 的 Privacy Badger）。
-
-第一方：
+而若原伺服器傳過來的網頁包含著某個插件(add-on)或者程式模組，該插件對應伺服器會是另一個伺服器2，當客戶端執行網頁下的呈現和JS時，會連同執行該插件，而這插件會以客戶端的名義向伺服器2發送請求，伺服器2處理完，隨後就要求客戶端紀錄cookie內容，並且指定該cookie隸屬於伺服器2所在的Domain2，客戶端就便建了隸屬於Cookie 2，但由於目前客戶端實際是瀏覽著Domain 1的網頁，對於Domain 1而言，隸屬于Domain 2的Cookie，就是third-party cookie。
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1650275945/blog/network/ClientAndServer/cookie-require_a_cookie_from_3rd_g1he6f.png)
 
 
+在這裡那個插件通常會用作於紀錄使用者在Domain 1下瀏覽了哪些頁面和做了哪些操作，並隨時與伺服器2進行回報，同時將回報處理結果放置在客戶端Cookie2上，每一次插件代替使用者向伺服器2發送請求就會附加客戶端的Cookie 2，好在未來根據結果來投放適合使用者的廣告。通常有網頁存在這樣子的服務，會事先告知使用者第三方 cookies 的存在，以降低發現插件和插件相關的cookie的負面影響，
 
-若沒有事先告訴消費者第三方 cookies 的存在，當消費者發現你使用 cookie 時，對你的信任將會受損。因此，公開表明 cookie 的使用（像在隱私權條款中）將減低發現 cookie 時的負面影響。有些國家有關於 cookies 的法律條文。範例可以參見維基百科的 cookie statement。
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1650276985/blog/network/ClientAndServer/third-party_cookie_example_wuyvts.png)
 
 Note:
 1. first-party vs. second-party vs. third-party： party是指參與者、參與方，源自於合約關係中的甲乙兩個參與方(party)，在這裡將甲方(提供服務的人)視為第一方(first-party)，而乙方(接受服務或者索求的人)視為第二方(second-party)，而排除在合約以外的一方就稱之為第三方(third-party)，然而除了第三方以外，實際上並沒有硬性規定哪一方為第一方和第二方，只是慣例上和傳統上的決定。
