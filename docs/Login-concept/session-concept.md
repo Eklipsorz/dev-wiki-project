@@ -1,44 +1,7 @@
 ---
-sidebar_position: 2
+sidebar_position: 3
 ---
-#  探討：Session 本身和設定
-
-## session 本身的含義
-
-根據字典所描述的session，會是指特定活動下的一段時間或者特定活動下的一場會議，在這裡可以稍微轉換一下說法，一段時間可以用一場會議來替代描述session，那麼實際上專注在會議上的定義就能明瞭session的意涵，而meeting代表著一個計畫好的時間點，能夠與其他人討論著什麼東西的時間點，或者說計畫好的互動情形、互動狀態，添加至原句就 **使session的意思變成特定活動下的所預計好之互動情形** ，
-```
-session: a period of time or meeting arranged for a particular activity
-meeting: a planned occasion when people come together to discuss something
-```
-
-## session 在http/https協議上的含義
-從上述轉換成網路連線的說法，**特定活動下的所預計好之互動情形** 的特定活動下就是意旨**伺服器和客戶端之間的連線活動下**，所預計好之互動情形則是意旨 **伺服器和客戶端之間在連線時的互動會根據RFC規範所定義的內容來進行**，換言之預計就是指著根據RFC規範下所會有的互動，簡單點就是指 **伺服器和客戶端之間在連線時的互動狀態**
-
-
-## session 在http/https協議的存在目的
-由於http/https協議本身為了簡化客戶端和伺服器之間的連線結構，而定義客戶端和伺服器之間在連線時互動情況並不會紀錄下來-無狀態(stateless)，但隨著越來越多服務需要客戶端和伺服器之間的過去互動情況，比如首次登入後就直接透過互動情況而跳過、使用者可以透過過去的購物車內容來直接購買，就有人於RFC規範提出session概念以及如何運用session概念來允許客戶端和伺服器在連線過程中 **分別讓客戶端單方面紀錄與伺服器之間的互動情形、讓伺服器單方面紀錄與客戶端之間的互動情形、更或者讓兩者紀錄雙方的互動情形**。
-
-而具體實作方式則是客戶端和伺服器各自從自己的系統中分配空間來儲存能夠代表與彼此進行連線時會有的互動情形之資料，而這樣的資料會是用session來稱呼，session 裡頭的內容則是稱之為session information，比如客戶端曾與某個電商伺服器進行連線並從中將產品放進購物車，但過程中客戶端先暫時關閉伺服器連線，而為了讓客戶端還能回憶起購物車的產品，會紀錄著這產品的相關資訊，而這資訊本身就會是session，其內容會是產品的主要內容，也就是session information。
-
-總結：
-1. session概念 本身是為了 **在不違反http/https無狀態下的環境能夠滿足伺服器和客戶端對於狀態的需求**
-2. session 本身是概念，會有相對應的實現方法，如:
-  - Cookie：賜福器透過Set-Cookie來幫助客戶端添加Cookie資訊至客戶端本地端，以方便下次與同樣伺服器延續之前處理狀態下的處理過程，其中Cookie資訊本身會因為用途而會是session的具體實體之一。
-  - 
-  
-  下的互動狀態會被稱之為session，
-
-相關的 RFC規範 和 參考文獻：
-[HTTP State Management Mechanism](https://tools.ietf.org/html/rfc2109)
-> This document specifies a way to create a stateful session with HTTP requests and responses.  It describes two new headers, Cookie and Set-Cookie, which carry state information between participating origin servers and user agents.  The method described here differs from Netscape's Cookie proposal, but it can interoperate with HTTP/1.0 user agents that use Netscape's method.  (See the HISTORICAL section.)
-
->  This document describes a way to create stateful sessions with HTTP requests and responses.  Currently, HTTP servers respond to each client request without relating that request to previous or subsequent requests; the technique allows clients and servers that wish to exchange state information to place HTTP requests and responses within a larger context, which we term a "session"
-在這裡客戶端單方面與伺服器之間的互動情形紀錄會是稱作為cookie，而伺服器負責單方面與客戶端互動情況紀錄會是session，若兩者同時紀錄，那麼就會是雙方紀錄彼此的互動情形。
-
-
-[淺談 Session 與 Cookie：一起來讀 RFC](https://blog.huli.tw/2019/08/09/session-and-cookie-part2/)
-
-
+# 探討：Session 本身和設定
 
 Session機制是一種服務器端的機制，服務器使用一種類似於散列表的結構（也可能就是使用散列表）來保存信息
 
