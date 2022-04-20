@@ -1,7 +1,7 @@
 ---
 sidebar_position: 1
 ---
-#  探討：http/https協議上的 session 概念
+#  探討：http協議上的 session 概念
 
 ## session 本身的含義
 

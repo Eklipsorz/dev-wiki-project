@@ -4,6 +4,49 @@ sidebar_position: 3
 # 探討：Session 本身和設定
 
 
+鑑於 [探討：http 協議上的 session 概念](/session-concept-in-rfc)所提到stateful session的概念，在這裡會基於概念的實現來說明session，此外，客戶端的cookie和伺服器的session皆為 **實作stateful session概念的產物**，不過這裡只會探討到實現層面，並且為了特別區分出哪一個是實作以及哪一個才是session概念，會特別強調session物件來表示實作
+
+## 伺服器的session
+
+cookie放在客戶端上，會是由瀏覽器負責實現其概念和如何管理cookie，而伺服器上的session則是依據第三方套件依據著RFC規範來負責產生session物件來實現session概念以及管理著這些session物件，伺服器的session物件是由key-value所組成的hash table結構(或者近似於hash table結構)，每一個session都有對應的key值(session ID)，其value會是該物件實際存下的內容-與客戶端連線時的互動狀態
+
+
+
+然而實際上來說，session物件結構、如何存放
+
+
+在客戶端與伺服器端建立連線後，客戶端就會向伺服器發送請求，伺服器收到請求，隨後為了紀錄請求和回應的過程而建立了名為session的物件來儲存過程中所會有的資訊(PS.這些資訊正是代表著連線時的互動狀況)，而這個物件實際上會佔用伺服器的記憶體、硬碟、資料庫系統空間(PS. 該空間也會從記憶體或者硬碟兩者之一獲取)。
+![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1650439921/blog/network/session/building_a_session_ommsjq.png)
+
+## 存了哪些資訊
+這些資訊具體來說會是:
+1. 能夠維持客戶端和伺服器兩者於連線的正常互動狀態之參數
+2. 代替客戶端cookie那一端來所儲存較為龐大或者較為敏感的資料
+
+第一點所提到的參數具體會是
+
+第二點所提到的資料具體來說，由於客戶端的cookie本身受限於沒辦法放多資料且因面向前端而容易遭受到
+惡意使用者讀取並使用，所以才會選擇將資料改放在專門處理資料的伺服器上，且比起客戶端而言，比較不容易受到惡意使用者從外部惡意讀取到資料，通常伺服器的實現上會直接存放cookie的原始資料或者一個指向某塊空間X的索引資料，這塊空間X會是使用資料庫的某一個區塊或者檔案本身來儲存cookie的原始資料，
+
+不論伺服器選擇哪一種來做，都要將負責儲存原始資料的session ID設定至Set-Cookie標頭封包來告知客戶端其原始資料要從哪個session找才能找到。
+
+
+
+## 儲存在哪？ && 何時釋放？
+伺服器的session物件主要放置於名為session store的空間，該空間通常會是由記憶體或者硬碟所構成。
+
+
+若session store本身是由記憶體所構成，那麼其裡頭的session釋放會依據著伺服器程式本身的重啟以及對應的cookie過期時間
+
+
+> Warning The default server-side session storage, MemoryStore, is purposely not designed for a production environment. It will leak memory under most conditions, does not scale past a single process, and is meant for debugging and developing.
+
+https://zhuanlan.zhihu.com/p/257854926
+
+安全設定有哪些？
+
+經典登入案例：？
+
 鑑於
 
 
