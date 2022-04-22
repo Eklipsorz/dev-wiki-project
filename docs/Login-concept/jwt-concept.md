@@ -5,12 +5,17 @@ sidebar_position: 6
 # jwt-concept
 
 
-Jwt
+JWT(JSON Web Token)是一種內容形式以JSON為原型且附加簽名值(signature)的token，
+其token的驗證方式是讓伺服器和客戶端之間只需要做signature比對來驗證就能達成，而非是傳統的API token得讓伺服器事先儲存正確的token來比對接收過來的token是否為合法，進而讓伺服器驗證成本平均分擔在每個客戶端和伺服器。
 
-目的為一種由JSON形式為原型的token種類，其中包含了以下三個部分
-Header：說明算法、token型別，用途為方便告知對方伺服器以什麼型別token和演算法來計算signature
-Payload：說明該token要包含的資料是為何，用途為由payload提供客戶端對應的資訊，並盡可能不用透過伺服器來存取資料庫
-Signature：由Header、Payload、伺服器的Secret來進行雜湊而產生的簽名值，用途為驗證竄改。
+JWT本質就如同發給客戶端一把合法的通關密語，在使用上客戶端只需要向伺服器說出通關密語就行，在這裡伺服器只會 **認誰擁有合法的通關密語就是合法使用者**，而非驗證哪個使用者才是真正的合法使用者，雖說仍有安全疑慮，但只要讓能夠存取到的服務不會危害到真正的系統，仍不失為一個好方法，其驗證機制會是驗證token是否被竄改為主，JWT主要有三個部分所組成：
+1. Header：說明算法、token型別，用途為 **方便告知對方伺服器以什麼型別token和演算法來重現signature並且比對**。
+2. Payload：說明該token要包含的資料是為何，用途為 **由payload提供客戶端對應的資訊，並盡可能不用透過伺服器來存取資料庫**。
+3. Signature：由Header、Payload、伺服器的Secret來進行雜湊而產生的簽名值，計算公式如下，用途為 **藉由驗證是否竄改來驗證使用者是否為合法**。
+```
+Hash( base64UrlEncode(header) +  base64UrlEncode(payload) + secret)
+```
+
 
 JWT形式為：
 base64(Header, Payload).Signature
