@@ -24,9 +24,17 @@ sidebar_position: 4
 > Authentication mechanisms define how to encode a credential, such as a password or an assertion from an identity provider (IdP), in a request. They also specify the procedure necessary to verify that credential. If the credential is successfully verified, the request is authenticated.
 [what is credential in passport.js](https://www.passportjs.org/concepts/authentication/strategies/)
 
-3. 使用者若透過身份驗證文件X通過passport.js的第一次身份驗證，通常passport.js會於server 建立一份session來儲存對應文件X在server對應的身分證資訊，並給予session id至client 的cookie中，客戶端會根據server域名來將 對應session id 儲存在server域名相關的cookie中，使用者在隨後第二次身份驗證時會**根據域名找尋對應的cookie，給予對應的session id來給passport.js做驗證**，若passport
-在電腦科學中，而在passport.js中，指的是第一次使用者用來登入的帳密資訊，該資訊只需要第一次登入時才需要請求附帶，隨後等成功登入後，伺服器會賦予session id給客戶端並請求它存在cookie，讓伺服器只需要驗證cookie內容是否為伺服器中的session id就能讓它通行
-
+3. 使用者若透過身份驗證文件X通過passport.js的第一次身份驗證時：
+  - passport.js會於server 建立一份session來儲存對應文件X在server對應的身分證資訊，在這裡會是以使用者的編號來儲存，其完整資料得用編號來從資料庫找尋
+  - 並根據對應session id和密鑰一同使用者雜湊演算法來產生簽署值至client 的cookie中，客戶端會根據server域名來將 對應session id 儲存在server域名相關的cookie中
+  ```
+  // 伺服器發送Set-Cookie標頭封包至客戶端，來要求客戶端建立cookie儲存ID和簽署值所構成的字串
+  Set-Cookie: <sessionID>.<signature>
+  ```
+4. 隨後只要每次客戶端向伺服器發出需要身份認證的請求：
+  - 客戶端就會找據域名找尋對應的cookie，來將對應的cookie內容附加至請求上，而那個內容會有對應的session id，
+  - 接著伺服器收到就便會拿id和密鑰一同做雜湊演算法來產生signature'與cookie內容上signature比較是否一樣
+  - 若一樣的話，伺服器就允許找尋對應的session id來解開其內容，若不一樣就不允許解開
 
 
 ## 登入功能的認證實作
@@ -35,14 +43,14 @@ sidebar_position: 4
  - 儲存認證結果：生成session來儲存認證結果，並要求客戶端儲存對應的session-id至cookie，如express-session
 
 ## Express-Session
-1. 一種第三方套件，非官方套件。
+1. 一種第三方套件，非官方套件，主要幫助開發者產生/管理對應的cookie和session
 2. 可以幫開發者從伺服器中擷取cookie資訊、並從中替客戶端建立儲存對應id的cookie和對應的session在伺服器內部的套件。
 3. 具體來說，當載入該模組時，客戶端和伺服器端只要處於request/response cycle的話，就會建立session來紀錄兩者的連線過程，同時間會賦予session id 給該session並讓客戶端建立cookie去儲存session id，而到時cookie只要拿著這session id發送請求至伺服器，伺服器收到便拿該id獲取對應先前的連線過程是什麼。 
 4. 安裝方式：
 ```
 npm install express-session
 ```
-5. 載入以及設定方式：其套件的回傳內容是本身是一個middleware function，所以若要讓其他的middleware能夠使用其功能，必須先將套件以app.use來使用其midddleware function並放置在其他middleware之前，如下例子：首先先載入express-session回傳的middleware function至session變數，然後用options物件去設定該middleware function，然後後面的app.method或者其他middleware function就能因為use的特性而使用express-session功能。
+5. 載入以及設定方式：其套件的回傳內容是本身是一個middleware function，所以若要讓其他的middleware能夠使用其功能所提供的session 功能，必須先將套件以app.use來使用其midddleware function並放置在其他middleware之前，如下例子：首先先載入express-session回傳的middleware function至session變數，然後用options物件去設定該middleware function，然後後面的app.method或者其他middleware function就能因為use的特性而使用express-session功能。
 ```
 // load express-session
 const session = require('express-session')

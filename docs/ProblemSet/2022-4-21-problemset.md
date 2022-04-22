@@ -24,3 +24,6 @@ sidebar_position: 3
 
 
 [您是否在为用户会话正确使用JWT？](https://zhuanlan.zhihu.com/p/142352954)
+
+3. token 和 JWT差別是什麼？
+目前已知道token會藉由session和cookie來管理，而JWT只會由cookie和簽名值來管理
