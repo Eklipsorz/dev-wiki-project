@@ -11,9 +11,10 @@ sidebar_position: 7
 ## JWT本身安裝套件
 安裝負責產生JWT以及支援用JWT做驗證的passport套件，套件有：
   - 產生JWT的工具 (jsonwebtoken)
-  - 支援JWT做驗證的passport套件 (passport-jwt)
+  - passport官方額外插件(能額外提供JWT驗證策略) (passport-jwt)
+  - passport 官方主模組(負責做登入驗證)
 ```
-npm install jsonwebtoken passport-jwt
+npm install jsonwebtoken passport-jwt passport
 ```
 ## JWT套件設定
 1. 讓伺服器能夠讀取JSON格式Payload的請求封包內容：
