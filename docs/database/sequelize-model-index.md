@@ -33,7 +33,8 @@ const db = {}
 2. 建構一個綁定資料庫連線資訊的Sequelize實例，可藉由它來與對應資訊的資料庫進行連線以及資料操作
 ```
 let sequelize
-// 若有設定環境變數的話，就使用環境變數下的內容來取下連線的資料庫、資料庫使用者帳號、資料庫使用者密碼
+// 若設定config檔案有透過use_env_variable來告知有設定環境變數的話，就能使用指定環境變數下
+// 的內容來取下連線的資料庫、資料庫使用者帳號、資料庫使用者密碼
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config)
 } else {
@@ -45,10 +46,19 @@ if (config.use_env_variable) {
 ```
 {
     "production": {
-	  // 資料庫系統協定名稱://資料庫系統使用者帳號:密碼@資料庫系統位址/指定使用的資料庫名稱
-        "use_env_variable": 'mysql://root:password@mysql_host.com/database_name'
+	  // 告知使用CLEARDB_DATABASE_URL這環境變數儲存production環境下的資料庫連線設定
+    // 只需要存取該環境變數的內容就能知道
+        "use_env_variable": "CLEARDB_DATABASE_URL"
     }
 }
+```
+而CLEARDB_DATABASE_URL內容會是如下：  
+  - username：使用者帳號
+  - password：密碼
+  - host：主機名稱
+  - schema：要使用哪個資料庫/要使用哪個命名空間(包含哪些可用表格)
+```
+mysql://<username>:<password>@<host>/<schema>
 ```
 
 
@@ -67,7 +77,7 @@ fs
     // 透過model物件帶有的name屬性名稱來替db增加其model名字為主的屬性名字以及對應的model
     // path.join中的__dirname會是目前index.js所在的目錄(絕對路徑)，而file則是檔案名稱
     // 所以path.join實際上是將目前所在的目錄與所有model對應檔名做合併，然後透過require
-    // 而拿到對應函式
+    // 而拿到對應函式，model的name會依據該model下的modelName來決定
     // 其函式會是建構特定model的類別，會綁定存放資料庫設定的sequelize instance以及設定
     // 每個model下的屬性具有什麼樣的資料型別。
     // 這使得每次對model進行CRUD都會透過sequelize instance來找到對應的資料庫表格來操作
