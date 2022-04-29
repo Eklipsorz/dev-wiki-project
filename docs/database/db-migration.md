@@ -1,13 +1,7 @@
 ---
-title: 探討：Database Migration
-date: 2022-04-15 21:27:51
-tags:
-  - Database Migration
-  - Migration
-  - Schema
-categories:
-  - Database
+sidebar_position: 6
 ---
+# Database migration
 
 Database migration (別名為schema migration 或者 database change management)，目前是由ORM/ODM來實現，並非由資料庫管理系統本身來實現，其概念主要目的是為了在 **盡量不破壞(PS. 只是盡量，並非完全能夠避免破壞)原有表格資料的情況下**，來將每一個時間點下的表格架構進行版本控制來讓這些表格架構能夠重複使用、可根據執行環境來進行測試、共享於整個團隊。
 > The goals of database migration software are to make database changes repeatable, shareable, and testable without loss of data
