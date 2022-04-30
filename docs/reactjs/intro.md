@@ -8,7 +8,7 @@ React 草稿
 
 React apps: elements and components.
 
-
+1. 
 React is a JavaScript library,
 
 
@@ -72,31 +72,36 @@ Vscode 套件
 
 ## element 構建方式
 
-react 應用程式的最小單位是element，而element相當於DOM結構上的node概念，透過多個element可以組成一個大元件(component)，在JSX上會以指派的形式來定義一個元素和其元素的內容，會有以下形式，而判定被指定內容是否element內容的邏輯為
+react 應用程式的最小單位是element，而element相當於DOM結構上的node概念，透過多個element可以組成一個大元件(component)，在JSX上會以指派的形式來定義一個元素和其元素的內容，主要會有以下形式，之所以會有那麼多形式是因為系統解析JS時會自動補足分號-在每一行程式碼結尾上添加;以表示該行程式碼的解析範疇，所以在被指定內容是否element內容的邏輯為
   - 檢查當前指派內容是否與定義element的程式碼為同一行，若同一行，則後續的指派內容會繼續被系統解析為同一個element的內容；若沒有的話，就往下檢查
   - 檢查當前指派內容是否有圓括號()和中括號\[\]，若有的話，就以括號所囊括著的內容為element的內容
-  - 若都沒有的話，則無法將指派內容構成其元素的內容
-```
-// 定義一個名為tag1的element 和一個名為tag2的element
-// 方式1：將指派的內容放在const element的同一行
-const element = <tag1> content <tag1>
-  <tag2> content <tag2>;
+  
+  ```
+  // 定義一個名為tag1的element 和一個名為tag2的element
+  // 方式1：將指派的內容放在const element的同一行
+  const element = <tag1> content <tag1>
+    <tag2> content <tag2>;
 
-// 方式2：用圓括號囊括著哪些內容為element的內容，並且允許指派內容以換行形式來呈現
-const element = (
-  <tag1> content <tag1>
-  <tag2> content <tag2>;
-)
-// 方式2：用中括號囊括著哪些內容為element的內容，並且允許指派內容以換行形式來呈現
-const element = [
-  <tag1> content <tag1>
-  <tag2> content <tag2>;
-]
-```
+  // 方式2：用圓括號囊括著哪些內容為element的內容，並且允許指派內容以換行形式來呈現
+  const element = (
+    <tag1> content <tag1>
+    <tag2> content <tag2>;
+  )
+  // 方式2：用中括號囊括著哪些內容為element的內容，並且允許指派內容以換行形式來呈現
+  const element = [
+    <tag1> content <tag1>
+    <tag2> content <tag2>;
+  ]
+  ```
+  - 若都沒有的話，則直接以自動分號來結束
+  ```
+  // before
+  const element =
+  // after 
+  const element =;
+  ```
+
 建議以圓括號來囊括著要被指派給元素的內容，第一、可以滿足開發者的通用習慣(中括號會被時常當作是陣列)，第二、同樣也能換行解析
-
-參考資料為：
-  [React之JSX里render中return方法添加括号()或者[]](https://www.cnblogs.com/fightjianxian/p/12350083.html)
 
 
 Note:
@@ -105,4 +110,122 @@ Note:
 const element = 
   <tag1> content <tag1>
   <tag2> content <tag2>
+```
+
+會被系統看作是
+
+```
+const element =;
+  <tag1> content <tag1>
+  <tag2> content <tag2>
+```
+參考資料為：
+  [React之JSX里render中return方法添加括号()或者[]](https://www.cnblogs.com/fightjianxian/p/12350083.html)
+  [What are the rules for JavaScript's automatic semicolon insertion (ASI)?](https://stackoverflow.com/questions/2846283/what-are-the-rules-for-javascripts-automatic-semicolon-insertion-asi)
+
+### 以大括號{}來標注元素內容
+若於元素內容指定大括號，則被它囊括住的內容會被系統認定其內容要先以JavaScript引擎來解析，並回傳其結果來替代，比如說element指派內容有formatName和user，在這裡會先以JS引擎來解析該語句，在這裡會被引擎判定為呼叫名為formatName的函式並載入user這物件至函式，待函式執行完畢並回傳使用者firstname和lastname的合併字串，就由字串來替代{formatName(user)}，
+
+```
+function formatName(user) {
+  return user.firstName+ ' ' + user.lastName;
+}
+const user = {
+  firstName: 'Harper',
+  lastName: 'Perez'
+};
+
+const element = (
+  <h1>
+    Hello, {formatName(user)}!  
+  </h1>
+);
+```
+從而構成內容為合併字串的h1標籤
+```
+const element = (
+  <h1>
+    Hello, {formatName(user)}!  
+  </h1>
+);
+```
+
+### 在JSX中指定元素的屬性
+具體來說有兩種方式，在這裡以src屬性為例：
+1. 直接設定常數字串或者參數: 若是設定字串就以雙引號或者單引號為主，若是數字就不用填單引號或者雙引號
+```
+const element = <a href="https://www.reactjs.org"> link </a>;
+```
+2. 使用大括號來給定{}：同樣地，也要注意替代的內容是否為字串以及是否帶有識別為字串的單引號或者雙引號
+```
+const element = <img src={user.avatarUrl}></img>;
+```
+### 在 JSX 中指定 Children 
+1. 若標籤涵蓋的內容content是空的話，比如content是空的
+```
+<tag>content<tag>
+```
+那麼就可以改用下列形式來告知系統tag內容的解析就僅止於tag標籤本身
+```
+<tag />
+```
+2. JSX 標籤也可以包含 children：
+```
+const element = (
+  <div>
+    <h1>Hello!</h1>
+    <h2>Good to see you here.</h2>
+  </div>
+);
+```
+
+### JSX 防範注入攻擊 
+React DOM 在render之前會先對JSX中的變數內容進行轉義(escape，讓內容跳脫原本的型別轉換至指定型)，最後轉義的型別會是字串，這使得要讓系統解析其內容時會是把它當作字串來印出其內容。
+
+比如說：假設response.input內容為如下，這時不是字串的形式，而是以XML語法來表現
+```
+<img src="1" onerror="alert('Gotcha!')" />
+```
+在正式進入render之前，系統會先將input內容轉換為字串，也就是下面形式
+```
+"<img src="1" onerror="alert('Gotcha!')" />"
+```
+
+那麼當系統需要載入其資料時，就會把input內容視為字串，而非當作XML語法來看待，
+```
+const title = response.input;
+// 這是安全的：
+const element = <h1>{title}</h1>;
+```
+而這特性，可以盡可能防範從網頁前端輸入進來的攻擊，比如輸入可能會讓系統執行的程式碼當輸入內容輸入進去，好讓系統去執行的**XSS攻擊**
+
+參考資料：
+[小技巧|在React中防範XSS攻擊](https://www.gushiciku.cn/pl/p50X/zh-tw)
+
+## 使用Babel將JSX編譯成JS
+1. JSX下所指定的元素會被轉譯成一個函式所回傳的物件，比如：
+```
+// 原JS語法
+var className = "div_class"
+// 以JSX語法而構成的元素，其內容為右邊的指派內容
+const div = <div class={'prefix_'+className}></div>
+```
+
+經過轉譯(編譯)後會變成
+```
+var className = "div_class";
+const div = React.createElement("div", {
+  class: 'prefix_' + className
+});
+```
+
+2. JSX下原JS語法則會經過轉譯而繼續保持現狀
+
+[谈谈JSX的编译原理](https://juejin.cn/post/6959948160525565960)
+
+
+## JSX 命名規則
+1. JSX比較接近於JavaScript，所以在JSX所定義的元素會是以JS常見的小駝峰命名法
+```
+class 變成了 className 而 tabindex 變成了 tabIndex。
 ```
