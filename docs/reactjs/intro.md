@@ -199,6 +199,18 @@ const element = <h1>{title}</h1>;
 ```
 而這特性，可以盡可能防範從網頁前端輸入進來的攻擊，比如輸入可能會讓系統執行的程式碼當輸入內容輸入進去，好讓系統去執行的**XSS攻擊**
 
+
+Note: 
+1. ESCAPE：原義為做某件事情來避免另外一件事情A發生，否則就會發生事件A，或者說從什麼地方脫離，在電腦科學裡，ESCAPE會是指將帶有特定功能1的某個語法或者內容移去原本功能1，並轉換為另一個功能的內容或者語法。
+> let’s take a very general approach to that word “escape”. It simply means that you do something to avoid something to happen, that might/would otherwise happen.
+  案例： "本身會用來判別哪些內容是字串的範疇，但若使用\"就能將"的功能-決定範疇 移除並轉換毫無功能的內容，在這裡會是轉換成字串的"
+  ```
+  String = """;
+  ```
+[What does escape means in programming languages?](https://www.quora.com/What-does-escape-means-in-programming-languages)
+2. JSX 的 ESCAPE 是專注在原本不是在JSX的內容進行ESCAPE，換言之，原始JSX內容不會被ESCAPE，從外部增加進來的內容會以ESCAPE來看待
+
+
 參考資料：
 [小技巧|在React中防範XSS攻擊](https://www.gushiciku.cn/pl/p50X/zh-tw)
 
@@ -218,6 +230,7 @@ const div = React.createElement("div", {
   class: 'prefix_' + className
 });
 ```
+
 
 2. JSX下原JS語法則會經過轉譯而繼續保持現狀
 
