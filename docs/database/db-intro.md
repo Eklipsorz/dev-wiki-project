@@ -7,24 +7,23 @@ sidebar_position: 9
 
 ## 資料
 1. 原文是：facts or information used usually to calculate, analyze, or plan something
-2. 軟體提供主要功能時所需要處理的額外資訊，而這資訊會是由文字、圖片所構成，而額外是指無法由軟體自行提供，必須由外部提供
+2. 軟體提供主要功能時所需要處理的資訊，而這資訊會是由多個文字、圖片所構成並代表，可以是由軟體自行提供，也可以由外部提供
 3. 從上述來看，資料具有以下特質：
  - 提供主要功能時所需的資訊
  - 資訊會由文字、圖片所構成
- - 它無法由軟體自行提供或者產生，必須由外部來提供
 4. 舉例來說：
 - Instagram：一名使用者、一張使用者分享的照片
 - Amazon：一名使用者、一個產品、一筆訂單
 - Gmail：一名使用者、一封電子郵件
-5. 每一筆資料具有進一步描述資料是什麼的屬性和進一步描述屬性是什麼的資料型別，屬性可以是描述資料的長度、大小、形狀、關係、日期等等，而資料型別則是定義這些屬性的資料型別，比如長度、大小一定得是整數型別，而形狀和關係則是字串型別、日期則是用日期特殊格式來表示。
+
 
 ## 資料庫管理系統
 1. 英文為Database Management System, DBMS)
-2. 主要功能為：
- - 負責定義資料如何存進資料庫，每個資料的結構會是如何
+2. 主要功能為定義Data Model和實現Data Model，具體來說會是
+ - 負責定義資料如何存進資料庫，每個資料的結構會是如何、每個資料本身的限制是如何
  - 提供Schema定義功能來確保資料都如預期
  - 提供一系列查詢語言API來幫助應用程式或者開發者透過API來產生對應指令讓系統解析並執行
- - 確保每一次操作和存取都能保證資料完整性(不破壞原資料內容)
+ - 確保每一次操作和存取都能保證資料完整性(不破壞原資料內容)、資料一致性
 
 3. 資料庫大致上分為兩種：基於關聯式資料庫架構(Relational Database)、基於非關聯式資料庫(NO SQL)
 4. 當你要在你的應用程式裡整合資料庫管理系統時，需要瞭解以下三件事：
@@ -35,19 +34,47 @@ sidebar_position: 9
 ### 參考資料
 1. [資料分析面試被刷後，後悔沒早點會學會這些資料庫知識！ - 知乎](https://www.gushiciku.cn/pl/p9vL/zh-tw)
 
+## Catalog vs Schema 
+0. Schema 原意為表現某個想法的規格書；Catalog則是定義一本以一個清單來包含多個商品的書
+1. 在SQL標準中，為了很好地分辨表格是隸屬於哪個資料庫，而哪個資料庫是隸屬於哪個資料庫範疇，會把Catalog和Schema定位一個資料儲存裝置/容器的抽象概念，換言之，會是視作為資料庫管理系統中的命名空間，Catalog這命名空間包含著哪些可用的Schema命名空間，而Schema則是包含哪些可用表格的命名空間
+> a book with a list of all the goods that you can buy from a shop
+> A database catalog of a database instance consists of metadata in which definitions of database objects such as base tables, views (virtual tables), synonyms, value ranges, indexes, users, and user groups are stored
 
+2. 但實際上的實現並不會跟標準一致，必須得看每個資料庫實作對於名詞的實際解釋才能理解。
+Note：
+1. 命名空間，是指某些事物的識別空間或存活空間，用途可以將同一個事物依照識別空間的不同而進一步分類，比如說假設有二個事物C並分別放在識別空間A和B，那麼當要存取事物C的是識別空間A擁有的，那麼只需要
+```
+識別空間A.事物C
+```
+[資料庫schema與catalog簡介](https://www.796t.com/content/1547512594.html)
 ## Schema
-1. 原文為一種易讓人理解某種理論或者某種想法的表現形式(通常會是文字或者圖片)，在資料庫當中會是定義一種資料的組成是什麼的規格書，其規格書包括資料的名稱、指定屬性、指定資料型別、屬性值本身的限制、定義資料之間的關聯性
-2. 傳統上的關聯式資料庫管理系統若要存放資料，會先要求建立一份規格書Schema來定義每一組資料會有的屬性、型別、關係等性質，並且要求儲存進資料庫的原生資料都必須按照Schema所指示的規格來存放或存取。
+1. Schema 原意為易讓人理解某種概念或者某種想法的表現形式(通常會是文字或者圖片)，換言之，表現某個想法的規格書，在資料庫管理系統的實現當中會是：
+  - 定義一個表格上的資料組成是什麼樣的規格書
+	- 定義一個使用者能夠使用什麼樣的資料庫(結構)之規格書
+	- 定義一個命名空間是什麼樣子內容的空間之規格書，其命名空間可指定自己可用的表格是哪些
+> So I think answer to your questions is:
+> 1. It depends on implementation, whether catalog name is needed to identify objects. The meaning of catalog, schema and database vary from one implementation to another.
+> 2. Yes, a catalog is an abstraction of data storage. I think it should be also defined as a self-contained isolated namespace, but not all SQL engines do it.
+> 3. Database and schema are pretty well defined by all vendors. Catalog is sometimes synonymous to "database" (at least in Oracle and Postgres), sometimes synonymous to "schema", and sometimes synonymous to both. The term catalog also often means metadata collection (aka system tables).
+> 4. Schema is what programmers should use to organize artifacts in SQL database as it represents a logical namespace with access control layer.
+2. 若描述著一個表格上的Schema，那麼其Schema是定義每一組資料會有的屬性、型別、關係、限制等性質，並且要求儲存進資料庫的原生資料都必須按照Schema所指示的規格來存放或存取。
 3. 規格書可以進一步確保每一筆資料的正確性。
-4. Schema vs. Data Model：前者是描述著某種資料A會有的屬性名稱、屬性型別、屬性值本身的限制、與其他種類資料的關聯性，後者則是定義某種資料是什麼以及如何儲存、對這些資料會有怎麼樣的操作、資料本身的限制，相較於Schema來說，Data Model是定義資料會是怎麼樣的結構，而Schema則是描述在這樣的結構下會有什麼樣的屬性、屬性型別、屬性本身的限制、資料關聯性
+4. Schema vs. Data Model：前者是描述著某種資料A會有的屬性名稱、屬性型別、屬性值本身的限制、與其他種類資料的關聯性，後者則是定義某種資料是什麼以及如何儲存、對這些資料會有怎麼樣的操作、資料本身的限制
 [Difference between Data Model and Database Schema in DBMS?](https://stackoverflow.com/questions/25093452/difference-between-data-model-and-database-schema-in-dbms)
 
 ## Self-Describing
-1. Self-Describing是指自己來描述自己是什麼樣的東西，在資料上，是指資料本身來解釋/描述自己是儲存什麼樣的內容，進而透過其特性來定義資料的Data Model是為何，不用透過額外框架和套件來定義每一筆資料都是什麼樣的內容和型別。
+0. 一般而言會由外部程式來定義資料本身是具有什麼樣的結構，而若資料內容本身就能描述資料結構的話，那麼就會是Self-Describing資料
+1. Self-Describing是指自己來描述自己是什麼樣的東西，在資料上，是指資料內容本身來解釋/描述自己是儲存什麼樣的內容或者描述自己是什麼樣的資料，進而透過其特性來定義資料的Data Model是為何，不用透過額外框架和套件來定義每一筆資料都是什麼樣的內容和型別，只需要解析其資料內容就能知道資料的架構。
 
 2. 案例：XML、HTML、JSON，利用標籤和標籤值來說明每筆資料所具有的屬性和型別，其中標籤和標籤值就是資料的一部分。
 
+3. XML: 建立四個標籤分別為to、from、heading、body，這些標籤包覆著內容就會是其標籤涵蓋的內容，而由四個標籤可以描述XML內容是主要Jani要傳遞給Tove的提醒訊息，並且內容會由標籤來組合，而外部程式只需要解析標籤和標籤內容就能構築成對應的key-value pair來解析，不需要重新定義
+```
+<to>Tove</to>
+<from>Jani</from>
+<heading>Reminder</heading>
+<body>Don't forget me this weekend!</body>
+```
 ### 參考資料
 1. [自我描述性 是什么意思？](https://www.zhihu.com/question/46127181)
 
@@ -65,9 +92,11 @@ sidebar_position: 9
 
 ## 關聯式資料庫
 1. 是一種基於關聯模型(Relational model)的資料儲存和管理的資料庫架構
-2. 關聯模型本身是基於數學(集合論、謂詞邏輯)是如何描述關係，產生關係的方式有很多種，比如將有條件式(關係/關聯)的笛卡爾積採用於多個集合中，而每個集合都存放著無窮無盡的資料，而笛卡兒積最後的產物會是從每個集合中取出一個滿足於有條件式笛卡兒積的元素，接著從而組成多組序列對(x1,x2,x3,...,xn)，x1從X1集合取出，x2從X2集合取出，後面以此類推
-
-3. 在這裡，條件式(關係/關聯)的笛卡爾積會是代表著關係或者關聯R，每組序列對就是資料本身，每一個集合都代表著資料會有的屬性，取出來組成序列對的元素就是對應著屬性的屬性值，最後由於屬性和屬性值皆為固定，而可以採用表格形式來儲存每一個序列對，而由於是對於特殊關係而計算出來的合併結果，所以會將表格稱之為relation
+2. 關聯模型本身是基於數學(集合論、謂詞邏輯)形式來描述每個集合之間的關係本身，在這裡，關係本身就是以數學形式所描述的條件式，該關係會針對於多個集合中，而每個集合都存放著無窮無盡的資料，而關係最後的產物會是從每個集合中取出一個滿足於該條件式的元素，接著從而組成多組序列對(x1,x2,x3,...,xn)，x1從X1集合取出，x2從X2集合取出，後面以此類推。
+    - 在關聯模型中，每筆資料會是每個元素所構成的序列對，而構成序列對的條件式會是關聯
+    - 此外該產物會是n個集合的笛卡爾積之子集
+    - 在這裡可以將集合們分別想像成名字集合、地址集合、性別集合、電話集合，而關係則是從這些集合中挑出適合的元素來組合成(x1,x2,x3,x4)這序列對。
+3. 在這裡，條件式會是代表著關係或者關聯R，每組序列對就是資料本身，每一個集合都代表著資料會有的屬性，取出來組成序列對的元素就是對應著屬性的屬性值，為了很好地描述由關係而構築出來的所有序列對，會採用表格形式來儲存每一個序列對並分別定義序列對的每一個元素皆源自於哪個集合，而由於是對於特殊關係而計算出來的合併結果，所以會將表格稱之為relation
 
 > 在任意兩個集合A, B中，若集合A中的元素a是與集合B的元素b具有某種數學關係/關聯R(比如a < b，或者說先前拿到的元素比現在拿的元素還大)，那麼所有滿足該數學關係/關聯R的元素，會構成另一個子集合，而子集合會使用(a,b)這序列對來表示
 
@@ -120,18 +149,30 @@ sidebar_position: 9
 ![](https://res.cloudinary.com/dqfxgtyoi/image/upload/v1637423850/blog/database/documentDB_ykfvn2.png)
 
 ## Data Model
-1. 是一種定義資料或資訊的表示模型，通常會以一種形式來表達能夠存取的資料、這種資料形式如何進行管理/操作、其資料形式本身的限制，而定義該模型的角色通常會是資料庫管理系統、應用程式本身、資料本身。
+1. 是一種定義資料或資訊的表示模型，通常會以一種形式來表達能夠存取的資料、這種資料形式如何進行管理/操作、其資料形式本身的限制，而定義該模型的角色通常會是管理資料的角色(資料庫管理系統)、使用資料的角色(應用程式本身)、資料本身。
 2. 其模型主要含有：
   - Structure of the data：資料本身上的結構以及多個資料如何儲存
   - Operations on the data：對於資料上的操作
   - Contrains on the data：對於資料本身的限制，如星期幾，就只能填寫1-7
-3. 對於資料是否能以預先定義好的Data Model來存放資料所包含的內容而區分成三種：
+3. 資料能否預先定義出Data Model而區分成三種資料：
 
-  - Structured Data：以預先定義好的Data Model來存放資料，每一筆資料的存取和操作都必須按照其Data Model來運行，不能夠違反，通常適用於可預先了解資料屬性和型別都為固定的資料，往往可以透過這些特性來打造以某種類的資料，而每一筆資料的屬性名稱和屬性值皆為固定，而這剛好可以形成表格形狀的資料結構。
-  - Unstructured Data：沒有使用預先定義好的Data Model來存放資料，每一筆資料的存取和操作可隨意地進行，通常適用於無法預先了解資料屬性和型別有哪些的資料。
-  
-  - Semi-Structured Data：既可以以預先定義好Data Model來存放資料，但又可以像Unstructured Data那樣不必完全遵從Data Model來存放，可以隨意修改事先定義的Data Model來進行操作，由於這些特點使它介於Structured Data和Unstructured Data之間，所以才稱之為不完全(Semi)。較為有名的Semi-Structured Data案例是XML、HTML、JSON，這些資料可以以預先定義好的Data Model來存放每筆資料，同時允許資料不必按照現有Data Model來存放，透過資料本身的標籤和標籤值來去定義自己的Data Model  
-
+  - Structured Data：資料本身的結構、如何存取/操作、資料本身限制皆能夠被預想出在資料處理過程中會有的變動，可以固定成一個完整的Data Model來表示其資料，通常適用於可預先了解資料欄位名稱和型別的場景。
+  > 结构化数据 固定的数据模型Schema，一组特定数据类型的数据组合，比如数据库表
+  > • 存储在RDBMS或者Spreadsheet中• 优点:关联查询和修改简便
+  > • 缺点:表结构固定，增加一个属性变更表结构困难。引入表关联会带来更多的应用的麻烦。
+  > • 应用:CRM，ERP，航班火车预定系统
+  - Unstructured Data：資料本身的結構、如何存取/操作、資料本身限制不太能夠被預想出資料處理過程會有的變動有哪些，因此無法構成較為固定的Data Model來表示其資料，通常適用於無法預先定義的資料之場景，在這裡由於沒有固定的Data Model，所以每一筆資料的存取、操作會隨意地進行。
+  > 非结构化数据
+  > • 没有固定的数据结构和类型，没有固定的数据模型schema 
+  > • 存储在文件存储系统或者对象存储系统里
+  > • 优点:随心所欲，各种类型
+  > • 缺点:无标准，难以规范化管理，检索，查询
+  > • 应用:BLOB，音视频文件，办公文档，报表，日志
+  - Semi-Structured Data：資料本身既可以以預先定義好Data Model來定義資料，但又可以像Unstructured Data那樣不會完全遵從現有的Data Model來存放，可以於資料處理過程中隨意修改事先定義的Data Model來進行操作，由於這些特點使它介於Structured Data和Unstructured Data之間，所以才稱之為不完全(Semi)，換言之，Semi-Structured Data 是一種會隨著處理情況/需求而變更自身的Data Model之資料，但又可以在特定時間點表現成Structured Data或者Unstructured Data。較為有名的Semi-Structured Data案例是XML、HTML、JSON，這些資料可以以預先定義好的Data Model來存放每筆資料，同時允許資料不必按照現有Data Model來存放，透過資料本身的標籤和標籤值來去定義自己的Data Model  
+  > • 有格式但没有固定的数据模型Schema，具备自描述的属性信息表达数据内容。
+  > • 以键值对儿存储，JSON/XML类似的文档描述，存储在文件或者文档形数据库中，或者以图的方式存储在图数据库中，数据仓库中。
+  > • 优点:扩展性好，对任意数据可以增、删、改描述信息，通过特定的算法和方法可以进行检索和分析。
+  > • 缺点:特定应用场景的特定用法，不善于存储BLOB。
 
 ## 參考資料
 1. [什么是结构化数据？非结构化数据？半结构化数据？](https://www.zhihu.com/question/50986354)
